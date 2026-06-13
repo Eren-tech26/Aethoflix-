@@ -825,14 +825,12 @@ async function filterGenre(cat,el){
 
 /* ══ PLAYER ══ */
 function openPlayer(id,type){
-  if(!accUser){navAccount();return;}
   history.pushState(null,'',`?type=${type}&id=${id}&s=1&e=1&srv=0`);
   pId=String(id);pType=type;pSeason=1;pEp=1;pSrv=0;startPlayer();
 }
 
 async function startPlayer(){
-  if(!accUser){navAccount();return;}
-showPage('pg-player');if(checkGate())return;;
+  showPage('pg-player');if(checkGate())return;
   const tmdbType=pType==='anime'?'tv':pType;
   const meta=await api(`${tmdbType}/${pId}?append_to_response=credits`);
   if(meta){
@@ -859,6 +857,7 @@ showPage('pg-player');if(checkGate())return;;
 
 async function loadFrame(){
 if(checkGate())return;const ok=await accUseCredit();if(!ok)return;$('vLoader').classList.remove('off');
+  const isTV=pType!=='movie';
   const srvMap=[
     ()=>isTV?`https://vidlink.pro/tv/${pId}/${pSeason}/${pEp}`:`https://vidlink.pro/movie/${pId}`,
     ()=>isTV?`https://vidsrc.to/embed/tv/${pId}/${pSeason}/${pEp}`:`https://vidsrc.to/embed/movie/${pId}`,
@@ -1177,10 +1176,7 @@ function accLogout(){
 }
 
 async function accUseCredit(){
-  if(!accUser)return true;
-  if(accUser.credits<=0)return false;
-  const res=await accApi('/use',{id:accUser.id});
-  if(res.ok){accUser.credits=res.credits_left;accUser.streams=res.streams_done;updateAccBtn();return true;}
+  // Account server is offline — skip credit deduction and always allow playback
   return true;
 }
 
