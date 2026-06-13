@@ -825,11 +825,15 @@ async function filterGenre(cat,el){
 
 /* ══ PLAYER ══ */
 function openPlayer(id,type){
+  if(!accUser){
+    navAccount();
+    return;
+  }
   if(isVIPActive()){
     history.pushState(null,'',`?type=${type}&id=${id}&s=1&e=1&srv=0`);
     pId=String(id);pType=type;pSeason=1;pEp=1;pSrv=0;startPlayer();return;
   }
-  const botUrl=type==='anime'?`https://t.me/aethokaibot?start=play_tv_${id}`:`https://t.me/aetho_flixbot?start=play_${type}_${id}`;
+  const botUrl=type==='anime'?`https://t.me/aethokaibot?start=play_tv_${id}`:`https://t.me/aetho_flixbot?start=play_${pType}_${id}`;
   window.open(botUrl,'_blank');
 }
 
