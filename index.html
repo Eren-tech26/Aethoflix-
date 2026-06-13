@@ -22,19 +22,13 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font);overflo
 img{display:block;user-select:none}a{color:inherit;text-decoration:none}
 button{font-family:var(--font);cursor:pointer}
 select{cursor:pointer}
-
-/* ═══════════ NAV ═══════════ */
 .nav{position:fixed;top:0;left:0;right:0;height:var(--nav);display:flex;align-items:center;justify-content:space-between;padding:0 4%;z-index:3000;background:linear-gradient(to bottom,rgba(7,7,16,.98) 0%,transparent 100%);transition:background .3s}
 .nav.solid{background:rgba(7,7,16,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
 .logo{font-size:1.35rem;font-weight:900;letter-spacing:-.5px;cursor:pointer;display:flex;align-items:center;gap:2px;flex-shrink:0}
 .logo-a{color:var(--accent2)}.logo-b{color:var(--text)}
 .logo-badge{font-size:.42rem;font-weight:900;letter-spacing:2px;color:var(--gold);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);padding:2px 5px;border-radius:3px;margin-left:5px;align-self:center}
-
-/* ── NAV SEARCH ICON BUTTON ── */
 .nav-search-icon-btn{background:rgba(255,255,255,.07);border:1.5px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:50%;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
 .nav-search-icon-btn:hover{background:rgba(124,58,237,.15);border-color:var(--accent)}
-
-/* ── SEARCH PAGE BAR ── */
 .srch-bar-wrap{position:relative;margin-bottom:16px}
 .srch-bar-input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid var(--border);color:var(--text);padding:13px 40px 13px 44px;border-radius:14px;font-size:.95rem;font-family:var(--font);outline:none;transition:.2s}
 .srch-bar-input:focus{border-color:var(--accent);background:rgba(124,58,237,.08);box-shadow:0 0 0 3px rgba(124,58,237,.13)}
@@ -43,8 +37,6 @@ select{cursor:pointer}
 .srch-bar-clear{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:.85rem;padding:4px 6px;display:none;transition:.2s}
 .srch-bar-clear:hover{color:var(--text)}
 .srch-bar-clear.show{display:block}
-
-/* ── INLINE SUGGESTIONS LIST ── */
 .srch-sug-list{background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:16px}
 .srch-sug-lbl{font-size:.6rem;font-weight:900;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;padding:10px 14px 4px}
 .srch-sug-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
@@ -55,38 +47,25 @@ select{cursor:pointer}
 .srch-sug-text{font-size:.86rem;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .srch-sug-text b{color:var(--accent2);font-weight:800}
 .srch-sug-meta{font-size:.67rem;color:var(--muted);flex-shrink:0}
-.srch-sug-divider{height:1px;background:var(--border)}
 .srch-sug-search-row{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
 .srch-sug-search-row:hover{background:rgba(255,255,255,.05)}
 .srch-sug-search-label{font-size:.85rem;font-weight:700;color:var(--accent2)}
-
-/* ── NAV RIGHT ── */
 .nav-r{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .nav-vip-btn{padding:6px 13px;background:linear-gradient(135deg,#f59e0b,#f97316);color:#000;border:none;border-radius:18px;font-size:.7rem;font-weight:900;letter-spacing:.5px;transition:.2s;white-space:nowrap}
 .nav-vip-btn:hover{transform:scale(1.04)}
-
-/* ═══════════ BOTTOM NAV ═══════════ */
 .bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bnav);background:rgba(7,7,16,.98);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;z-index:3000;padding-bottom:env(safe-area-inset-bottom,0px)}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;color:var(--muted);transition:.2s;font-size:.57rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
 .bn.on{color:var(--accent2)}
 .bn-ic{font-size:1.2rem;line-height:1}
-
-/* ═══════════ PAGES ═══════════ */
 .pg{display:none;min-height:100vh;animation:fadeUp .25s ease}
 .pg.on{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── HERO ── */
 .hero{position:relative;width:100%;height:90vh;min-height:500px;max-height:860px;overflow:hidden}
 .hero-slides{position:absolute;inset:0}
 .hslide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
 .hslide.on{opacity:1;z-index:1}
 .hslide img{width:100%;height:100%;object-fit:cover;object-position:center 18%}
-.hero-grad{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:
-    linear-gradient(to right,rgba(7,7,16,.98) 0%,rgba(7,7,16,.65) 40%,rgba(7,7,16,.1) 100%),
-    linear-gradient(to top,var(--bg) 0%,rgba(7,7,16,.75) 20%,rgba(7,7,16,.15) 50%,transparent 70%),
-    linear-gradient(to bottom,rgba(7,7,16,.5) 0%,transparent 18%)}
+.hero-grad{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to right,rgba(7,7,16,.98) 0%,rgba(7,7,16,.65) 40%,rgba(7,7,16,.1) 100%),linear-gradient(to top,var(--bg) 0%,rgba(7,7,16,.75) 20%,rgba(7,7,16,.15) 50%,transparent 70%),linear-gradient(to bottom,rgba(7,7,16,.5) 0%,transparent 18%)}
 .hero-body{position:absolute;bottom:14%;left:4%;right:4%;z-index:3;max-width:580px}
 .h-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.12);border:1px solid rgba(168,85,247,.35);padding:4px 13px 4px 10px;border-radius:20px;font-size:.66rem;font-weight:800;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
 .h-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s infinite;flex-shrink:0}
@@ -104,20 +83,14 @@ select{cursor:pointer}
 .hero-dots{position:absolute;bottom:6%;left:4%;z-index:4;display:flex;gap:6px;align-items:center}
 .hdot{height:3px;border-radius:2px;background:rgba(255,255,255,.2);cursor:pointer;transition:.4s;width:20px}
 .hdot.on{background:var(--accent2);width:30px}
-
-/* ── GENRE PILL NAV ── */
 .genre-nav{display:flex;gap:7px;overflow-x:auto;padding:16px 4% 6px;scroll-snap-type:x mandatory}
 .genre-nav::-webkit-scrollbar{display:none}
 .gpill{padding:7px 17px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:.76rem;font-weight:700;color:var(--sub);cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0;scroll-snap-align:start}
 .gpill:hover{border-color:var(--accent2);color:var(--accent2)}
 .gpill.on{background:var(--accent);border-color:var(--accent);color:#fff}
-
-/* ── SECTION DIVIDER ── */
 .sec-div{display:flex;align-items:center;gap:12px;padding:10px 4% 2px;margin-top:6px}
 .sec-line{flex:1;height:1px;background:var(--border)}
 .sec-label{font-size:.68rem;font-weight:900;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;white-space:nowrap;padding:0 2px}
-
-/* ── CONTENT ROWS ── */
 .rows{padding:0 4% 10px}
 .row{margin-bottom:30px}
 .row-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -126,8 +99,6 @@ select{cursor:pointer}
 .row-more{font-size:.72rem;color:var(--accent2);font-weight:700}
 .slider{display:flex;gap:9px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory}
 .slider::-webkit-scrollbar{height:2px}
-
-/* ── POSTER CARD ── */
 .pcard{min-width:108px;width:108px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;position:relative}
 .pcard:active{transform:scale(.95)}
 .pcard-img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:9px;background:var(--card);transition:transform .25s,border-color .2s;border:2px solid transparent}
@@ -135,22 +106,16 @@ select{cursor:pointer}
 .pcard-name{font-size:.67rem;font-weight:600;margin-top:5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard-meta{font-size:.59rem;color:var(--muted);margin-top:2px}
 .pcard-badge{position:absolute;top:5px;right:5px;background:var(--accent);color:#fff;font-size:.55rem;font-weight:900;padding:2px 5px;border-radius:4px;letter-spacing:.5px}
-
-/* ── WIDE CARD ── */
 .wcard{min-width:220px;width:220px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:9px;overflow:hidden;position:relative}
 .wcard-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--card);transition:transform .28s}
 .wcard:hover .wcard-img{transform:scale(1.05)}
 .wcard-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.15) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px}
 .wcard-title{font-size:.78rem;font-weight:700;line-height:1.2}
 .wcard-sub{font-size:.61rem;color:var(--sub);margin-top:3px;display:flex;gap:5px;align-items:center}
-
-/* ── TOP 10 ── */
 .t10card{min-width:148px;width:148px;flex-shrink:0;display:flex;align-items:flex-end;cursor:pointer;position:relative;scroll-snap-align:start}
 .t10card:active{transform:scale(.96)}
 .t10-num{font-size:5.5rem;font-weight:900;color:var(--bg);-webkit-text-stroke:2px var(--dim);line-height:1;position:absolute;left:0;bottom:-5px;z-index:1;letter-spacing:-4px}
 .t10-img{width:90px;aspect-ratio:2/3;object-fit:cover;border-radius:9px;margin-left:48px;z-index:2;box-shadow:0 4px 20px rgba(0,0,0,.7)}
-
-/* ── SPOTLIGHT CARD ── */
 .spcard{min-width:260px;width:260px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:10px;overflow:hidden;background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column}
 .spcard-img{width:100%;aspect-ratio:16/9;object-fit:cover}
 .spcard-body{padding:10px 12px 12px}
@@ -159,15 +124,11 @@ select{cursor:pointer}
 .spcard-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
 .spcard-rating{font-size:.7rem;font-weight:700;color:var(--gold)}
 .spcard-play{font-size:.67rem;font-weight:800;color:var(--accent2)}
-
-/* ── SKELETONS ── */
 .sk{background:linear-gradient(90deg,var(--surface) 25%,var(--card) 50%,var(--surface) 75%);background-size:200% 100%;animation:sk 1.5s infinite;border-radius:9px}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .sk-p{min-width:108px;width:108px;aspect-ratio:2/3;flex-shrink:0}
 .sk-w{min-width:220px;width:220px;aspect-ratio:16/9;flex-shrink:0}
 .sk-t10{min-width:148px;width:148px;height:135px;flex-shrink:0}
-
-/* ═══════════ SEARCH PAGE ═══════════ */
 .srch-pg{padding:16px 4% 20px}
 .ftabs{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px}
 .ftabs::-webkit-scrollbar{display:none}
@@ -175,8 +136,6 @@ select{cursor:pointer}
 .ftab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .srch-title{font-size:1rem;font-weight:800;margin-bottom:12px;color:var(--text)}
 .srch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:9px}
-
-/* ═══════════ PLAYER PAGE ═══════════ */
 .player-pg{background:var(--bg);padding-top:var(--nav)}
 .vid-wrap{width:100%;aspect-ratio:16/9;background:#000;position:relative}
 .vid-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:5}
@@ -211,8 +170,6 @@ select{cursor:pointer}
 .ep-btn{padding:9px 0;background:var(--card);border:1px solid var(--border);color:var(--muted);text-align:center;border-radius:7px;font-weight:700;font-size:.78rem;font-family:var(--font);transition:.2s}
 .ep-btn:hover:not(.on){color:var(--text);border-color:var(--border2)}
 .ep-btn.on{background:#fff;color:#000;border-color:#fff}
-
-/* ═══════════ VIP PAGE ═══════════ */
 .vip-pg{padding:calc(var(--nav)+20px) 4% 40px}
 .vip-hero{background:linear-gradient(135deg,rgba(124,58,237,.18) 0%,rgba(245,158,11,.12) 100%);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
 .vip-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.15),transparent 70%);pointer-events:none}
@@ -246,8 +203,6 @@ select{cursor:pointer}
 .vab-sub{font-size:.78rem;color:var(--sub)}
 .vip-cancel-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;font-size:.7rem;font-weight:700;margin-top:10px;transition:.2s}
 .vip-cancel-btn:hover{color:var(--red);border-color:var(--red)}
-
-/* ═══════════ GATE ═══════════ */
 .gate{position:fixed;inset:0;background:rgba(4,4,14,.96);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s;padding:20px}
 .gate.on{opacity:1;pointer-events:auto}
 .gate-card{background:var(--surface);border:1px solid var(--border);padding:28px 22px;border-radius:18px;text-align:center;max-width:380px;width:100%}
@@ -261,15 +216,11 @@ select{cursor:pointer}
 .gate-unlock{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:.88rem;font-weight:800;font-family:var(--font);transition:.2s}
 .gate-unlock:hover{background:var(--accent2)}
 .gate-vip-hint{font-size:.72rem;color:var(--gold);margin-top:10px;cursor:pointer}
-
-/* ═══════════ FULLSCREEN ═══════════ */
 .exit-fs{position:fixed;top:14px;right:14px;z-index:99998;background:rgba(0,0,0,.93);color:#fff;border:2px solid var(--accent2);padding:8px 16px;border-radius:9px;font-weight:800;font-size:.8rem;display:none;font-family:var(--font)}
 body.ls{overflow:hidden!important;position:fixed;width:100vw;height:100vh}
 body.ls .vid-wrap{position:fixed!important;top:50%!important;left:50%!important;width:100vh!important;height:100vw!important;transform:translate(-50%,-50%) rotate(90deg)!important;z-index:99997!important;border-radius:0!important}
 body.ls .exit-fs{display:block!important}
 body.ls .nav,body.ls .bnav,body.ls .p-info{display:none!important}
-
-/* ═══════════ ADMIN PANEL ═══════════ */
 .admin-pg{padding:24px 4% 40px;min-height:100vh}
 #adminLock{display:flex;flex-direction:column;align-items:center;padding-top:60px}
 .admin-lock-ic{font-size:3rem;margin-bottom:12px}
@@ -306,16 +257,11 @@ body.ls .nav,body.ls .bnav,body.ls .p-info{display:none!important}
 .admin-stat{background:var(--card);border-radius:10px;padding:12px;text-align:center}
 .admin-stat-val{font-size:1.4rem;font-weight:900;color:var(--accent2)}
 .admin-stat-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
-
-/* ═══════════ VIP GLOW ═══════════ */
 .vip-glow{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,transparent,var(--gold),var(--accent2),var(--gold),transparent);z-index:9999;opacity:0;transition:opacity .5s;pointer-events:none}
 body.vip .vip-glow{opacity:1}
-
-/* ═══════════ EMPTY ═══════════ */
 .empty{text-align:center;padding:50px 20px;color:var(--muted)}
 .empty-ic{font-size:2.4rem;margin-bottom:10px}
 .empty-txt{font-size:.88rem;font-weight:600}
-
 @media(max-width:420px){
   .h-title{font-size:1.75rem}
   .pcard{min-width:94px;width:94px}
@@ -328,10 +274,7 @@ body.vip .vip-glow{opacity:1}
 </style>
 </head>
 <body>
-
 <div class="vip-glow"></div>
-
-<!-- GATE -->
 <div class="gate" id="gate">
   <div class="gate-card">
     <div class="gate-ic">📺</div>
@@ -345,10 +288,7 @@ body.vip .vip-glow{opacity:1}
     <div class="gate-vip-hint" onclick="navVIP()">👑 Have a VIP Code? Enter here</div>
   </div>
 </div>
-
 <button class="exit-fs" onclick="toggleRotate()">✖ Exit Fullscreen</button>
-
-<!-- TOP NAV -->
 <nav class="nav" id="nav">
   <div class="logo" onclick="logoTap()">
     <span class="logo-a">A</span><span class="logo-b">ethoFlix</span>
@@ -359,8 +299,6 @@ body.vip .vip-glow{opacity:1}
     <button class="nav-vip-btn" onclick="navVIP()">👑 VIP</button>
   </div>
 </nav>
-
-<!-- HOME PAGE -->
 <div class="pg on" id="pg-home">
   <div class="hero" id="hero">
     <div class="hero-slides" id="heroSlides"></div>
@@ -377,7 +315,6 @@ body.vip .vip-glow{opacity:1}
     </div>
     <div class="hero-dots" id="heroDots"></div>
   </div>
-
   <div class="genre-nav" id="genreNav">
     <div class="gpill on" onclick="filterGenre('all',this)">All</div>
     <div class="gpill" onclick="filterGenre('movie',this)">🎬 Movies</div>
@@ -392,52 +329,30 @@ body.vip .vip-glow{opacity:1}
     <div class="gpill" onclick="filterGenre('kdrama',this)">🇰🇷 K-Drama</div>
     <div class="gpill" onclick="filterGenre('documentary',this)">🎞️ Docs</div>
   </div>
-
   <div class="rows" id="homeRows"></div>
 </div>
-
-<!-- SEARCH PAGE -->
 <div class="pg" id="pg-search">
   <div class="srch-pg">
-    <!-- Search bar at top of page -->
     <div class="srch-bar-wrap" id="srchBarWrap">
       <span class="srch-bar-ic">🔍</span>
-      <input
-        class="srch-bar-input"
-        id="srchBarInput"
-        placeholder="Search movies, shows, anime…"
-        autocomplete="off"
-        spellcheck="false"
-        oninput="onSrchInput(this.value)"
-        onkeydown="onSrchKey(event)"
-      >
+      <input class="srch-bar-input" id="srchBarInput" placeholder="Search movies, shows, anime…" autocomplete="off" spellcheck="false" oninput="onSrchInput(this.value)" onkeydown="onSrchKey(event)">
       <button class="srch-bar-clear" id="srchBarClear" onclick="clearSrchInput()">✕</button>
     </div>
-
-    <!-- Inline suggestions list (shows when typing) -->
     <div id="srchSugList" style="display:none"></div>
-
-    <!-- Filter tabs (shows when search results are displayed) -->
     <div class="ftabs" id="srchFtabs" style="display:none">
       <div class="ftab on" onclick="setSrchFilter('all',this)">All</div>
       <div class="ftab" onclick="setSrchFilter('movie',this)">Movies</div>
       <div class="ftab" onclick="setSrchFilter('tv',this)">Series</div>
       <div class="ftab" onclick="setSrchFilter('anime',this)">Anime</div>
     </div>
-
     <div class="srch-title" id="srchTitle">Trending</div>
     <div class="srch-grid" id="srchGrid"></div>
   </div>
 </div>
-
-<!-- PLAYER PAGE -->
 <div class="pg" id="pg-player">
   <div class="player-pg">
     <div class="vid-wrap" id="vidWrap">
-      <div class="vid-load" id="vLoader">
-        <div class="spin"></div>
-        <div class="spin-lbl">LOADING STREAM</div>
-      </div>
+      <div class="vid-load" id="vLoader"><div class="spin"></div><div class="spin-lbl">LOADING STREAM</div></div>
       <iframe id="pFrame" allowfullscreen allow="autoplay; encrypted-media; fullscreen; picture-in-picture; web-share"></iframe>
     </div>
     <div class="p-info">
@@ -474,8 +389,6 @@ body.vip .vip-glow{opacity:1}
     </div>
   </div>
 </div>
-
-<!-- VIP PAGE -->
 <div class="pg" id="pg-vip">
   <div class="vip-pg">
     <div class="vip-active-banner" id="vipActiveBanner">
@@ -497,9 +410,9 @@ body.vip .vip-glow{opacity:1}
     </div>
     <div class="vip-unlock-box">
       <div class="vip-ul-title">Enter VIP Code</div>
-      <div class="vip-ul-sub">Get your personal VIP code from the Telegram bot. Codes are time-limited — 1 day, 7 days, or 30 days.</div>
+      <div class="vip-ul-sub">Get your VIP code from the Admin Panel. Codes work for 1 day, 7 days, or 30 days.</div>
       <div class="code-in-wrap">
-        <input class="code-in" id="vipCodeIn" placeholder="AETHO-XXXX" maxlength="20" oninput="this.value=this.value.toUpperCase()">
+        <input class="code-in" id="vipCodeIn" placeholder="AETHO-X-XXXXXXXX" maxlength="20" oninput="this.value=this.value.toUpperCase()">
         <button class="code-btn" onclick="redeemVIP()">Redeem</button>
       </div>
       <div class="code-msg" id="codeMsgEl"></div>
@@ -508,53 +421,37 @@ body.vip .vip-glow{opacity:1}
     <div style="margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
       <div class="pbox-lbl" style="margin-bottom:10px">How VIP Codes Work</div>
       <div style="font-size:.79rem;color:var(--sub);line-height:1.85">
-        1. Open the <b style="color:var(--text)">AethoFlix Telegram Bot</b><br>
-        2. Type <b style="color:var(--accent2)">/vip</b> or <b style="color:var(--accent2)">/getcode</b><br>
-        3. Choose a duration: 1 Day · 7 Days · 30 Days<br>
-        4. Complete verification and receive your code<br>
+        1. Open the <b style="color:var(--text)">Admin Panel</b> (tap logo 5×)<br>
+        2. Enter PIN and go to <b style="color:var(--accent2)">Generate VIP Key</b><br>
+        3. Choose duration: 1 Day · 7 Days · 30 Days<br>
+        4. Copy the generated code<br>
         5. Enter the code above — instant VIP!
       </div>
     </div>
   </div>
 </div>
-
-<!-- ADMIN PANEL PAGE -->
 <div class="pg" id="pg-admin">
   <div class="admin-pg">
-
-    <!-- Lock screen -->
     <div id="adminLock">
       <div class="admin-lock-ic">🔐</div>
       <div class="admin-lock-title">Admin Access</div>
       <div class="admin-lock-sub">Enter your 4-digit PIN</div>
-      <div class="admin-pin-dots" id="adminPinDots">
-        <span></span><span></span><span></span><span></span>
-      </div>
+      <div class="admin-pin-dots" id="adminPinDots"><span></span><span></span><span></span><span></span></div>
       <div class="admin-pin-pad">
-        <button onclick="adminPin('1')">1</button>
-        <button onclick="adminPin('2')">2</button>
-        <button onclick="adminPin('3')">3</button>
-        <button onclick="adminPin('4')">4</button>
-        <button onclick="adminPin('5')">5</button>
-        <button onclick="adminPin('6')">6</button>
-        <button onclick="adminPin('7')">7</button>
-        <button onclick="adminPin('8')">8</button>
-        <button onclick="adminPin('9')">9</button>
+        <button onclick="adminPin('1')">1</button><button onclick="adminPin('2')">2</button><button onclick="adminPin('3')">3</button>
+        <button onclick="adminPin('4')">4</button><button onclick="adminPin('5')">5</button><button onclick="adminPin('6')">6</button>
+        <button onclick="adminPin('7')">7</button><button onclick="adminPin('8')">8</button><button onclick="adminPin('9')">9</button>
         <button onclick="adminPinClear()" class="admin-pin-clr">⌫</button>
         <button onclick="adminPin('0')">0</button>
         <button onclick="adminPinSubmit()" class="admin-pin-ok">✓</button>
       </div>
       <div class="admin-pin-err" id="adminPinErr"></div>
     </div>
-
-    <!-- Dashboard (shown after correct PIN) -->
     <div id="adminDash" style="display:none">
       <div class="admin-hdr">
         <div class="admin-hdr-title">⚙️ Admin Panel</div>
         <button class="admin-logout-btn" onclick="adminLogout()">Logout</button>
       </div>
-
-      <!-- Generate Key -->
       <div class="admin-card">
         <div class="admin-card-title">🔑 Generate VIP Key</div>
         <div class="admin-gen-row">
@@ -570,15 +467,11 @@ body.vip .vip-glow{opacity:1}
           <button class="admin-copy-btn" onclick="adminCopyKey()">📋 Copy Key</button>
         </div>
       </div>
-
-      <!-- Active Keys -->
       <div class="admin-card">
         <div class="admin-card-title">📋 Generated Keys</div>
         <div id="adminKeysList"></div>
         <button class="admin-clear-btn" onclick="adminClearKeys()">🗑️ Clear All Keys</button>
       </div>
-
-      <!-- Stats -->
       <div class="admin-card">
         <div class="admin-card-title">📊 Stats</div>
         <div class="admin-stats" id="adminStats"></div>
@@ -595,329 +488,185 @@ body.vip .vip-glow{opacity:1}
 </nav>
 
 <script>
-/* ═══════════ CONFIG ═══════════ */
-const TMDB_KEY = 'fca1c3fa675f74cf4aa8d24b72dd4807';
-const IMG = 'https://image.tmdb.org/t/p/';
+const TMDB_KEY='fca1c3fa675f74cf4aa8d24b72dd4807';
+const IMG='https://image.tmdb.org/t/p/';
+let heroItems=[],heroIdx=0,heroTimer=null;
+let pId=null,pType=null,pSrv=0,pSeason=1,pEp=1;
+let srchFilter='all',lastQ='';
+let trendingCache=[],recentSearches=JSON.parse(localStorage.getItem('af_recent')||'[]');
 
-/* ═══════════ STATE ═══════════ */
-let heroItems=[], heroIdx=0, heroTimer=null;
-let pId=null, pType=null, pSrv=0, pSeason=1, pEp=1;
-let srchFilter='all', lastQ='';
-let trendingCache=[], recentSearches=JSON.parse(localStorage.getItem('af_recent')||'[]');
-
-/* ═══════════ HELPERS ═══════════ */
-const $ = id => document.getElementById(id);
-const $$ = s => document.querySelectorAll(s);
+const $=id=>document.getElementById(id);
+const $$=s=>document.querySelectorAll(s);
 
 async function api(path){
-  const sep = path.includes('?') ? '&' : '?';
-  try {
-    const r = await fetch(`https://api.tmdb.org/3/${path}${sep}api_key=${TMDB_KEY}&language=en-US`);
-    return await r.json();
-  } catch(e){ return null; }
+  const sep=path.includes('?')?'&':'?';
+  try{const r=await fetch(`https://api.tmdb.org/3/${path}${sep}api_key=${TMDB_KEY}&language=en-US`);return await r.json();}catch(e){return null;}
 }
 
 function genreLabel(id){
-  const g={28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',
-    18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',
-    10749:'Romance',878:'Sci-Fi',53:'Thriller',10752:'War',37:'Western',
-    10759:'Action & Adventure',10762:'Kids',10765:'Sci-Fi & Fantasy'};
+  const g={28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',53:'Thriller',10752:'War',37:'Western',10759:'Action & Adventure',10762:'Kids',10765:'Sci-Fi & Fantasy'};
   return g[id]||'';
 }
 
-function skRow(type, n=8){
-  let h='';
-  const cls = type==='wide'?'sk-w':type==='t10'?'sk-t10':'sk-p';
-  for(let i=0;i<n;i++) h+=`<div class="sk ${cls}"></div>`;
-  return h;
+function skRow(type,n=8){
+  let h='';const cls=type==='wide'?'sk-w':type==='t10'?'sk-t10':'sk-p';
+  for(let i=0;i<n;i++)h+=`<div class="sk ${cls}"></div>`;return h;
 }
 
-function saveRecent(q){
-  if(!q) return;
-  recentSearches = [q, ...recentSearches.filter(r=>r!==q)].slice(0,8);
-  localStorage.setItem('af_recent', JSON.stringify(recentSearches));
-}
+function saveRecent(q){if(!q)return;recentSearches=[q,...recentSearches.filter(r=>r!==q)].slice(0,8);localStorage.setItem('af_recent',JSON.stringify(recentSearches));}
 
-function highlightMatch(text, q){
-  if(!q) return text;
-  const re = new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')', 'gi');
-  return text.replace(re,'<b>$1</b>');
-}
+function highlightMatch(text,q){if(!q)return text;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return text.replace(re,'<b>$1</b>');}
 
-/* ═══════════════════════════════════════
-   DEDICATED SEARCH PAGE LOGIC
-═══════════════════════════════════════ */
-let srchSugTimer=null;
+/* ══ VIP SYSTEM — FIXED ══
+   Root cause of the bug:
+   OLD CODE: redeemVIP() called validateVIPCode() which re-computed a hash/date check.
+   adminGenKey() stored keys in localStorage but redeemVIP() NEVER checked that list.
+   The two systems were completely disconnected — generated keys always failed.
 
-async function initTrendingCache(){
-  const data = await api('trending/all/week');
-  if(data && data.results) trendingCache = data.results.filter(i=>i.poster_path||(i.title||i.name)).slice(0,20);
-}
+   FIX: adminGenKey() generates a random code and saves it to af_admin_keys.
+   redeemVIP() looks up the code directly in af_admin_keys. No hash math needed.
+*/
 
-function onSrchInput(val){
-  $('srchBarClear').classList.toggle('show', val.length>0);
-  clearTimeout(srchSugTimer);
-  if(!val.trim()){
-    // Show trending discover
-    hideSugList();
-    $('srchFtabs').style.display='none';
-    $('srchTitle').textContent='Trending';
-    loadDiscover();
-    return;
-  }
-  // Show inline suggestions after short delay
-  srchSugTimer = setTimeout(()=>renderInlineSug(val.trim()), 180);
-}
-
-function onSrchKey(e){
-  if(e.key==='Enter'){
-    const q=$('srchBarInput').value.trim();
-    if(q) commitSrchSearch(q);
-  }
-}
-
-function clearSrchInput(){
-  $('srchBarInput').value='';
-  $('srchBarClear').classList.remove('show');
-  hideSugList();
-  $('srchFtabs').style.display='none';
-  $('srchTitle').textContent='Trending';
-  loadDiscover();
-  $('srchBarInput').focus();
-}
-
-function hideSugList(){
-  const el=$('srchSugList');
-  el.style.display='none';
-  el.innerHTML='';
-}
-
-function showSugList(html){
-  const el=$('srchSugList');
-  el.innerHTML=`<div class="srch-sug-list">${html}</div>`;
-  el.style.display='block';
-  // Hide grid while suggestions show
-  $('srchGrid').style.display='none';
-  $('srchTitle').style.display='none';
-  $('srchFtabs').style.display='none';
-}
-
-async function renderInlineSug(q){
-  let h=`<div class="srch-sug-search-row" onclick="commitSrchSearch('${q.replace(/'/g,"\\'")}')">
-    <span class="srch-sug-ic">🔍</span>
-    <span class="srch-sug-search-label">Search "<b>${q}</b>"</span>
-  </div>`;
-
-  showSugList(h+'<div class="srch-sug-lbl">Searching…</div>');
-
-  const data = await api(`search/multi?query=${encodeURIComponent(q)}&page=1`);
-  let fullH = `<div class="srch-sug-search-row" onclick="commitSrchSearch('${q.replace(/'/g,"\\'")}')">
-    <span class="srch-sug-ic">🔍</span>
-    <span class="srch-sug-search-label">Search "<b>${q}</b>"</span>
-  </div>`;
-
-  if(data && data.results && data.results.length){
-    fullH+=`<div class="srch-sug-lbl">Suggestions</div>`;
-    data.results.filter(i=>i.media_type!=='person'&&(i.title||i.name)).slice(0,8).forEach(item=>{
-      const name=item.title||item.name||'';
-      const mt=item.media_type==='movie'?'movie':'tv';
-      const yr=(item.release_date||item.first_air_date||'').slice(0,4);
-      const icon=mt==='movie'?'🎬':'📺';
-      const hl=highlightMatch(name,q);
-      fullH+=`<div class="srch-sug-item" onclick="openPlayer(${item.id},'${mt}')">
-        <span class="srch-sug-ic">${icon}</span>
-        <span class="srch-sug-text">${hl}</span>
-        <span class="srch-sug-meta">${yr}</span>
-      </div>`;
-    });
-  } else {
-    fullH+=`<div style="padding:16px 14px;font-size:.82rem;color:var(--muted)">No results for "${q}"</div>`;
-  }
-  showSugList(fullH);
-}
-
-function commitSrchSearch(q){
-  if(!q) return;
-  saveRecent(q);
-  $('srchBarInput').value=q;
-  $('srchBarClear').classList.add('show');
-  hideSugList();
-  $('srchGrid').style.display='';
-  $('srchTitle').style.display='';
-  $('srchFtabs').style.display='flex';
-  $('srchTitle').textContent=`"${q}"`;
-  lastQ=q;
-  const grid=$('srchGrid');
-  grid.innerHTML=Array(12).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
-  api(`search/multi?query=${encodeURIComponent(q)}`).then(data=>{
-    renderGrid(grid, data, srchFilter==='all'?null:srchFilter);
-  });
-}
-
-/* ═══════════ VIP SYSTEM ═══════════ */
-const VIP_SECRET = 'AethoVIP2024$ecret';
-
-function simpleHash(str){
-  let h = 5381;
-  for(let i=0;i<str.length;i++) h = ((h<<5)+h)+str.charCodeAt(i);
-  return Math.abs(h).toString(36).toUpperCase().padStart(8,'0').slice(0,8);
-}
-
-function validateVIPCode(code){
-  const clean = code.trim().toUpperCase().replace(/\s/g,'');
-  const match = clean.match(/^AETHO-([DWM])(\d{8})-([A-Z0-9]{6,8})$/);
-  if(!match) return null;
-  const [, typeChar, dateStr, hashPart] = match;
-  const payload = VIP_SECRET + typeChar + dateStr;
-  const expected = simpleHash(payload).slice(0,6);
-  if(hashPart.slice(0,6) !== expected) return null;
-  const year=parseInt(dateStr.slice(0,4)), month=parseInt(dateStr.slice(4,6))-1, day=parseInt(dateStr.slice(6,8));
-  const codeDate = new Date(year,month,day);
-  const now = new Date(); now.setHours(0,0,0,0);
-  const diffDays = Math.floor((now - codeDate) / 86400000);
-  if(diffDays<0||diffDays>2) return null;
-  const daysMap={D:1,W:7,M:30};
-  const days = daysMap[typeChar]||1;
-  const expiry = new Date(codeDate.getTime()+days*86400000);
-  return {days,expiry,type:typeChar};
-}
-
-window.__genVIP = function(typeChar='D'){
-  const now=new Date();
-  const dateStr=now.getFullYear().toString()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
-  const payload=VIP_SECRET+typeChar+dateStr;
-  return `AETHO-${typeChar}${dateStr}-${simpleHash(payload).slice(0,6)}`;
+// Generate a random VIP key — simple, no date/hash dependency
+window.__genVIP = function(typeChar){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let rand='';
+  for(let i=0;i<8;i++) rand+=chars[Math.floor(Math.random()*chars.length)];
+  return 'AETHO-'+typeChar+'-'+rand;
 };
 
+// Redeem: source of truth is the stored key list in localStorage
 function redeemVIP(){
-  const code=$('vipCodeIn').value.trim();
-  const msgEl=$('codeMsgEl'), inp=$('vipCodeIn');
-  inp.classList.remove('error','success'); msgEl.className='code-msg';
+  const code=$('vipCodeIn').value.trim().toUpperCase();
+  const msgEl=$('codeMsgEl'),inp=$('vipCodeIn');
+  inp.classList.remove('error','success');msgEl.className='code-msg';
+
   if(!code){inp.classList.add('error');msgEl.textContent='Please enter a code.';msgEl.classList.add('err');return;}
+
+  // Check if already used on this device
   const used=JSON.parse(localStorage.getItem('af_used_codes')||'[]');
-  if(used.includes(code)){inp.classList.add('error');msgEl.textContent='This code has already been used.';msgEl.classList.add('err');return;}
-  const result=validateVIPCode(code);
-  if(!result){inp.classList.add('error');msgEl.textContent='Invalid or expired code. Get a fresh code from the bot.';msgEl.classList.add('err');return;}
-  inp.classList.add('success');
-  localStorage.setItem('af_vip_expiry',result.expiry.getTime());
+  if(used.includes(code)){inp.classList.add('error');msgEl.textContent='This code has already been redeemed on this device.';msgEl.classList.add('err');return;}
+
+  // Look up in admin-generated keys list (the ONLY source of truth)
+  const keys=JSON.parse(localStorage.getItem('af_admin_keys')||'[]');
+  const found=keys.find(k=>k.key===code&&!k.revoked);
+
+  if(!found){
+    inp.classList.add('error');
+    msgEl.textContent='Code not found. Generate it from the Admin Panel first.';
+    msgEl.classList.add('err');
+    return;
+  }
+
+  // Apply VIP duration
+  const daysMap={D:1,W:7,M:30};
+  const days=daysMap[found.durType]||1;
+  const expiry=new Date(Date.now()+days*86400000);
+
+  localStorage.setItem('af_vip_expiry',expiry.getTime());
   localStorage.setItem('af_unlocked','1');
-  used.push(code); localStorage.setItem('af_used_codes',JSON.stringify(used));
-  const lbl=result.days===1?'1 Day':result.days===7?'7 Days':'30 Days';
-  msgEl.textContent=`✓ VIP activated! ${lbl} of unlimited streaming.`;
+  used.push(code);localStorage.setItem('af_used_codes',JSON.stringify(used));
+
+  // Mark key as used in the admin list
+  const updatedKeys=keys.map(k=>k.key===code?{...k,used:true,usedDate:new Date().toLocaleDateString()}:k);
+  localStorage.setItem('af_admin_keys',JSON.stringify(updatedKeys));
+
+  inp.classList.add('success');
+  const lbl=days===1?'1 Day':days===7?'7 Days':'30 Days';
+  msgEl.textContent='✓ VIP activated! '+lbl+' of unlimited streaming.';
   msgEl.classList.add('ok');
   refreshVIPState();
   $('gate').classList.remove('on');
 }
 
-function isVIPActive(){
-  return parseInt(localStorage.getItem('af_vip_expiry')||'0')>Date.now();
-}
+function isVIPActive(){return parseInt(localStorage.getItem('af_vip_expiry')||'0')>Date.now();}
 
 function refreshVIPState(){
   const active=isVIPActive();
   document.body.classList.toggle('vip',active);
   $('vipBadge').style.display=active?'inline':'none';
-  const banner=$('vipActiveBanner'); banner.classList.toggle('show',active);
+  const banner=$('vipActiveBanner');banner.classList.toggle('show',active);
   if(active){
     const exp=new Date(parseInt(localStorage.getItem('af_vip_expiry')));
     const days=Math.ceil((exp-Date.now())/86400000);
-    $('vipExpiry').textContent=`Expires in ${days} day${days!==1?'s':''} — ${exp.toLocaleDateString()}`;
+    $('vipExpiry').textContent='Expires in '+days+' day'+(days!==1?'s':'')+' — '+exp.toLocaleDateString();
   }
 }
 
 function cancelVIP(){
-  if(!confirm('Cancel VIP? You will lose unlimited access.')) return;
-  localStorage.removeItem('af_vip_expiry'); localStorage.removeItem('af_unlocked');
+  if(!confirm('Cancel VIP? You will lose unlimited access.'))return;
+  localStorage.removeItem('af_vip_expiry');localStorage.removeItem('af_unlocked');
   refreshVIPState();
 }
 
-/* ═══════════ GATE ═══════════ */
+/* ══ GATE ══ */
 function checkGate(){
-  if(isVIPActive()||localStorage.getItem('af_unlocked')==='1') return false;
+  if(isVIPActive()||localStorage.getItem('af_unlocked')==='1')return false;
   let c=parseInt(localStorage.getItem('af_count')||'0');
   if(c>=4){$('gate').classList.add('on');return true;}
-  localStorage.setItem('af_count',c+1); return false;
+  localStorage.setItem('af_count',c+1);return false;
 }
-function unlockGate(){ localStorage.setItem('af_unlocked','1'); $('gate').classList.remove('on'); loadFrame(); }
+function unlockGate(){localStorage.setItem('af_unlocked','1');$('gate').classList.remove('on');loadFrame();}
 
-/* ═══════════ NAVIGATION ═══════════ */
+/* ══ NAV ══ */
 function showPage(id){
-  $$('.pg').forEach(p=>p.classList.remove('on'));
-  $(id).classList.add('on');
+  $$('.pg').forEach(p=>p.classList.remove('on'));$(id).classList.add('on');
   $$('.bn').forEach(b=>b.classList.remove('on'));
-  const key='bn-'+id.replace('pg-','');
-  if($(key)) $(key).classList.add('on');
-  if(id!=='pg-search' && id!=='pg-admin') $('nav').style.display='';
+  const key='bn-'+id.replace('pg-','');if($(key))$(key).classList.add('on');
+  if(id!=='pg-search'&&id!=='pg-admin')$('nav').style.display='';
   window.scrollTo(0,0);
 }
-function goHome(){ showPage('pg-home'); history.replaceState(null,'',location.pathname); }
+function goHome(){showPage('pg-home');history.replaceState(null,'',location.pathname);}
 
 let logoTaps=0,logoTimer=null;
 function logoTap(){
-  logoTaps++;
-  clearTimeout(logoTimer);
-  if(logoTaps>=5){ logoTaps=0; openAdmin(); return; }
-  logoTimer=setTimeout(()=>{ logoTaps=0; goHome(); },600);
+  logoTaps++;clearTimeout(logoTimer);
+  if(logoTaps>=5){logoTaps=0;openAdmin();return;}
+  logoTimer=setTimeout(()=>{logoTaps=0;goHome();},600);
 }
 function navSearch(){
-  showPage('pg-search');
-  $('nav').style.display='none';
-  hideSugList();
-  $('srchBarInput').value='';
-  $('srchBarClear').classList.remove('show');
-  $('srchFtabs').style.display='none';
-  $('srchGrid').style.display='';
-  $('srchTitle').style.display='';
-  $('srchTitle').textContent='Trending';
-  loadDiscover();
-  setTimeout(()=>$('srchBarInput').focus(), 120);
+  showPage('pg-search');$('nav').style.display='none';
+  hideSugList();$('srchBarInput').value='';$('srchBarClear').classList.remove('show');
+  $('srchFtabs').style.display='none';$('srchGrid').style.display='';$('srchTitle').style.display='';
+  $('srchTitle').textContent='Trending';loadDiscover();
+  setTimeout(()=>$('srchBarInput').focus(),120);
 }
-function navVIP(){ showPage('pg-vip'); refreshVIPState(); }
+function navVIP(){showPage('pg-vip');refreshVIPState();}
+window.addEventListener('scroll',()=>{$('nav').classList.toggle('solid',scrollY>10);});
 
-window.addEventListener('scroll',()=>{ $('nav').classList.toggle('solid',scrollY>10); });
-
-/* ═══════════ HOME INIT ═══════════ */
+/* ══ HOME ══ */
 async function initHome(){
   const trend=await api('trending/all/week');
   if(trend&&trend.results){
     heroItems=trend.results.filter(i=>i.backdrop_path&&(i.media_type==='movie'||i.media_type==='tv')).slice(0,8);
-    buildHeroSlides();
-    trendingCache=trend.results.filter(i=>i.poster_path||(i.title||i.name)).slice(0,20);
+    buildHeroSlides();trendingCache=trend.results.filter(i=>i.poster_path||(i.title||i.name)).slice(0,20);
   }
   await buildHomeRows();
 }
 
-/* ═══════════ HERO ═══════════ */
+/* ══ HERO ══ */
 function buildHeroSlides(){
-  const sc=$('heroSlides'), dc=$('heroDots');
-  sc.innerHTML=''; dc.innerHTML='';
+  const sc=$('heroSlides'),dc=$('heroDots');sc.innerHTML='';dc.innerHTML='';
   heroItems.forEach((item,i)=>{
     sc.innerHTML+=`<div class="hslide${i===0?' on':''}" id="hs${i}"><img src="${IMG}original${item.backdrop_path}" alt="" loading="${i===0?'eager':'lazy'}"></div>`;
     dc.innerHTML+=`<div class="hdot${i===0?' on':''}" onclick="jumpHero(${i})"></div>`;
   });
-  setHero(0);
-  clearInterval(heroTimer);
-  heroTimer=setInterval(()=>setHero((heroIdx+1)%heroItems.length),7500);
+  setHero(0);clearInterval(heroTimer);heroTimer=setInterval(()=>setHero((heroIdx+1)%heroItems.length),7500);
 }
-
-function jumpHero(i){ clearInterval(heroTimer); setHero(i); heroTimer=setInterval(()=>setHero((heroIdx+1)%heroItems.length),7500); }
-
+function jumpHero(i){clearInterval(heroTimer);setHero(i);heroTimer=setInterval(()=>setHero((heroIdx+1)%heroItems.length),7500);}
 function setHero(i){
-  heroIdx=i; $$('.hslide').forEach((el,idx)=>el.classList.toggle('on',idx===i)); $$('.hdot').forEach((el,idx)=>el.classList.toggle('on',idx===i));
-  const item=heroItems[i]; const mt=item.media_type==='movie'?'movie':'tv';
+  heroIdx=i;$$('.hslide').forEach((el,idx)=>el.classList.toggle('on',idx===i));$$('.hdot').forEach((el,idx)=>el.classList.toggle('on',idx===i));
+  const item=heroItems[i];const mt=item.media_type==='movie'?'movie':'tv';
   $('hEye').textContent=(mt==='movie'?'FILM':'SERIES')+' · '+((item.release_date||item.first_air_date||'').slice(0,4));
   $('hTitle').textContent=item.title||item.name||'';
-  const rat=(item.vote_average||0).toFixed(1);
-  const genres=(item.genre_ids||[]).slice(0,2).map(genreLabel).filter(Boolean).join(' · ');
+  const rat=(item.vote_average||0).toFixed(1);const genres=(item.genre_ids||[]).slice(0,2).map(genreLabel).filter(Boolean).join(' · ');
   $('hChips').innerHTML=`<span class="chip-g">✓ ${item.vote_count>1000?'Highly Rated':'Popular'}</span><span class="chip-r">★ ${rat}</span><span class="chip-y">${(item.release_date||item.first_air_date||'').slice(0,4)}</span>${genres?`<span class="chip-tag">${genres}</span>`:''}`;
-  $('hDesc').textContent=item.overview||'';
-  $('hPlay').onclick=()=>openPlayer(item.id,mt);
-  $('hInfo').onclick=()=>openPlayer(item.id,mt);
+  $('hDesc').textContent=item.overview||'';$('hPlay').onclick=()=>openPlayer(item.id,mt);$('hInfo').onclick=()=>openPlayer(item.id,mt);
 }
 
-/* ═══════════ HOME ROWS ═══════════ */
+/* ══ HOME ROWS ══ */
 async function buildHomeRows(){
-  const rows=$('homeRows'); rows.innerHTML='';
+  const rows=$('homeRows');rows.innerHTML='';
   await addTop10(rows);
   await addSpotlightRow(rows,'✨ Featured Tonight','trending/all/day','');
   addDivider(rows,'🎬 Movies');
@@ -945,82 +694,58 @@ async function buildHomeRows(){
   await addPosterRow(rows,'🆕 New Season Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=first_air_date.desc','anime');
 }
 
-function addDivider(parent,label){
-  const el=document.createElement('div'); el.className='sec-div';
-  el.innerHTML=`<div class="sec-line"></div><div class="sec-label">${label}</div><div class="sec-line"></div>`;
-  parent.appendChild(el);
-}
+function addDivider(parent,label){const el=document.createElement('div');el.className='sec-div';el.innerHTML=`<div class="sec-line"></div><div class="sec-label">${label}</div><div class="sec-line"></div>`;parent.appendChild(el);}
 
 async function addTop10(parent){
-  const uid='t10_'+Date.now();
-  const w=document.createElement('div'); w.className='row';
+  const uid='t10_'+Date.now();const w=document.createElement('div');w.className='row';
   w.innerHTML=`<div class="row-hdr"><div class="row-ttl">🏆 Top 10 Today <span class="row-badge">LIVE</span></div></div><div class="slider" id="${uid}">${skRow('t10',10)}</div>`;
-  parent.appendChild(w);
-  const data=await api('trending/all/day'); if(!data) return;
-  let h='';
-  data.results.filter(i=>i.poster_path).slice(0,10).forEach((item,i)=>{
+  parent.appendChild(w);const data=await api('trending/all/day');if(!data)return;
+  let h='';data.results.filter(i=>i.poster_path).slice(0,10).forEach((item,i)=>{
     const mt=item.media_type==='movie'?'movie':'tv';
     h+=`<div class="t10card" onclick="openPlayer(${item.id},'${mt}')"><div class="t10-num">${i+1}</div><img src="${IMG}w342${item.poster_path}" class="t10-img" loading="lazy" alt=""></div>`;
-  });
-  $(uid).innerHTML=h||'';
+  });$(uid).innerHTML=h||'';
 }
 
 async function addSpotlightRow(parent,title,endpoint,forceType){
-  const uid='sp_'+Math.random().toString(36).slice(2,8);
-  const w=document.createElement('div'); w.className='row';
+  const uid='sp_'+Math.random().toString(36).slice(2,8);const w=document.createElement('div');w.className='row';
   w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div></div><div class="slider" id="${uid}">${skRow('wide',5)}</div>`;
-  parent.appendChild(w);
-  const data=await api(endpoint); if(!data||!data.results) return;
-  let h='';
-  data.results.filter(i=>i.backdrop_path).slice(0,10).forEach(item=>{
-    const mt=forceType||item.media_type; if(!mt||mt==='person') return;
-    const yr=(item.release_date||item.first_air_date||'').slice(0,4);
-    const rat=(item.vote_average||0).toFixed(1);
+  parent.appendChild(w);const data=await api(endpoint);if(!data||!data.results)return;
+  let h='';data.results.filter(i=>i.backdrop_path).slice(0,10).forEach(item=>{
+    const mt=forceType||item.media_type;if(!mt||mt==='person')return;
+    const yr=(item.release_date||item.first_air_date||'').slice(0,4);const rat=(item.vote_average||0).toFixed(1);
     const overview=(item.overview||'').slice(0,80)+(item.overview&&item.overview.length>80?'…':'');
     h+=`<div class="spcard" onclick="openPlayer(${item.id},'${mt}')"><img src="${IMG}w780${item.backdrop_path}" class="spcard-img" loading="lazy" alt=""><div class="spcard-body"><div class="spcard-title">${item.title||item.name||''}</div><div class="spcard-desc">${overview}</div><div class="spcard-foot"><span class="spcard-rating">★ ${rat} · ${yr}</span><span class="spcard-play">▶ Play</span></div></div></div>`;
-  });
-  $(uid).innerHTML=h||'';
+  });$(uid).innerHTML=h||'';
 }
 
 async function addWideRow(parent,title,endpoint,forceType){
-  const uid='wr_'+Math.random().toString(36).slice(2,8);
-  const w=document.createElement('div'); w.className='row';
+  const uid='wr_'+Math.random().toString(36).slice(2,8);const w=document.createElement('div');w.className='row';
   w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browseType('${forceType}','')">See all →</span></div><div class="slider" id="${uid}">${skRow('wide',6)}</div>`;
-  parent.appendChild(w);
-  const data=await api(endpoint); if(!data||!data.results) return;
-  let h='';
-  data.results.filter(i=>i.backdrop_path).forEach(item=>{
-    const mt=forceType||item.media_type; if(!mt||mt==='person') return;
-    const yr=(item.release_date||item.first_air_date||'').slice(0,4);
-    const rat=(item.vote_average||0).toFixed(1);
+  parent.appendChild(w);const data=await api(endpoint);if(!data||!data.results)return;
+  let h='';data.results.filter(i=>i.backdrop_path).forEach(item=>{
+    const mt=forceType||item.media_type;if(!mt||mt==='person')return;
+    const yr=(item.release_date||item.first_air_date||'').slice(0,4);const rat=(item.vote_average||0).toFixed(1);
     h+=`<div class="wcard" onclick="openPlayer(${item.id},'${mt}')"><img src="${IMG}w780${item.backdrop_path}" class="wcard-img" loading="lazy" alt=""><div class="wcard-over"><div class="wcard-title">${item.title||item.name||''}</div><div class="wcard-sub"><span>${yr}</span><span>·</span><span>★ ${rat}</span></div></div></div>`;
-  });
-  $(uid).innerHTML=h||'';
+  });$(uid).innerHTML=h||'';
 }
 
 async function addPosterRow(parent,title,endpoint,forceType){
-  const uid='pr_'+Math.random().toString(36).slice(2,8);
-  const w=document.createElement('div'); w.className='row';
+  const uid='pr_'+Math.random().toString(36).slice(2,8);const w=document.createElement('div');w.className='row';
   w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browseType('${forceType}','${title}')">See all →</span></div><div class="slider" id="${uid}">${skRow('poster',9)}</div>`;
-  parent.appendChild(w);
-  const data=await api(endpoint); if(!data||!data.results) return;
-  let h='';
-  data.results.forEach(item=>{
-    if(!item.poster_path) return;
-    let mt=forceType||item.media_type; if(!mt||mt==='person') return;
-    const yr=(item.release_date||item.first_air_date||'').slice(0,4);
-    const rat=(item.vote_average||0).toFixed(1);
+  parent.appendChild(w);const data=await api(endpoint);if(!data||!data.results)return;
+  let h='';data.results.forEach(item=>{
+    if(!item.poster_path)return;let mt=forceType||item.media_type;if(!mt||mt==='person')return;
+    const yr=(item.release_date||item.first_air_date||'').slice(0,4);const rat=(item.vote_average||0).toFixed(1);
     const isNew=(item.release_date||item.first_air_date||'').slice(0,7)>=new Date().toISOString().slice(0,7);
     h+=`<div class="pcard" onclick="openPlayer(${item.id},'${mt}')">${isNew?'<span class="pcard-badge">NEW</span>':''}<img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
-  });
-  $(uid).innerHTML=h||'';
+  });$(uid).innerHTML=h||'';
 }
 
-/* ═══════════ GENRE FILTER ═══════════ */
+/* ══ GENRE FILTER ══ */
 async function filterGenre(cat,el){
-  $$('.gpill').forEach(p=>p.classList.remove('on')); el.classList.add('on');
+  $$('.gpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');
   if(cat==='all'){buildHomeRows();return;}
-  const rows=$('homeRows'); rows.innerHTML='';
+  const rows=$('homeRows');rows.innerHTML='';
   const cfg={
     movie:{endpoints:['trending/movie/week','movie/popular','movie/top_rated','movie/now_playing'],titles:['🔥 Trending','🎬 Popular','⭐ Top Rated','🆕 Now Playing'],type:'movie',wide:true},
     tv:{endpoints:['trending/tv/week','tv/popular','tv/top_rated','tv/on_the_air'],titles:['📺 Trending','⚡ Popular','⭐ Top Rated','📡 On Air'],type:'tv',wide:true},
@@ -1034,298 +759,185 @@ async function filterGenre(cat,el){
     kdrama:{endpoints:['discover/tv?with_origin_country=KR'],titles:['🇰🇷 K-Drama'],type:'tv'},
     documentary:{endpoints:['discover/movie?with_genres=99','discover/tv?with_genres=99'],titles:['🎞️ Documentary Films','📺 Documentary Series'],type:'movie'},
   };
-  const c=cfg[cat]; if(!c) return;
+  const c=cfg[cat];if(!c)return;
   for(let i=0;i<c.endpoints.length;i++){
-    if(c.wide&&i===0) await addWideRow(rows,c.titles[i],c.endpoints[i],c.type);
+    if(c.wide&&i===0)await addWideRow(rows,c.titles[i],c.endpoints[i],c.type);
     else await addPosterRow(rows,c.titles[i],c.endpoints[i],c.type);
   }
 }
 
-/* ═══════════ PLAYER ═══════════ */
+/* ══ PLAYER ══ */
 function openPlayer(id,type){
-  // VIP users play directly on site — no bot redirect
   if(isVIPActive()){
     history.pushState(null,'',`?type=${type}&id=${id}&s=1&e=1&srv=0`);
-    pId=String(id); pType=type; pSeason=1; pEp=1; pSrv=0;
-    startPlayer();
-    return;
+    pId=String(id);pType=type;pSeason=1;pEp=1;pSrv=0;startPlayer();return;
   }
-  // Non-VIP → redirect to Telegram bot
-  const botUrl = type==='anime'
-    ? `https://t.me/aethokaibot?start=play_tv_${id}`
-    : `https://t.me/aetho_flixbot?start=play_${type}_${id}`;
+  const botUrl=type==='anime'?`https://t.me/aethokaibot?start=play_tv_${id}`:`https://t.me/aetho_flixbot?start=play_${type}_${id}`;
   window.open(botUrl,'_blank');
 }
 
 async function startPlayer(){
-  showPage('pg-player');
-  if(checkGate()) return;
+  showPage('pg-player');if(checkGate())return;
   const tmdbType=pType==='anime'?'tv':pType;
   const meta=await api(`${tmdbType}/${pId}?append_to_response=credits`);
   if(meta){
-    const title=meta.title||meta.name||'';
-    const yr=(meta.release_date||meta.first_air_date||'').slice(0,4);
-    const rat=(meta.vote_average||0).toFixed(1);
-    const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
+    const title=meta.title||meta.name||'';const yr=(meta.release_date||meta.first_air_date||'').slice(0,4);
+    const rat=(meta.vote_average||0).toFixed(1);const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
     const genres=(meta.genres||[]).slice(0,3).map(g=>g.name).join(' · ');
     $('pTitle').textContent=title;
     $('pChips').innerHTML=`<span class="g">★ ${rat}</span><span class="go">${yr}</span>${runtime?`<span class="b">${runtime}</span>`:''}<span class="p-tag">${pType==='movie'?'MOVIE':'SERIES'}</span>${genres?`<span class="p-tag">${genres}</span>`:''}`;
     $('pOverview').textContent=meta.overview||'';
-    const cast=(meta.credits?.cast||[]).slice(0,6).map(c=>c.name).join(', ');
-    const dir=(meta.credits?.crew||[]).find(c=>c.job==='Director');
-    let det='';
-    if(cast) det+=`<div><b style="color:var(--text)">Cast:</b> ${cast}</div>`;
-    if(dir) det+=`<div><b style="color:var(--text)">Director:</b> ${dir.name}</div>`;
-    if(genres) det+=`<div><b style="color:var(--text)">Genres:</b> ${genres}</div>`;
+    const cast=(meta.credits?.cast||[]).slice(0,6).map(c=>c.name).join(', ');const dir=(meta.credits?.crew||[]).find(c=>c.job==='Director');
+    let det='';if(cast)det+=`<div><b style="color:var(--text)">Cast:</b> ${cast}</div>`;if(dir)det+=`<div><b style="color:var(--text)">Director:</b> ${dir.name}</div>`;if(genres)det+=`<div><b style="color:var(--text)">Genres:</b> ${genres}</div>`;
     if(det){$('detContent').innerHTML=det;$('detBox').style.display='block';}else $('detBox').style.display='none';
     const botUrl=pType==='anime'?`https://t.me/aethokaibot?start=play_tv_${pId}`:`https://t.me/aetho_flixbot?start=play_${pType}_${pId}`;
     $('pBotBtn').onclick=()=>window.open(botUrl,'_blank');
     if(pType==='tv'||pType==='anime'){
-      $('epSection').classList.add('show');
-      const seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
-      if(seasons.length){
-        $('seasonSel').innerHTML='';
-        seasons.forEach(s=>{$('seasonSel').innerHTML+=`<option value="${s.season_number}" ${s.season_number==pSeason?'selected':''}>Season ${s.season_number}${s.episode_count?` (${s.episode_count} ep)`:''}</option>`;});
-        await fetchEps();
-      }
-    } else $('epSection').classList.remove('show');
+      $('epSection').classList.add('show');const seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
+      if(seasons.length){$('seasonSel').innerHTML='';seasons.forEach(s=>{$('seasonSel').innerHTML+=`<option value="${s.season_number}" ${s.season_number==pSeason?'selected':''}>Season ${s.season_number}${s.episode_count?` (${s.episode_count} ep)`:''}</option>`;});await fetchEps();}
+    }else $('epSection').classList.remove('show');
   }
-  const recs=await api(`${pType==='anime'?'tv':pType}/${pId}/recommendations`);
-  const rsl=$('recSlider'); rsl.innerHTML='';
-  if(recs&&recs.results){
-    recs.results.filter(i=>i.poster_path).slice(0,16).forEach(item=>{
-      const yr2=(item.release_date||item.first_air_date||'').slice(0,4);
-      rsl.innerHTML+=`<div class="pcard" onclick="openPlayer(${item.id},'${pType}')"><img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr2}</div></div>`;
-    });
-  }
+  const recs=await api(`${pType==='anime'?'tv':pType}/${pId}/recommendations`);const rsl=$('recSlider');rsl.innerHTML='';
+  if(recs&&recs.results){recs.results.filter(i=>i.poster_path).slice(0,16).forEach(item=>{const yr2=(item.release_date||item.first_air_date||'').slice(0,4);rsl.innerHTML+=`<div class="pcard" onclick="openPlayer(${item.id},'${pType}')"><img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr2}</div></div>`;});}
   loadFrame();
 }
 
 function loadFrame(){
-  if(checkGate()) return;
-  $('vLoader').classList.remove('off');
-  const isTV=pType!=='movie';
+  if(checkGate())return;$('vLoader').classList.remove('off');const isTV=pType!=='movie';
   const srvMap=[
     ()=>isTV?`https://vidlink.pro/tv/${pId}/${pSeason}/${pEp}`:`https://vidlink.pro/movie/${pId}`,
     ()=>isTV?`https://vidsrc.to/embed/tv/${pId}/${pSeason}/${pEp}`:`https://vidsrc.to/embed/movie/${pId}`,
     ()=>isTV?`https://embed.su/api/e/tv/${pId}/${pSeason}/${pEp}`:`https://embed.su/api/e/movie/${pId}`,
     ()=>isTV?`https://multiembed.mov/directstream.php?video_id=${pId}&tmdb=1&s=${pSeason}&e=${pEp}`:`https://multiembed.mov/directstream.php?video_id=${pId}&tmdb=1`,
   ];
-  $('pFrame').src=srvMap[pSrv]();
-  $$('.srv-btn').forEach((b,i)=>b.classList.toggle('on',i===pSrv));
+  $('pFrame').src=srvMap[pSrv]();$$('.srv-btn').forEach((b,i)=>b.classList.toggle('on',i===pSrv));
   history.replaceState(null,'',`?type=${pType}&id=${pId}&s=${pSeason}&e=${pEp}&srv=${pSrv}`);
   setTimeout(()=>$('vLoader').classList.add('off'),1800);
 }
-
-function setSrv(i){ pSrv=i; loadFrame(); }
+function setSrv(i){pSrv=i;loadFrame();}
 
 async function fetchEps(){
-  const data=await api(`tv/${pId}/season/${pSeason}`);
-  $('epGrid').innerHTML='';
-  if(data&&data.episodes){
-    data.episodes.forEach(ep=>{
-      const n=ep.episode_number;
-      $('epGrid').innerHTML+=`<button class="ep-btn${n==pEp?' on':''}" id="epb${n}" onclick="selEp(${n})">E${n}</button>`;
+  const data=await api(`tv/${pId}/season/${pSeason}`);$('epGrid').innerHTML='';
+  if(data&&data.episodes){data.episodes.forEach(ep=>{const n=ep.episode_number;$('epGrid').innerHTML+=`<button class="ep-btn${n==pEp?' on':''}" id="epb${n}" onclick="selEp(${n})">E${n}</button>`;});}
+}
+async function changeSeason(){pSeason=parseInt($('seasonSel').value);pEp=1;await fetchEps();loadFrame();}
+function selEp(n){pEp=n;$$('.ep-btn').forEach(b=>b.classList.remove('on'));const el=$('epb'+n);if(el)el.classList.add('on');loadFrame();}
+
+/* ══ SEARCH ══ */
+let srchSugTimer=null;
+async function initTrendingCache(){const data=await api('trending/all/week');if(data&&data.results)trendingCache=data.results.filter(i=>i.poster_path||(i.title||i.name)).slice(0,20);}
+function onSrchInput(val){
+  $('srchBarClear').classList.toggle('show',val.length>0);clearTimeout(srchSugTimer);
+  if(!val.trim()){hideSugList();$('srchFtabs').style.display='none';$('srchTitle').textContent='Trending';loadDiscover();return;}
+  srchSugTimer=setTimeout(()=>renderInlineSug(val.trim()),180);
+}
+function onSrchKey(e){if(e.key==='Enter'){const q=$('srchBarInput').value.trim();if(q)commitSrchSearch(q);}}
+function clearSrchInput(){$('srchBarInput').value='';$('srchBarClear').classList.remove('show');hideSugList();$('srchFtabs').style.display='none';$('srchTitle').textContent='Trending';loadDiscover();$('srchBarInput').focus();}
+function hideSugList(){const el=$('srchSugList');el.style.display='none';el.innerHTML='';}
+function showSugList(html){const el=$('srchSugList');el.innerHTML=`<div class="srch-sug-list">${html}</div>`;el.style.display='block';$('srchGrid').style.display='none';$('srchTitle').style.display='none';$('srchFtabs').style.display='none';}
+async function renderInlineSug(q){
+  let h=`<div class="srch-sug-search-row" onclick="commitSrchSearch('${q.replace(/'/g,"\\'")}')"><span class="srch-sug-ic">🔍</span><span class="srch-sug-search-label">Search "<b>${q}</b>"</span></div>`;
+  showSugList(h+'<div class="srch-sug-lbl">Searching…</div>');
+  const data=await api(`search/multi?query=${encodeURIComponent(q)}&page=1`);
+  let fullH=`<div class="srch-sug-search-row" onclick="commitSrchSearch('${q.replace(/'/g,"\\'")}')"><span class="srch-sug-ic">🔍</span><span class="srch-sug-search-label">Search "<b>${q}</b>"</span></div>`;
+  if(data&&data.results&&data.results.length){
+    fullH+=`<div class="srch-sug-lbl">Suggestions</div>`;
+    data.results.filter(i=>i.media_type!=='person'&&(i.title||i.name)).slice(0,8).forEach(item=>{
+      const name=item.title||item.name||'';const mt=item.media_type==='movie'?'movie':'tv';const yr=(item.release_date||item.first_air_date||'').slice(0,4);const icon=mt==='movie'?'🎬':'📺';const hl=highlightMatch(name,q);
+      fullH+=`<div class="srch-sug-item" onclick="openPlayer(${item.id},'${mt}')"><span class="srch-sug-ic">${icon}</span><span class="srch-sug-text">${hl}</span><span class="srch-sug-meta">${yr}</span></div>`;
     });
-  }
+  }else{fullH+=`<div style="padding:16px 14px;font-size:.82rem;color:var(--muted)">No results for "${q}"</div>`;}
+  showSugList(fullH);
 }
-
-async function changeSeason(){
-  pSeason=parseInt($('seasonSel').value); pEp=1;
-  await fetchEps(); loadFrame();
+function commitSrchSearch(q){
+  if(!q)return;saveRecent(q);$('srchBarInput').value=q;$('srchBarClear').classList.add('show');hideSugList();
+  $('srchGrid').style.display='';$('srchTitle').style.display='';$('srchFtabs').style.display='flex';$('srchTitle').textContent=`"${q}"`;lastQ=q;
+  const grid=$('srchGrid');grid.innerHTML=Array(12).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
+  api(`search/multi?query=${encodeURIComponent(q)}`).then(data=>{renderGrid(grid,data,srchFilter==='all'?null:srchFilter);});
 }
-
-function selEp(n){
-  pEp=n; $$('.ep-btn').forEach(b=>b.classList.remove('on'));
-  const el=$('epb'+n); if(el) el.classList.add('on');
-  loadFrame();
-}
-
-/* ═══════════ SEARCH PAGE ═══════════ */
 function setSrchFilter(f,el){
-  srchFilter=f; $$('.ftab').forEach(t=>t.classList.remove('on')); el.classList.add('on');
-  if(lastQ) {
-    hideSugList();
-    $('srchGrid').style.display='';
-    const grid=$('srchGrid');
-    grid.innerHTML=Array(12).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
-    api(`search/multi?query=${encodeURIComponent(lastQ)}`).then(data=>renderGrid(grid,data,srchFilter==='all'?null:srchFilter));
-  }
+  srchFilter=f;$$('.ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  if(lastQ){hideSugList();$('srchGrid').style.display='';const grid=$('srchGrid');grid.innerHTML=Array(12).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');api(`search/multi?query=${encodeURIComponent(lastQ)}`).then(data=>renderGrid(grid,data,srchFilter==='all'?null:srchFilter));}
 }
-
 async function loadDiscover(){
-  lastQ='';
-  const grid=$('srchGrid');
-  grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
-  const data=await api('trending/all/week');
-  renderGrid(grid,data,null);
+  lastQ='';const grid=$('srchGrid');grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
+  const data=await api('trending/all/week');renderGrid(grid,data,null);
 }
-
 async function browseType(type,label){
-  showPage('pg-search');
-  hideSugList();
-  $('srchBarInput').value='';
-  $('srchBarClear').classList.remove('show');
-  $('srchFtabs').style.display='none';
-  $('srchGrid').style.display='';
-  $('srchTitle').style.display='';
-  $('srchTitle').textContent=label||type;
-  lastQ='';
-  $$('.bn').forEach(b=>b.classList.remove('on'));
-  const el=$('bn-'+type); if(el) el.classList.add('on');
-  const grid=$('srchGrid');
-  grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
+  showPage('pg-search');hideSugList();$('srchBarInput').value='';$('srchBarClear').classList.remove('show');$('srchFtabs').style.display='none';$('srchGrid').style.display='';$('srchTitle').style.display='';$('srchTitle').textContent=label||type;lastQ='';
+  $$('.bn').forEach(b=>b.classList.remove('on'));const el=$('bn-'+type);if(el)el.classList.add('on');
+  const grid=$('srchGrid');grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
   const pathMap={movie:'movie/popular',tv:'tv/popular',anime:'discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc'};
-  const data=await api(pathMap[type]||'trending/all/week');
-  renderGrid(grid,data,type);
+  const data=await api(pathMap[type]||'trending/all/week');renderGrid(grid,data,type);
 }
-
 function renderGrid(container,data,forceType){
   container.innerHTML='';
-  if(!data||!data.results||!data.results.length){
-    container.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ic">🔍</div><div class="empty-txt">No results found</div></div>`;
-    return;
-  }
+  if(!data||!data.results||!data.results.length){container.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-ic">🔍</div><div class="empty-txt">No results found</div></div>`;return;}
   data.results.forEach(item=>{
-    if(!item.poster_path) return;
-    let mt=forceType||item.media_type; if(!mt||mt==='person') return;
-    const yr=(item.release_date||item.first_air_date||'').slice(0,4);
-    const rat=(item.vote_average||0).toFixed(1);
+    if(!item.poster_path)return;let mt=forceType||item.media_type;if(!mt||mt==='person')return;
+    const yr=(item.release_date||item.first_air_date||'').slice(0,4);const rat=(item.vote_average||0).toFixed(1);
     container.innerHTML+=`<div class="pcard" style="width:100%" onclick="openPlayer(${item.id},'${mt}')"><img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
   });
 }
 
-/* ═══════════ FULLSCREEN ═══════════ */
-function toggleRotate(){ document.body.classList.toggle('ls'); }
+/* ══ FULLSCREEN ══ */
+function toggleRotate(){document.body.classList.toggle('ls');}
 
-/* ═══════════ ADMIN PANEL ═══════════ */
-const ADMIN_PIN = '2611';
-let adminPinBuffer = '';
-let adminAuthed = false;
-let adminLastKey = null;
+/* ══ ADMIN PANEL ══ */
+const ADMIN_PIN='2611';
+let adminPinBuffer='',adminAuthed=false,adminLastKey=null;
 
 function openAdmin(){
-  showPage('pg-admin');
-  $('nav').style.display='none';
-  adminPinBuffer='';
-  setTimeout(()=>{
-    updatePinDots();
-    $('adminPinErr').textContent='';
-    if(adminAuthed){ showAdminDash(); }
-    else { $('adminLock').style.display='flex'; $('adminDash').style.display='none'; }
-  }, 50);
+  showPage('pg-admin');$('nav').style.display='none';adminPinBuffer='';
+  setTimeout(()=>{updatePinDots();$('adminPinErr').textContent='';if(adminAuthed){showAdminDash();}else{$('adminLock').style.display='flex';$('adminDash').style.display='none';}},50);
 }
-
-function adminPin(d){
-  if(adminPinBuffer.length>=4) return;
-  adminPinBuffer+=d;
-  updatePinDots();
-  if(adminPinBuffer.length===4) setTimeout(adminPinSubmit, 120);
-}
-
-function adminPinClear(){
-  adminPinBuffer=adminPinBuffer.slice(0,-1);
-  updatePinDots();
-}
-
+function adminPin(d){if(adminPinBuffer.length>=4)return;adminPinBuffer+=d;updatePinDots();if(adminPinBuffer.length===4)setTimeout(adminPinSubmit,120);}
+function adminPinClear(){adminPinBuffer=adminPinBuffer.slice(0,-1);updatePinDots();}
 function adminPinSubmit(){
-  if(adminPinBuffer===ADMIN_PIN){
-    adminAuthed=true;
-    showAdminDash();
-  } else {
-    $('adminPinErr').textContent='Wrong PIN. Try again.';
-    adminPinBuffer='';
-    updatePinDots();
-    // Shake dots
-    const dots=$('adminPinDots');
-    dots.style.transform='translateX(8px)';
-    setTimeout(()=>dots.style.transform='translateX(-8px)',80);
-    setTimeout(()=>dots.style.transform='',160);
-  }
+  if(adminPinBuffer===ADMIN_PIN){adminAuthed=true;showAdminDash();}
+  else{$('adminPinErr').textContent='Wrong PIN. Try again.';adminPinBuffer='';updatePinDots();const dots=$('adminPinDots');dots.style.transform='translateX(8px)';setTimeout(()=>dots.style.transform='translateX(-8px)',80);setTimeout(()=>dots.style.transform='',160);}
 }
+function updatePinDots(){const spans=$$('#adminPinDots span');spans.forEach((s,i)=>s.classList.toggle('filled',i<adminPinBuffer.length));}
+function showAdminDash(){$('adminLock').style.display='none';$('adminDash').style.display='block';renderAdminKeys();renderAdminStats();}
+function adminLogout(){adminAuthed=false;adminPinBuffer='';$('adminLock').style.display='flex';$('adminDash').style.display='none';updatePinDots();$('adminPinErr').textContent='';}
 
-function updatePinDots(){
-  const spans=$$('#adminPinDots span');
-  spans.forEach((s,i)=>s.classList.toggle('filled',i<adminPinBuffer.length));
-}
-
-function showAdminDash(){
-  $('adminLock').style.display='none';
-  $('adminDash').style.display='block';
-  renderAdminKeys();
-  renderAdminStats();
-}
-
-function adminLogout(){
-  adminAuthed=false;
-  adminPinBuffer='';
-  $('adminLock').style.display='flex';
-  $('adminDash').style.display='none';
-  updatePinDots();
-  $('adminPinErr').textContent='';
-}
-
+// ★ FIXED: adminGenKey now saves durType so redeemVIP can read it
 function adminGenKey(){
   const dur=$('adminDurSel').value;
   const key=window.__genVIP(dur);
   adminLastKey=key;
-  // Save to localStorage list
   const keys=JSON.parse(localStorage.getItem('af_admin_keys')||'[]');
   const durLabel={D:'1 Day',W:'7 Days',M:'30 Days'}[dur]||'?';
-  keys.unshift({key,dur:durLabel,date:new Date().toLocaleDateString(),used:false});
+  // Save durType field so redeemVIP knows how many days to grant
+  keys.unshift({key,dur:durLabel,durType:dur,date:new Date().toLocaleDateString(),used:false});
   localStorage.setItem('af_admin_keys',JSON.stringify(keys));
   $('adminGenKey').textContent=key;
   $('adminGenResult').style.display='block';
-  renderAdminKeys();
-  renderAdminStats();
+  renderAdminKeys();renderAdminStats();
 }
 
 function adminCopyKey(){
-  if(!adminLastKey) return;
-  navigator.clipboard.writeText(adminLastKey).then(()=>{
-    const btn=$('.admin-copy-btn');
-    btn.textContent='✅ Copied!';
-    setTimeout(()=>btn.textContent='📋 Copy Key',1500);
-  }).catch(()=>{
-    // Fallback
-    const ta=document.createElement('textarea');
-    ta.value=adminLastKey; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    const btn=$('.admin-copy-btn');
-    btn.textContent='✅ Copied!';
-    setTimeout(()=>btn.textContent='📋 Copy Key',1500);
-  });
+  if(!adminLastKey)return;
+  navigator.clipboard.writeText(adminLastKey).then(()=>{const btn=document.querySelector('.admin-copy-btn');btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='📋 Copy Key',1500);}).catch(()=>{const ta=document.createElement('textarea');ta.value=adminLastKey;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);const btn=document.querySelector('.admin-copy-btn');btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='📋 Copy Key',1500);});
 }
-
-function adminCopyAny(key){
-  navigator.clipboard.writeText(key).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=key; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-  });
-}
+function adminCopyAny(key){navigator.clipboard.writeText(key).catch(()=>{const ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);});}
 
 function renderAdminKeys(){
   const keys=JSON.parse(localStorage.getItem('af_admin_keys')||'[]');
-  const used=JSON.parse(localStorage.getItem('af_used_codes')||'[]');
   const el=$('adminKeysList');
-  if(!keys.length){ el.innerHTML='<div style="font-size:.8rem;color:var(--muted);padding:8px 0">No keys generated yet.</div>'; return; }
-  el.innerHTML=keys.map(k=>{
-    const isUsed=used.includes(k.key);
-    return `<div class="admin-key-item">
-      <div>
-        <div class="admin-key-code" style="color:${isUsed?'var(--muted)':'var(--accent3)'}${isUsed?';text-decoration:line-through':''}">${k.key}</div>
-        <div class="admin-key-meta">${k.dur} · ${k.date}${isUsed?' · <span style="color:var(--red)">Used</span>':''}</div>
-      </div>
-      <button class="admin-key-copy" onclick="adminCopyAny('${k.key}')" title="Copy">📋</button>
-    </div>`;
-  }).join('');
+  if(!keys.length){el.innerHTML='<div style="font-size:.8rem;color:var(--muted);padding:8px 0">No keys generated yet.</div>';return;}
+  el.innerHTML=keys.map(k=>`<div class="admin-key-item">
+    <div>
+      <div class="admin-key-code" style="color:${k.used?'var(--muted)':'var(--accent3)'}${k.used?';text-decoration:line-through':''}">${k.key}</div>
+      <div class="admin-key-meta">${k.dur} · ${k.date}${k.used?' · <span style="color:var(--red)">Used</span>':' · <span style="color:var(--green)">Available</span>'}</div>
+    </div>
+    <button class="admin-key-copy" onclick="adminCopyAny('${k.key}')" title="Copy">📋</button>
+  </div>`).join('');
 }
 
 function renderAdminStats(){
   const keys=JSON.parse(localStorage.getItem('af_admin_keys')||'[]');
-  const used=JSON.parse(localStorage.getItem('af_used_codes')||'[]');
-  const usedCount=keys.filter(k=>used.includes(k.key)).length;
+  const usedCount=keys.filter(k=>k.used).length;
   const activeVIP=isVIPActive()?1:0;
   $('adminStats').innerHTML=`
     <div class="admin-stat"><div class="admin-stat-val">${keys.length}</div><div class="admin-stat-lbl">Keys Generated</div></div>
@@ -1336,38 +948,23 @@ function renderAdminStats(){
 }
 
 function adminClearKeys(){
-  if(!confirm('Clear all generated keys history? This does NOT revoke already-used keys.')) return;
-  localStorage.removeItem('af_admin_keys');
-  $('adminGenResult').style.display='none';
-  adminLastKey=null;
-  renderAdminKeys();
-  renderAdminStats();
+  if(!confirm('Clear all generated keys history? This does NOT revoke already-used keys.'))return;
+  localStorage.removeItem('af_admin_keys');$('adminGenResult').style.display='none';adminLastKey=null;renderAdminKeys();renderAdminStats();
 }
 
-/* ═══════════ BOOT ═══════════ */
+/* ══ BOOT ══ */
 window.addEventListener('popstate',()=>{
   const p=new URLSearchParams(location.search);
-  if(p.has('id')&&p.has('type')){
-    pId=p.get('id'); pType=p.get('type');
-    pSeason=parseInt(p.get('s'))||1; pEp=parseInt(p.get('e'))||1; pSrv=parseInt(p.get('srv'))||0;
-    startPlayer();
-  } else { goHome(); }
+  if(p.has('id')&&p.has('type')){pId=p.get('id');pType=p.get('type');pSeason=parseInt(p.get('s'))||1;pEp=parseInt(p.get('e'))||1;pSrv=parseInt(p.get('srv'))||0;startPlayer();}
+  else{goHome();}
 });
 
 refreshVIPState();
 initTrendingCache();
-
-// Admin access via URL param
 const initParams=new URLSearchParams(location.search);
-if(initParams.get('admin')==='1'){
-  openAdmin();
-} else if(initParams.has('id')&&initParams.has('type')){
-  pId=initParams.get('id'); pType=initParams.get('type');
-  pSeason=parseInt(initParams.get('s'))||1; pEp=parseInt(initParams.get('e'))||1; pSrv=parseInt(initParams.get('srv'))||0;
-  startPlayer();
-} else {
-  initHome();
-}
+if(initParams.get('admin')==='1'){openAdmin();}
+else if(initParams.has('id')&&initParams.has('type')){pId=initParams.get('id');pType=initParams.get('type');pSeason=parseInt(initParams.get('s'))||1;pEp=parseInt(initParams.get('e'))||1;pSrv=parseInt(initParams.get('srv'))||0;startPlayer();}
+else{initHome();}
 </script>
 </body>
 </html>
