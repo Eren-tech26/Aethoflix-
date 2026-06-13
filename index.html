@@ -521,6 +521,11 @@ body.vip .vip-glow{opacity:1}
         <div class="admin-card-title">📊 Stats</div>
         <div class="admin-stats" id="adminStats"></div>
       </div>
+      <div class="admin-card">
+        <div class="admin-card-title">👥 Account Server Stats</div>
+        <div class="admin-stats" id="accServerStats"><div style="font-size:.8rem;color:var(--muted)">Loading...</div></div>
+        <button class="admin-clear-btn" style="background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.3);color:var(--accent2);margin-top:12px" onclick="fetchAccServerStats()">🔄 Refresh</button>
+      </div>
     </div>
   </div>
 </div>
@@ -647,12 +652,19 @@ function cancelVIP(){
 /* ══ GATE ══ */
 function checkGate(){
   if(isVIPActive()||localStorage.getItem('af_unlocked')==='1')return false;
+  if(accUser){if(accUser.credits<=0){$('gate').classList.add('on');return true;}return false;}
   let c=parseInt(localStorage.getItem('af_count')||'0');
   if(c>=4){$('gate').classList.add('on');return true;}
   localStorage.setItem('af_count',c+1);return false;
 }
-function unlockGate(){localStorage.setItem('af_unlocked','1');$('gate').classList.remove('on');loadFrame();}
-
+async function unlockGate(){
+  $('gate').classList.remove('on');
+  if(accUser){
+    const res=await accApi('/unlock',{id:accUser.id});
+    if(res.ok){accUser.credits=999999;updateAccBtn();}
+  }else{localStorage.setItem('af_unlocked','1');}
+  loadFrame();
+}
 /* ══ NAV ══ */
 function showPage(id){
   $$('.pg').forEach(p=>p.classList.remove('on'));$(id).classList.add('on');
@@ -943,7 +955,7 @@ function adminPinSubmit(){
   else{$('adminPinErr').textContent='Wrong PIN. Try again.';adminPinBuffer='';updatePinDots();const dots=$('adminPinDots');dots.style.transform='translateX(8px)';setTimeout(()=>dots.style.transform='translateX(-8px)',80);setTimeout(()=>dots.style.transform='',160);}
 }
 function updatePinDots(){const spans=$$('#adminPinDots span');spans.forEach((s,i)=>s.classList.toggle('filled',i<adminPinBuffer.length));}
-function showAdminDash(){$('adminLock').style.display='none';$('adminDash').style.display='block';renderAdminKeys();renderAdminStats();}
+function showAdminDash(){$('adminLock').style.display='none';$('adminDash').style.display='block';renderAdminKeys();renderAdminStats();fetchAccServerStats();}
 function adminLogout(){adminAuthed=false;adminPinBuffer='';$('adminLock').style.display='flex';$('adminDash').style.display='none';updatePinDots();$('adminPinErr').textContent='';}
 
 // ★ FIXED: adminGenKey now saves durType so redeemVIP can read it
@@ -967,7 +979,23 @@ function adminCopyKey(){
 }
 function adminCopyAny(key){navigator.clipboard.writeText(key).catch(()=>{const ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);});}
 
-function renderAdminKeys(){
+async function fetchAccServerStats(){
+  const el=$('accServerStats');
+  if(!el)return;
+  el.innerHTML='<div style="font-size:.8rem;color:var(--muted)">Loading...</div>';
+  try{
+    const r=await fetch(ACC_API+'/stats',{headers:{'X-Admin-Token':'AETHO_ADMIN_9x7k2m'}});
+    const d=await r.json();
+    if(d.ok){
+      el.innerHTML=`
+        <div class="admin-stat"><div class="admin-stat-val">${d.total_users}</div><div class="admin-stat-lbl">Total Users</div></div>
+        <div class="admin-stat"><div class="admin-stat-val">${d.total_streams}</div><div class="admin-stat-lbl">Total Streams</div></div>
+        <div class="admin-stat"><div class="admin-stat-val">${d.active_users}</div><div class="admin-stat-lbl">Active Users</div></div>
+        <div class="admin-stat"><div class="admin-stat-val">${d.unlimited}</div><div class="admin-stat-lbl">Unlimited</div></div>
+      `;
+    }else{el.innerHTML='<div style="font-size:.8rem;color:var(--red)">Server offline</div>';}
+  }catch(e){el.innerHTML='<div style="font-size:.8rem;color:var(--red)">Can\'t reach acc.py</div>';}
+}function renderAdminKeys(){
   const keys=JSON.parse(localStorage.getItem('af_admin_keys')||'[]');
   const el=$('adminKeysList');
   if(!keys.length){el.innerHTML='<div style="font-size:.8rem;color:var(--muted);padding:8px 0">No keys generated yet.</div>';return;}
