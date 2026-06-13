@@ -228,8 +228,16 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .reco-title{font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .reco-meta{font-size:.58rem;color:var(--sub);margin-top:2px}
 .reco-play-ic{position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(229,9,20,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff}
-.player-back{display:flex;align-items:center;gap:6px;padding:10px 4%;font-size:.78rem;font-weight:700;color:var(--sub);cursor:pointer;background:none;border:none;color:var(--sub)}
+.player-back{display:flex;align-items:center;gap:6px;padding:10px 4%;font-size:.78rem;font-weight:700;cursor:pointer;background:none;border:none;color:var(--sub);font-family:var(--font)}
 .player-back:active{color:var(--text)}
+.server-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-top:2px}
+.server-lbl{font-size:.62rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:2px}
+.srv-btn{padding:5px 13px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;font-size:.68rem;font-weight:700;color:var(--sub);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--font)}
+.srv-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.srv-btn:active{opacity:.75}
+.pact-btn-sm{padding:5px 11px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;font-size:.68rem;font-weight:700;color:var(--sub);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--font)}
+.pact-btn-sm:active{background:var(--card);color:var(--text)}
+
 </style>
 </head>
 <body>
@@ -331,10 +339,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <div class="player-info">
     <div class="player-title" id="plTitle">Loading…</div>
     <div class="player-meta" id="plMeta"></div>
-    <div class="player-actions" id="plActions">
-      <button class="pact-btn primary" id="plPlayBtn"><span class="pact-ic">▶</span>Playing</button>
-      <button class="pact-btn" onclick="togglePlOv()"><span class="pact-ic">📖</span>Overview</button>
-      <button class="pact-btn" id="plShareBtn" onclick="shareCurrent()"><span class="pact-ic">🔗</span>Share</button>
+    <!-- Server switcher -->
+    <div class="server-strip">
+      <span class="server-lbl">Source:</span>
+      <button class="srv-btn on" onclick="switchServer(0,this)">VidLink</button>
+      <button class="srv-btn" onclick="switchServer(1,this)">VidSrc</button>
+      <button class="srv-btn" onclick="switchServer(2,this)">EmbedSu</button>
+      <button class="pact-btn-sm" onclick="goFullscreen()" title="Fullscreen">⛶ Fullscreen</button>
+      <button class="pact-btn-sm" onclick="shareCurrent()" title="Share">🔗 Share</button>
     </div>
   </div>
   <div id="plOvWrap" style="display:none">
@@ -721,18 +733,28 @@ async function browseType(type, label) {
 let plState = { id: null, type: null, season: 1, episode: 1, seasons: [], episodes: [], meta: null };
 let ovExpanded = false;
 
-function buildPlayerUrl(id, type, season, ep) {
-  if (type === 'movie') {
-    return `https://vidsrc.xyz/embed/movie/${id}`;
-  } else {
-    return `https://vidsrc.xyz/embed/tv/${id}/${season}/${ep}`;
-  }
+function buildPlayerUrl(id, type, season, ep, server) {
+  server = server || plState.server || 0;
+  const servers = {
+    movie: [
+      `https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true`,
+      `https://vidsrc.xyz/embed/movie/${id}`,
+      `https://embed.su/embed/movie/${id}`,
+    ],
+    tv: [
+      `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true`,
+      `https://vidsrc.xyz/embed/tv/${id}/${season}/${ep}`,
+      `https://embed.su/embed/tv/${id}/${season}/${ep}`,
+    ]
+  };
+  const k = (type === 'movie') ? 'movie' : 'tv';
+  return (servers[k][server] || servers[k][0]);
 }
 
 async function openPlayer(id, type, season, ep) {
   season = season || 1;
   ep = ep || 1;
-  plState = { id, type, season, episode: ep, seasons: [], episodes: [], meta: null };
+  plState = { id, type, season, episode: ep, seasons: [], episodes: [], meta: null, server: 0 };
 
   // Reset UI
   $$('.pg').forEach(p => p.classList.remove('on'));
@@ -748,7 +770,8 @@ async function openPlayer(id, type, season, ep) {
   history.pushState({ id, type, season, ep }, '', url);
 
   // Embed
-  $('playerFrame').src = buildPlayerUrl(id, type, season, ep);
+  $('playerFrame').src = buildPlayerUrl(id, type, season, ep, 0);
+  $$('.srv-btn').forEach((b,i) => b.classList.toggle('on', i===0));
   $('plTitle').textContent = 'Loading…';
   $('plMeta').innerHTML = '';
   $('epSection').style.display = 'none';
@@ -891,7 +914,21 @@ function togglePlOv() {
   }
 }
 
-function shareCurrent() {
+function switchServer(idx, el) {
+  plState.server = idx;
+  $$('.srv-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  $('playerFrame').src = buildPlayerUrl(plState.id, plState.type, plState.season, plState.episode, idx);
+}
+
+function goFullscreen() {
+  const frame = $('playerFrame');
+  if (frame.requestFullscreen) frame.requestFullscreen();
+  else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+  else if (frame.mozRequestFullScreen) frame.mozRequestFullScreen();
+}
+
+
   const url = location.href;
   if (navigator.share) { navigator.share({ title: $('plTitle').textContent, url }); }
   else { navigator.clipboard?.writeText(url); alert('Link copied!'); }
@@ -961,4 +998,3 @@ window.addEventListener('popstate', () => {
 </script>
 </body>
 </html>
-
