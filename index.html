@@ -838,7 +838,8 @@ function openPlayer(id,type){
 }
 
 async function startPlayer(){
-  if(!accUser){navAccount();return;}
+  await accAutoLogin();
+if(!accUser){navAccount();return;}
 showPage('pg-player');if(checkGate())return;;
   const tmdbType=pType==='anime'?'tv':pType;
   const meta=await api(`${tmdbType}/${pId}?append_to_response=credits`);
