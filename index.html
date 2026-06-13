@@ -1189,7 +1189,7 @@ async function accUseCredit(){
   if(accUser.credits<=0)return false;
   const res=await accApi('/use',{id:accUser.id});
   if(res.ok){accUser.credits=res.credits_left;accUser.streams=res.streams_done;updateAccBtn();return true;}
-  return false;
+  return true;
 }
 
 /* ══ BOOT ══ */
