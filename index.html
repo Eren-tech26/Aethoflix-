@@ -167,6 +167,69 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;text-align:center;gap:9px;color:var(--muted);grid-column:1/-1}
 .empty-ic{font-size:2.3rem}
 .empty-txt{font-size:.82rem}
+
+/* PLAYER PAGE */
+.player-pg{display:none;min-height:100vh;padding-bottom:80px;animation:fadeUp .22s ease}
+.player-pg.on{display:block}
+.player-wrap{position:relative;width:100%;background:#000;aspect-ratio:16/9;max-height:56vw}
+.player-frame{width:100%;height:100%;border:none;display:block}
+.player-info{padding:14px 4% 0}
+.player-title{font-size:1.2rem;font-weight:900;line-height:1.15;margin-bottom:5px}
+.player-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.73rem;font-weight:600;margin-bottom:10px;color:var(--sub)}
+.pm-rat{color:var(--gold)}
+.pm-tag{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 7px;border-radius:3px;font-size:.6rem;color:var(--sub)}
+.pm-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:3px;font-size:.6rem;font-weight:800}
+.player-actions{display:flex;gap:8px;margin-bottom:14px}
+.pact-btn{flex:1;padding:10px 8px;border-radius:8px;font-size:.72rem;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface);border:1px solid var(--border);color:var(--sub);cursor:pointer;transition:.15s}
+.pact-btn:active{background:var(--card);color:var(--text)}
+.pact-btn .pact-ic{font-size:1.1rem}
+.pact-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.player-overview{font-size:.8rem;color:#aaaac8;line-height:1.65;padding:0 4% 4px;margin-bottom:0}
+.player-ov-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.player-ov-toggle{font-size:.73rem;color:var(--accent);font-weight:700;cursor:pointer;padding:2px 4% 10px;display:block}
+.ep-section{padding:4px 0 0}
+.ep-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 4% 8px}
+.ep-section-ttl{font-size:.9rem;font-weight:800}
+.season-picker{display:flex;gap:6px;overflow-x:auto;padding:0 4% 10px}
+.season-picker::-webkit-scrollbar{display:none}
+.spill{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:.7rem;font-weight:700;color:var(--sub);cursor:pointer;white-space:nowrap;transition:.2s;flex-shrink:0}
+.spill.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.spill:active{opacity:.7}
+.ep-list{display:flex;flex-direction:column;gap:0;padding:0 4%}
+.ep-card{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;align-items:flex-start}
+.ep-card:active{opacity:.7}
+.ep-card.playing .ep-thumb-num{display:none}
+.ep-card.playing .ep-playing-ic{display:flex}
+.ep-thumb-wrap{position:relative;flex-shrink:0}
+.ep-thumb{width:110px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:var(--card)}
+.ep-playing-ic{display:none;position:absolute;inset:0;background:rgba(229,9,20,.75);border-radius:5px;align-items:center;justify-content:center;font-size:1.4rem;color:#fff}
+.ep-info{flex:1;min-width:0}
+.ep-num{font-size:.58rem;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.ep-name{font-size:.8rem;font-weight:700;line-height:1.25;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ep-runtime{font-size:.62rem;color:var(--muted)}
+.ep-overview{font-size:.68rem;color:var(--sub);line-height:1.5;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ep-loader{text-align:center;padding:20px;color:var(--muted);font-size:.78rem}
+.next-ep-banner{margin:12px 4% 4px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:none;align-items:center;gap:12px;cursor:pointer}
+.next-ep-banner.show{display:flex}
+.next-ep-banner:active{opacity:.8}
+.neb-img{width:72px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;flex-shrink:0;background:var(--surface)}
+.neb-info{flex:1;min-width:0}
+.neb-label{font-size:.58rem;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.neb-title{font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.neb-sub{font-size:.62rem;color:var(--sub)}
+.neb-play{font-size:1.3rem;flex-shrink:0}
+.reco-section{padding:16px 4% 0}
+.reco-hdr{font-size:.9rem;font-weight:800;margin-bottom:10px}
+.reco-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.reco-card{cursor:pointer;border-radius:7px;overflow:hidden;background:var(--card);position:relative}
+.reco-card:active{transform:scale(.97)}
+.reco-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--surface)}
+.reco-body{padding:7px 8px 9px}
+.reco-title{font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reco-meta{font-size:.58rem;color:var(--sub);margin-top:2px}
+.reco-play-ic{position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(229,9,20,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff}
+.player-back{display:flex;align-items:center;gap:6px;padding:10px 4%;font-size:.78rem;font-weight:700;color:var(--sub);cursor:pointer;background:none;border:none;color:var(--sub)}
+.player-back:active{color:var(--text)}
 </style>
 </head>
 <body>
@@ -251,20 +314,63 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <div class="detail-title" id="detTitle">Loading…</div>
       <div class="detail-meta" id="detMeta"></div>
       <div class="detail-overview" id="detOverview"></div>
-      <div class="tg-hint">
-        <div class="tg-hint-ic">🤖</div>
-        <div class="tg-hint-txt">Tap <b>Watch on Telegram</b> to stream instantly via our bot — no ads, no buffering.</div>
-      </div>
       <button class="detail-play" id="detPlayBtn">
-        <span>▶ Watch on Telegram</span>
-        <span class="bot-tag" id="detBotTag">@aetho_flixbot</span>
+        <span>▶ Watch Now</span>
       </button>
       <div class="detail-cast" id="detCast"></div>
     </div>
   </div>
 </div>
 
+<!-- PLAYER PAGE -->
+<div class="player-pg" id="pg-player">
+  <button class="player-back" onclick="closePlayer()">← Back</button>
+  <div class="player-wrap">
+    <iframe class="player-frame" id="playerFrame" src="" allowfullscreen allow="autoplay; fullscreen" scrolling="no"></iframe>
+  </div>
+  <div class="player-info">
+    <div class="player-title" id="plTitle">Loading…</div>
+    <div class="player-meta" id="plMeta"></div>
+    <div class="player-actions" id="plActions">
+      <button class="pact-btn primary" id="plPlayBtn"><span class="pact-ic">▶</span>Playing</button>
+      <button class="pact-btn" onclick="togglePlOv()"><span class="pact-ic">📖</span>Overview</button>
+      <button class="pact-btn" id="plShareBtn" onclick="shareCurrent()"><span class="pact-ic">🔗</span>Share</button>
+    </div>
+  </div>
+  <div id="plOvWrap" style="display:none">
+    <div class="player-overview" id="plOverview"></div>
+    <span class="player-ov-toggle" onclick="togglePlOv()">Hide</span>
+  </div>
+
+  <!-- Next episode banner (TV/Anime) -->
+  <div class="next-ep-banner" id="nextEpBanner" onclick="playNextEp()">
+    <img class="neb-img" id="nebImg" src="" alt="">
+    <div class="neb-info">
+      <div class="neb-label">Up Next</div>
+      <div class="neb-title" id="nebTitle"></div>
+      <div class="neb-sub" id="nebSub"></div>
+    </div>
+    <div class="neb-play">▶</div>
+  </div>
+
+  <!-- Episode/Season selector (TV/Anime only) -->
+  <div class="ep-section" id="epSection" style="display:none">
+    <div class="ep-section-hdr">
+      <div class="ep-section-ttl">Episodes</div>
+    </div>
+    <div class="season-picker" id="seasonPicker"></div>
+    <div class="ep-list" id="epList"><div class="ep-loader">Loading episodes…</div></div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="reco-section">
+    <div class="reco-hdr">More Like This</div>
+    <div class="reco-grid" id="recoGrid"></div>
+  </div>
+</div>
+
 <script>
+
 const TMDB_KEY = 'fca1c3fa675f74cf4aa8d24b72dd4807';
 const IMG = 'https://image.tmdb.org/t/p/';
 const BOT_MOVIE = 'aetho_flixbot';
@@ -506,7 +612,6 @@ async function openDetail(id, type) {
   // Pick the right bot
   const isAnime = type === 'anime';
   const bot = isAnime ? BOT_ANIME : BOT_MOVIE;
-  const tgUrl = `https://t.me/${bot}?start=play_${type}_${id}`;
 
   // Image — prefer backdrop, fall back to poster
   const imgSrc = meta.backdrop_path
@@ -518,10 +623,9 @@ async function openDetail(id, type) {
   $('detTitle').textContent = title;
   $('detMeta').innerHTML = `<span class="dm-rat">★ ${rat}</span><span class="dm-yr">${yr}</span>${runtime ? `<span class="dm-tag">${runtime}</span>` : ''}${genres ? `<span class="dm-tag">${genres}</span>` : ''}`;
   $('detOverview').textContent = meta.overview || '';
-  $('detBotTag').textContent = '@' + bot;
   if (cast) $('detCast').innerHTML = `<b>Cast:</b> ${cast}`;
 
-  $('detPlayBtn').onclick = () => window.open(tgUrl, '_blank');
+  $('detPlayBtn').onclick = () => { closeDetail(); openPlayer(id, type); };
 }
 
 function closeDetail() {
@@ -613,21 +717,248 @@ async function browseType(type, label) {
   renderGrid(grid, data, type);
 }
 
-/* BOOT — handle bot redirect back to site e.g. ?type=movie&id=12345 */
+/* PLAYER */
+let plState = { id: null, type: null, season: 1, episode: 1, seasons: [], episodes: [], meta: null };
+let ovExpanded = false;
+
+function buildPlayerUrl(id, type, season, ep) {
+  if (type === 'movie') {
+    return `https://vidsrc.xyz/embed/movie/${id}`;
+  } else {
+    return `https://vidsrc.xyz/embed/tv/${id}/${season}/${ep}`;
+  }
+}
+
+async function openPlayer(id, type, season, ep) {
+  season = season || 1;
+  ep = ep || 1;
+  plState = { id, type, season, episode: ep, seasons: [], episodes: [], meta: null };
+
+  // Reset UI
+  $$('.pg').forEach(p => p.classList.remove('on'));
+  $('pg-player').classList.add('on');
+  $('nav').style.display = 'none';
+  window.scrollTo(0, 0);
+
+  // Update URL without reload
+  const url = new URL(location.href.split('?')[0]);
+  url.searchParams.set('id', id);
+  url.searchParams.set('type', type);
+  if (type !== 'movie') { url.searchParams.set('s', season); url.searchParams.set('e', ep); }
+  history.pushState({ id, type, season, ep }, '', url);
+
+  // Embed
+  $('playerFrame').src = buildPlayerUrl(id, type, season, ep);
+  $('plTitle').textContent = 'Loading…';
+  $('plMeta').innerHTML = '';
+  $('epSection').style.display = 'none';
+  $('nextEpBanner').classList.remove('show');
+  $('recoGrid').innerHTML = sk('sk-w', 4).replace(/sk-w/g, 'reco-card').replace(/<\/div>/g, '<div class="reco-img sk"></div></div>');
+
+  // Reset overview
+  ovExpanded = false;
+  $('plOvWrap').style.display = 'none';
+  $('plOverview').textContent = '';
+
+  // Fetch metadata
+  const tmdbType = type === 'anime' ? 'tv' : type;
+  const meta = await api(`${tmdbType}/${id}?append_to_response=credits,seasons`);
+  if (!meta) return;
+  plState.meta = meta;
+
+  const title = meta.title || meta.name || '';
+  const yr = (meta.release_date || meta.first_air_date || '').slice(0, 4);
+  const rat = (meta.vote_average || 0).toFixed(1);
+  const genres = (meta.genres || []).slice(0, 3).map(g => g.name).join(' · ');
+  const runtime = meta.runtime ? `${meta.runtime}m` : (meta.episode_run_time?.[0] ? `~${meta.episode_run_time[0]}m/ep` : '');
+  const seasons = meta.number_of_seasons || 0;
+  const eps = meta.number_of_episodes || 0;
+
+  $('plTitle').textContent = title;
+  let metaHtml = `<span class="pm-rat">★ ${rat}</span><span>${yr}</span>`;
+  if (runtime) metaHtml += `<span class="pm-tag">${runtime}</span>`;
+  if (type !== 'movie' && seasons) metaHtml += `<span class="pm-tag">${seasons} Season${seasons>1?'s':''}</span>`;
+  if (genres) metaHtml += `<span class="pm-tag">${genres}</span>`;
+  $('plMeta').innerHTML = metaHtml;
+  $('plOverview').textContent = meta.overview || '';
+
+  document.title = `${title} — AethoFlix`;
+
+  // TV/Anime: show episode selector
+  if (type !== 'movie') {
+    $('epSection').style.display = 'block';
+    plState.seasons = (meta.seasons || []).filter(s => s.season_number > 0);
+    buildSeasonPicker();
+    await loadEpisodes(season, ep);
+  } else {
+    $('epSection').style.display = 'none';
+  }
+
+  // Recommendations
+  loadRecommendations(id, tmdbType);
+}
+
+function buildSeasonPicker() {
+  const s = plState.seasons;
+  if (!s.length) {
+    // Fallback: guess from number_of_seasons
+    const n = plState.meta?.number_of_seasons || 1;
+    $('seasonPicker').innerHTML = Array.from({length:n},(_,i)=>`<button class="spill${plState.season===i+1?' on':''}" onclick="switchSeason(${i+1},this)">Season ${i+1}</button>`).join('');
+    return;
+  }
+  $('seasonPicker').innerHTML = s.map(sv=>`<button class="spill${plState.season===sv.season_number?' on':''}" onclick="switchSeason(${sv.season_number},this)">Season ${sv.season_number}</button>`).join('');
+}
+
+async function switchSeason(n, el) {
+  $$('.spill').forEach(p=>p.classList.remove('on')); el.classList.add('on');
+  plState.season = n;
+  plState.episode = 1;
+  $('epList').innerHTML = '<div class="ep-loader">Loading episodes…</div>';
+  await loadEpisodes(n, 1);
+  $('playerFrame').src = buildPlayerUrl(plState.id, plState.type, n, 1);
+  updateNextEpBanner();
+}
+
+async function loadEpisodes(season, currentEp) {
+  const { id, type } = plState;
+  const tmdbType = type === 'anime' ? 'tv' : 'tv';
+  const data = await api(`${tmdbType}/${id}/season/${season}`);
+  if (!data || !data.episodes) { $('epList').innerHTML = '<div class="ep-loader">No episodes found.</div>'; return; }
+  plState.episodes = data.episodes;
+  renderEpisodes(data.episodes, currentEp);
+  updateNextEpBanner();
+}
+
+function renderEpisodes(eps, currentEp) {
+  $('epList').innerHTML = eps.map(ep => {
+    const isPlaying = ep.episode_number === currentEp && ep.season_number === plState.season;
+    const thumb = ep.still_path ? `${IMG}w300${ep.still_path}` : '';
+    const runtime = ep.runtime ? `${ep.runtime}m` : '';
+    return `<div class="ep-card${isPlaying?' playing':''}" onclick="playEpisode(${ep.season_number},${ep.episode_number})">
+      <div class="ep-thumb-wrap">
+        <img class="ep-thumb" src="${thumb}" alt="" loading="lazy">
+        <div class="ep-playing-ic">▶</div>
+      </div>
+      <div class="ep-info">
+        <div class="ep-num">E${ep.episode_number}${runtime ? ' · ' + runtime : ''}</div>
+        <div class="ep-name">${ep.name || 'Episode ' + ep.episode_number}</div>
+        ${ep.overview ? `<div class="ep-overview">${ep.overview}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function playEpisode(season, ep) {
+  plState.season = season;
+  plState.episode = ep;
+  $('playerFrame').src = buildPlayerUrl(plState.id, plState.type, season, ep);
+  window.scrollTo(0, 0);
+  renderEpisodes(plState.episodes, ep);
+  updateNextEpBanner();
+  // Update URL
+  const url = new URL(location.href.split('?')[0]);
+  url.searchParams.set('id', plState.id);
+  url.searchParams.set('type', plState.type);
+  url.searchParams.set('s', season);
+  url.searchParams.set('e', ep);
+  history.replaceState({}, '', url);
+}
+
+function updateNextEpBanner() {
+  const { episodes, episode, season } = plState;
+  const nextIdx = episodes.findIndex(e => e.episode_number === episode && e.season_number === season) + 1;
+  const next = episodes[nextIdx];
+  if (!next) { $('nextEpBanner').classList.remove('show'); return; }
+  plState.nextEp = next;
+  $('nebTitle').textContent = next.name || 'Episode ' + next.episode_number;
+  $('nebSub').textContent = `S${season} E${next.episode_number}${next.runtime ? ' · ' + next.runtime + 'm' : ''}`;
+  $('nebImg').src = next.still_path ? `${IMG}w300${next.still_path}` : '';
+  $('nextEpBanner').classList.add('show');
+}
+
+function playNextEp() {
+  if (plState.nextEp) playEpisode(plState.nextEp.season_number, plState.nextEp.episode_number);
+}
+
+function togglePlOv() {
+  ovExpanded = !ovExpanded;
+  const wrap = $('plOvWrap');
+  if (ovExpanded) {
+    wrap.style.display = 'block';
+    $('plOverview').classList.remove('player-ov-clamp');
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function shareCurrent() {
+  const url = location.href;
+  if (navigator.share) { navigator.share({ title: $('plTitle').textContent, url }); }
+  else { navigator.clipboard?.writeText(url); alert('Link copied!'); }
+}
+
+async function loadRecommendations(id, tmdbType) {
+  const data = await api(`${tmdbType}/${id}/recommendations`);
+  const grid = $('recoGrid');
+  if (!data || !data.results?.length) { grid.innerHTML = ''; return; }
+  grid.innerHTML = data.results.filter(r => r.backdrop_path).slice(0, 12).map(r => {
+    const mt = r.media_type || tmdbType;
+    const yr = (r.release_date || r.first_air_date || '').slice(0, 4);
+    const rat = (r.vote_average || 0).toFixed(1);
+    return `<div class="reco-card" onclick="openPlayerFromReco(${r.id},'${mt}')">
+      <img class="reco-img" src="${IMG}w500${r.backdrop_path}" loading="lazy" alt="">
+      <div class="reco-play-ic">▶</div>
+      <div class="reco-body">
+        <div class="reco-title">${r.title||r.name||''}</div>
+        <div class="reco-meta">★ ${rat} · ${yr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openPlayerFromReco(id, type) {
+  // Normalize media type
+  const t = (type === 'tv' || type === 'anime') ? type : (type === 'movie' ? 'movie' : 'tv');
+  openPlayer(id, t);
+}
+
+function closePlayer() {
+  $('playerFrame').src = '';
+  document.title = 'AethoFlix';
+  const url = new URL(location.href.split('?')[0]);
+  history.pushState({}, '', url);
+  goHome();
+  $('nav').style.display = '';
+}
+
+/* BOOT — handle ?id=...&type=... to open player directly */
 (async function boot() {
   const p = new URLSearchParams(location.search);
   const id   = p.get('id');
-  const type = p.get('type'); // movie | tv | anime
+  const type = p.get('type');
+  const s    = parseInt(p.get('s')) || 1;
+  const e    = parseInt(p.get('e')) || 1;
 
-  // Always init home so background content loads
   initHome();
 
   if (id && type) {
-    // Open the detail sheet for this specific title
-    // Small delay so the page DOM and hero are ready
-    setTimeout(() => openDetail(id, type), 300);
+    setTimeout(() => openPlayer(id, type, s, e), 150);
   }
 })();
+
+// Handle browser back/forward
+window.addEventListener('popstate', () => {
+  const p = new URLSearchParams(location.search);
+  const id = p.get('id'), type = p.get('type');
+  if (id && type) {
+    openPlayer(id, type, parseInt(p.get('s'))||1, parseInt(p.get('e'))||1);
+  } else {
+    $('playerFrame').src = '';
+    goHome();
+    $('nav').style.display = '';
+  }
+});
 </script>
 </body>
 </html>
+
