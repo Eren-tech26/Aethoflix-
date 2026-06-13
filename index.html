@@ -865,8 +865,8 @@ showPage('pg-player');if(checkGate())return;;
   loadFrame();
 }
 
-function loadFrame(){
-  if(checkGate())return;$('vLoader').classList.remove('off');const isTV=pType!=='movie';
+async function loadFrame(){
+if(checkGate())return;const ok=await accUseCredit();if(!ok)return;$('vLoader').classList.remove('off');
   const srvMap=[
     ()=>isTV?`https://vidlink.pro/tv/${pId}/${pSeason}/${pEp}`:`https://vidlink.pro/movie/${pId}`,
     ()=>isTV?`https://vidsrc.to/embed/tv/${pId}/${pSeason}/${pEp}`:`https://vidsrc.to/embed/movie/${pId}`,
