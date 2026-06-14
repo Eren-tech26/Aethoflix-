@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{touch-action:manipulation}
 :root{
   --bg:#080810;--surface:#0f0f1a;--card:#14141f;--border:#1e1e2e;
   --accent:#e50914;--accent2:#ff2233;
@@ -88,19 +87,19 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .slider::-webkit-scrollbar{display:none}
 
 /* ─── CARDS ─── */
-.pcard{min-width:96px;width:96px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;position:relative;touch-action:manipulation}
+.pcard{min-width:96px;width:96px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;position:relative}
 .pcard:active{transform:scale(.93)}
 .pcard-img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:7px;background:var(--card)}
 .pcard-name{font-size:.58rem;font-weight:600;margin-top:4px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard-meta{font-size:.53rem;color:var(--muted);margin-top:1px}
 .pcard-new{position:absolute;top:5px;left:5px;background:var(--accent);color:#fff;font-size:.46rem;font-weight:900;padding:2px 5px;border-radius:3px;letter-spacing:.5px}
-.wcard{min-width:190px;width:190px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:7px;overflow:hidden;position:relative;touch-action:manipulation}
+.wcard{min-width:190px;width:190px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:7px;overflow:hidden;position:relative}
 .wcard:active{transform:scale(.96)}
 .wcard-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--card)}
 .wcard-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:8px}
 .wcard-title{font-size:.7rem;font-weight:700;line-height:1.2}
 .wcard-sub{font-size:.55rem;color:var(--sub);margin-top:2px}
-.t10card{min-width:124px;width:124px;flex-shrink:0;display:flex;align-items:flex-end;cursor:pointer;position:relative;scroll-snap-align:start;touch-action:manipulation}
+.t10card{min-width:124px;width:124px;flex-shrink:0;display:flex;align-items:flex-end;cursor:pointer;position:relative;scroll-snap-align:start}
 .t10card:active{transform:scale(.95)}
 .t10-num{font-size:4.5rem;font-weight:900;color:var(--bg);-webkit-text-stroke:2px var(--muted);line-height:1;position:absolute;left:0;bottom:-4px;z-index:1;letter-spacing:-4px}
 .t10-img{width:76px;aspect-ratio:2/3;object-fit:cover;border-radius:7px;margin-left:38px;z-index:2;box-shadow:0 4px 16px rgba(0,0,0,.7)}
@@ -140,8 +139,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .overlay{position:fixed;inset:0;background:rgba(4,4,12,.85);z-index:9000;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
 .overlay.on{opacity:1;pointer-events:auto}
 .sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-height:91vh;overflow-y:auto;transform:translateY(50px);transition:transform .3s cubic-bezier(.22,1,.36,1);border-top:1px solid var(--border);position:relative}
-.overlay .sheet-close{display:none}
-.overlay.on .sheet-close{display:flex}
+.overlay.on .sheet{transform:translateY(0)}
 .sheet-back{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--card);display:block}
 .sheet-fade{height:56px;margin-top:-56px;background:linear-gradient(to top,var(--surface),transparent)}
 .sheet-body{padding:2px 18px 34px}
@@ -163,7 +161,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
 .sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
 .sheet-cast b{color:var(--text)}
-.sheet-close{position:fixed;top:max(env(safe-area-inset-top,0px) + 10px, 10px);right:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;border:none;touch-action:manipulation}
+.sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
 
 /* ─── PLAYER PAGE ─── */
 .player-pg{display:none;min-height:100vh;background:var(--bg);padding-bottom:80px}
@@ -254,7 +252,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ann-banner.show{display:flex}
 .ann-ic{font-size:1.1rem;flex-shrink:0}
 .ann-txt{flex:1;font-size:.76rem;font-weight:600;color:#c8d8f8;line-height:1.45}
-.ann-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.ann-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .ann-close:active{background:rgba(255,255,255,.16)}
 .vip-gate{position:fixed;inset:0;z-index:8000;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
 .vip-gate.on{opacity:1;pointer-events:auto}
@@ -268,7 +266,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .vip-btn{width:100%;padding:12px;background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;border:none;border-radius:8px;font-size:.88rem;font-weight:900;cursor:pointer;transition:.15s;font-family:var(--font)}
 .vip-btn:active{transform:scale(.97)}
 .vip-err{font-size:.7rem;color:var(--accent);margin-top:8px;min-height:18px}
-.vip-close{position:absolute;top:10px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;touch-action:manipulation}
+.vip-close{position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
 
 /* ─── VIP BADGE in nav ─── */
 .vip-badge{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--sub);font-size:.56rem;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.5px;cursor:pointer;transition:.2s}
@@ -281,7 +279,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .admin-logo{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:-.5px}
 .admin-logo span{color:var(--text);font-weight:300}
 .admin-badge{font-size:.54rem;font-weight:900;background:var(--accent);color:#fff;padding:2px 7px;border-radius:4px;letter-spacing:1px;margin-left:6px}
-.admin-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.admin-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .admin-body{padding:16px 18px 40px;display:flex;flex-direction:column;gap:18px}
 
 /* admin PIN gate */
@@ -366,7 +364,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .notif-drw-title{font-size:.9rem;font-weight:900}
 .notif-drw-actions{display:flex;gap:8px;align-items:center}
 .notif-mark-all{font-size:.64rem;color:var(--accent);font-weight:700;cursor:pointer;background:none;border:none;font-family:var(--font)}
-.notif-drw-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;touch-action:manipulation}
+.notif-drw-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}
 .notif-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
 .ntab{flex:1;padding:10px 8px;font-size:.66rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font)}
 .ntab.on{color:var(--text);border-bottom-color:var(--accent)}
@@ -744,45 +742,12 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
-<script type="module">
-import { initializeApp }                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, getDoc, getDocs,
-         setDoc, updateDoc, collection }           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-/* ══════════ FIREBASE CONFIG — paste yours here ══════════ */
-const firebaseConfig = {
-  apiKey:            "PASTE_API_KEY",
-  authDomain:        "PASTE_AUTH_DOMAIN",
-  projectId:         "PASTE_PROJECT_ID",
-  storageBucket:     "PASTE_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId:             "PASTE_APP_ID"
-};
-const _app = initializeApp(firebaseConfig);
-const _db  = getFirestore(_app);
-
-/* Firestore helpers */
-const fbGet  = (col,id)       => getDoc(doc(_db,col,id));
-const fbSet  = (col,id,data)  => setDoc(doc(_db,col,id),data);
-const fbUpd  = (col,id,data)  => updateDoc(doc(_db,col,id),data);
-const fbAll  = (col)          => getDocs(collection(_db,col));
-
+<script>
 /* ══════════ CONFIG ══════════ */
 const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
 const IMG    = 'https://image.tmdb.org/t/p/';
 const BOT_M  = 'aetho_flixbot';   // movies + series
 const BOT_A  = 'aethokaibot';     // anime
-const VIP_API = 'https://aethoflix-acc.onrender.com';
-
-/* ── VIP API helper ── */
-async function vipApi(path, body){
-  const r = await fetch(VIP_API + path, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-  return r.json();
-}
 
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
@@ -1292,10 +1257,14 @@ async function loadReco(id,tmdbType){
   }).join('');
 }
 
-/* ══════════ SAFE PLAY — non-VIP goes to bot, VIP plays directly ══════════ */
-function safePlay(id,type,season,ep){
-  if(checkVipStatus()) openPlayer(id,type,season||1,ep||1);
-  else openDetail(id,type);
+/* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
+// Non-VIP users are sent to the bot via the detail sheet instead of directly to player
+function safePlay(id, type, season, ep){
+  if(checkVipStatus()){
+    openPlayer(id, type, season||1, ep||1);
+  } else {
+    openDetail(id, type);
+  }
 }
 
 /* Close player */
@@ -1443,11 +1412,11 @@ function removeFromWishlistPage(type,id){
 /* ══════════ LOGO TAP → ADMIN ══════════ */
 let logoTaps=0, logoTmr=null;
 function logoTap(){
+  goHome();
   logoTaps++;
   clearTimeout(logoTmr);
   if(logoTaps>=5){ logoTaps=0; openAdmin(); return; }
-  logoTmr=setTimeout(()=>{ logoTaps=0; goHome(); },3000);
-  if(logoTaps===1) goHome();
+  logoTmr=setTimeout(()=>logoTaps=0,2000);
 }
 
 /* ══════════ ADMIN PANEL ══════════ */
@@ -1489,19 +1458,14 @@ function checkPin(){
 }
 
 /* ══════════ ADMIN DASHBOARD ══════════ */
-async function loadAdminDash(){
-  $('statTotal').textContent='…';$('statActive').textContent='…';
-  $('statUsed').textContent='…';$('statRevoked').textContent='…';
-  $('codeList').innerHTML='<div class="no-codes">Loading…</div>';
-  try{
-    const codes=await vipApi('/codes',{password:'2611'});
-    if(!Array.isArray(codes)){$('codeList').innerHTML='<div class="no-codes">❌ Failed to load</div>';return;}
-    $('statTotal').textContent=codes.length;
-    $('statActive').textContent=codes.filter(c=>c.status==='active').length;
-    $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
-    $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
-    renderCodeList(codes);
-  }catch(e){$('codeList').innerHTML='<div class="no-codes">❌ Server unreachable</div>';}
+function loadAdminDash(){
+  const codes=lsGet('vipCodes',[]);
+  $('statTotal').textContent=codes.length;
+  $('statActive').textContent=codes.filter(c=>c.status==='active').length;
+  $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
+  $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
+  renderCodeList(codes);
+  // Load broadcast
   const bc=lsGet('broadcast','');
   $('bcInp').value=bc||'';
 }
@@ -1509,7 +1473,8 @@ async function loadAdminDash(){
 function renderCodeList(codes){
   const list=$('codeList');
   if(!codes.length){ list.innerHTML='<div class="no-codes">No codes yet.</div>'; return; }
-  list.innerHTML=[...codes].reverse().map(c=>{
+  list.innerHTML=[...codes].reverse().map((c,ri)=>{
+    const i=codes.length-1-ri;
     const statusLabel=c.status==='active'?'ACTIVE':c.status==='used'?'USED':'REVOKED';
     const exp=c.expires?`Exp: ${new Date(c.expires).toLocaleDateString()}`:(c.type==='1use'?'1-time use':'Permanent');
     return `<div class="code-row${c.status!=='active'?' code-used':''}">
@@ -1519,28 +1484,32 @@ function renderCodeList(codes){
       </div>
       <span class="code-badge ${c.status}">${statusLabel}</span>
       <button class="code-copy" onclick="copyCode('${c.code}')">Copy</button>
-      ${c.status==='active'?`<button class="code-revoke" onclick="revokeCode('${c.code}')">Revoke</button>`:''}
+      ${c.status==='active'?`<button class="code-revoke" onclick="revokeCode(${i})">Revoke</button>`:''}
     </div>`;
   }).join('');
 }
 
-async function generateCode(){
+function generateCode(){
   const type=$('codeType').value;
-  try{
-    const r=await vipApi('/generate',{password:'2611',type});
-    if(r.error){showToast('❌ '+r.error);return;}
-    showToast('✅ Code generated: '+r.code);
-    loadAdminDash();
-  }catch(e){showToast('❌ Server error');}
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='VIP-';
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  let expires=null;
+  if(type==='7d') expires=Date.now()+7*86400000;
+  if(type==='30d') expires=Date.now()+30*86400000;
+  const codes=lsGet('vipCodes',[]);
+  codes.push({code,type,status:'active',expires,created:Date.now()});
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('✅ Code generated: '+code);
 }
 
-async function revokeCode(code){
-  try{
-    const r=await vipApi('/revoke',{password:'2611',code});
-    if(r.error){showToast('❌ '+r.error);return;}
-    showToast('🚫 Code revoked');
-    loadAdminDash();
-  }catch(e){showToast('❌ Server error');}
+function revokeCode(idx){
+  const codes=lsGet('vipCodes',[]);
+  if(codes[idx]) codes[idx].status='revoked';
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('🚫 Code revoked');
 }
 
 function copyCode(code){
@@ -1548,13 +1517,11 @@ function copyCode(code){
 }
 
 /* ══════════ ADMIN TOOLS ══════════ */
-async function toolExportCodes(){
-  try{
-    const codes=await vipApi('/codes',{password:'2611'});
-    if(!Array.isArray(codes)||!codes.length){showToast('No codes to export');return;}
-    const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
-    navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
-  }catch(e){showToast('❌ Server error');}
+function toolExportCodes(){
+  const codes=lsGet('vipCodes',[]);
+  if(!codes.length){showToast('No codes to export');return;}
+  const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
+  navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
 }
 
 function toolClearCache(){
@@ -1563,13 +1530,11 @@ function toolClearCache(){
   showToast('🧹 Cache cleared');
 }
 
-async function toolVipStats(){
-  try{
-    const codes=await vipApi('/codes',{password:'2611'});
-    const used=(codes||[]).filter(c=>c.status==='used');
-    if(!used.length){showToast('No redeemed codes yet');return;}
-    alert('Redeemed Codes:\n\n'+used.map(c=>`${c.code} · ${c.type}`).join('\n'));
-  }catch(e){showToast('❌ Server error');}
+function toolVipStats(){
+  const redemptions=lsGet('vipRedemptions',[]);
+  if(!redemptions.length){showToast('No redemptions recorded yet');return;}
+  const msg=redemptions.map(r=>`${r.code} redeemed at ${new Date(r.at).toLocaleString()}`).join('\n');
+  alert('VIP Redemptions:\n\n'+msg);
 }
 
 function toolChangePin(){
@@ -1579,24 +1544,23 @@ function toolChangePin(){
   showToast('🔑 PIN updated successfully');
 }
 
-async function toolRevokeAll(){
+function toolRevokeAll(){
   if(!confirm('Revoke ALL active codes? This cannot be undone.'))return;
-  try{
-    await vipApi('/revoke-all',{password:'2611'});
-    loadAdminDash();
-    showToast('🚫 All active codes revoked');
-  }catch(e){showToast('❌ Server error');}
+  const codes=lsGet('vipCodes',[]);
+  codes.forEach(c=>{if(c.status==='active')c.status='revoked';});
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('🚫 All active codes revoked');
 }
 
-async function toolWipeVip(){
+function toolWipeVip(){
   if(!confirm('⚠️ This will delete ALL codes and revoke ALL VIP access. Are you sure?'))return;
-  try{
-    await vipApi('/wipe',{password:'2611'});
-    lsSet('vipStatus',null);
-    loadAdminDash();
-    checkVipStatus();
-    showToast('💣 All VIP data wiped');
-  }catch(e){showToast('❌ Server error');}
+  localStorage.removeItem('afx_vipCodes');
+  localStorage.removeItem('afx_vipRedemptions');
+  localStorage.removeItem('afx_vipStatus');
+  loadAdminDash();
+  checkVipStatus();
+  showToast('💣 All VIP data wiped');
 }
 
 function saveBroadcast(){
@@ -1664,22 +1628,28 @@ function openVipGate(){
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
-async function redeemVip(){
+function redeemVip(){
   const entered=$('vipInp').value.trim().toUpperCase();
   if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  $('vipRedeemBtn').textContent='Checking…'; $('vipRedeemBtn').disabled=true;
-  try{
-    const r=await vipApi('/redeem',{code:entered});
-    if(r.error){ $('vipErr').textContent='❌ '+r.error; return; }
-    lsSet('vipStatus',{active:true,code:entered,expires:r.expires||null,since:Date.now()});
-    closeVipGate();
-    checkVipStatus();
-    showToast('👑 VIP unlocked! Welcome.',3000);
-  }catch(e){
-    $('vipErr').textContent='❌ Server error. Try again.';
-  }finally{
-    $('vipRedeemBtn').textContent='🔓 Unlock VIP'; $('vipRedeemBtn').disabled=false;
-  }
+  const codes=lsGet('vipCodes',[]);
+  const idx=codes.findIndex(c=>c.code===entered);
+  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
+  const code=codes[idx];
+  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
+  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
+  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
+  // Mark used if 1-time
+  if(code.type==='1use') codes[idx].status='used';
+  lsSet('vipCodes',codes);
+  // Save VIP status
+  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
+  // Log redemption
+  const rr=lsGet('vipRedemptions',[]);
+  rr.push({code:entered,at:Date.now()});
+  lsSet('vipRedemptions',rr);
+  closeVipGate();
+  checkVipStatus();
+  showToast('👑 VIP unlocked! Welcome.',3000);
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
@@ -1848,24 +1818,6 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
-/* ══════════ TOUCH — distinguish tap vs scroll on sliders ══════════ */
-let _touchStartX=0, _touchStartY=0, _touchMoved=false;
-document.addEventListener('touchstart',e=>{
-  _touchStartX=e.touches[0].clientX;
-  _touchStartY=e.touches[0].clientY;
-  _touchMoved=false;
-},{passive:true});
-document.addEventListener('touchmove',e=>{
-  const dx=Math.abs(e.touches[0].clientX-_touchStartX);
-  const dy=Math.abs(e.touches[0].clientY-_touchStartY);
-  if(dx>8||dy>8) _touchMoved=true;
-},{passive:true});
-// Wrap openDetail and safePlay to ignore swipe-triggered clicks
-const _openDetail=openDetail;
-window.openDetail=function(id,type){ if(_touchMoved)return; _openDetail(id,type); };
-const _safePlay=safePlay;
-window.safePlay=function(id,type,s,e){ if(_touchMoved)return; _safePlay(id,type,s,e); };
-
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
@@ -1888,3 +1840,4 @@ window.addEventListener('popstate',()=>{
 </script>
 </body>
 </html>
+
