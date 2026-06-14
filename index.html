@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AethoFlix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -751,6 +752,7 @@ const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
 const IMG    = 'https://image.tmdb.org/t/p/';
 const BOT_M  = 'aetho_flixbot';   // movies + series
 const BOT_A  = 'aethokaibot';     // anime
+const ANIME_API = 'https://aethoflix-acc.onrender.com'; // AnimeKai backend
 
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
@@ -1071,6 +1073,21 @@ function closeDetail(){ $('detOverlay').classList.remove('on'); document.body.st
 function srcUrl(id,type,season,ep,src){
   src=src??pl.source;
   const isTV=(type!=='movie');
+
+  // ── ANIME: megaplay.buzz via MAL ID (fetched from TMDB external IDs) ──
+  if(type==='anime'){
+    // malId is stored in pl.malId after openPlayer fetches it
+    const mid=pl.malId||'';
+    if(mid){
+      const urls=[
+        `https://megaplay.buzz/stream/mal/${mid}/${ep}/sub`,
+        `https://megaplay.buzz/stream/mal/${mid}/${ep}/dub`,
+      ];
+      return urls[src]||urls[0];
+    }
+  }
+
+  // ── MOVIES & TV SERIES: unchanged ──
   const urls=isTV?[
     `https://indraembed.netlify.app/tv/${id}/${season}/${ep}`,
     `https://player.videasy.net/tv/${id}/${season}/${ep}`,
@@ -1089,6 +1106,114 @@ function srcUrl(id,type,season,ep,src){
   return urls[src]||urls[0];
 }
 
+/* ══════════ ANIME API (AnimeKai via Render) ══════════ */
+let animeState = { slug:null, aniId:null, episodes:[], hls:null };
+
+async function animeApi(path){
+  try{ const r=await fetch(`${ANIME_API}${path}`); return r.ok?r.json():null; }catch{ return null; }
+}
+
+function showAnimePlayer(){
+  $('vidFrame').style.display='none';
+  let w=$('animePlayerWrap');
+  if(!w){
+    w=document.createElement('div');
+    w.id='animePlayerWrap';
+    w.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;flex-direction:column;';
+    w.innerHTML=`<video id="animeVid" style="width:100%;height:100%;display:none;" controls playsinline webkit-playsinline></video><div id="animeStatus" style="color:#aaa;font-size:.8rem;text-align:center;padding:24px;line-height:1.8;"></div>`;
+    $('vidFrame').parentNode.appendChild(w);
+  }
+  w.style.display='flex';
+}
+function hideAnimePlayer(){
+  const w=$('animePlayerWrap');
+  if(w) w.style.display='none';
+  $('vidFrame').style.display='block';
+  if(animeState.hls){ animeState.hls.destroy(); animeState.hls=null; }
+  const v=$('animeVid'); if(v){ v.pause(); v.src=''; }
+}
+
+function setAnimeStatus(msg){ const s=$('animeStatus'); if(s){s.style.display='block';s.innerHTML=msg;} const v=$('animeVid'); if(v) v.style.display='none'; }
+
+async function openAnimePlayer(tmdbId, tmdbTitle, ep){
+  showAnimePlayer();
+  setAnimeStatus('🔍 Searching <b>'+tmdbTitle+'</b> on AnimeKai...');
+
+  const res=await animeApi(`/api/search?keyword=${encodeURIComponent(tmdbTitle)}`);
+  if(!res?.results?.length){ setAnimeStatus('❌ Not found on AnimeKai.<br><small>Try searching a different title</small>'); return; }
+
+  const match=res.results[0];
+  animeState.slug=match.slug;
+  setAnimeStatus('📋 Loading episode info...');
+
+  const info=await animeApi(`/api/anime/${encodeURIComponent(match.slug)}`);
+  if(!info?.ani_id){ setAnimeStatus('❌ Could not load anime info.'); return; }
+  animeState.aniId=info.ani_id;
+
+  const epsRes=await animeApi(`/api/episodes/${info.ani_id}`);
+  if(!epsRes?.episodes?.length){ setAnimeStatus('❌ No episodes found.'); return; }
+  animeState.episodes=epsRes.episodes;
+
+  const episode=animeState.episodes[Math.max(0,(ep||1)-1)]||animeState.episodes[0];
+  await playAnimeEp(episode,'sub');
+}
+
+async function playAnimeEp(episode, lang){
+  setAnimeStatus('⚡ Loading '+lang.toUpperCase()+' servers...');
+  const srvRes=await animeApi(`/api/servers/${episode.token}`);
+  if(!srvRes?.servers){ setAnimeStatus('❌ Could not load servers.'); return; }
+
+  const servers=srvRes.servers[lang]||srvRes.servers['sub']||[];
+  if(!servers.length){ setAnimeStatus('❌ No '+lang.toUpperCase()+' servers available. Try switching to DUB.'); return; }
+
+  for(const srv of servers){
+    setAnimeStatus('🎬 Trying server: <b>'+srv.name+'</b>...');
+    const srcRes=await animeApi(`/api/source/${srv.link_id}`);
+    if(srcRes?.sources?.length){
+      const src=srcRes.sources.find(s=>s.type==='hls')||srcRes.sources[0];
+      if(src?.file){ playM3u8(src.file, srcRes.tracks||[]); return; }
+    }
+  }
+  setAnimeStatus('❌ All servers failed.<br><small>Try switching between SUB / DUB</small>');
+}
+
+async function switchAnimeLang(lang,btn){
+  $$('.src-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  if(!animeState.episodes.length) return;
+  const episode=animeState.episodes[Math.max(0,(pl.ep||1)-1)]||animeState.episodes[0];
+  await playAnimeEp(episode,lang);
+}
+
+function playM3u8(url, tracks){
+  const vid=$('animeVid');
+  $('animeStatus').style.display='none';
+  vid.style.display='block';
+  if(animeState.hls){ animeState.hls.destroy(); animeState.hls=null; }
+  while(vid.firstChild) vid.removeChild(vid.firstChild);
+
+  if(typeof Hls!=='undefined'&&Hls.isSupported()){
+    const hls=new Hls({enableWorker:true});
+    animeState.hls=hls;
+    hls.loadSource(url);
+    hls.attachMedia(vid);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>vid.play().catch(()=>{}));
+    hls.on(Hls.Events.ERROR,(_,d)=>{ if(d.fatal) setAnimeStatus('❌ Stream error. Try another server.'); });
+  } else if(vid.canPlayType('application/vnd.apple.mpegurl')){
+    vid.src=url; vid.play().catch(()=>{});
+  } else {
+    setAnimeStatus('❌ Your browser does not support HLS streams.');
+    return;
+  }
+  // Add subtitle tracks
+  tracks.filter(t=>t.kind==='captions'||t.kind==='subtitles').forEach(t=>{
+    const tr=document.createElement('track');
+    tr.kind=t.kind||'subtitles'; tr.label=t.label||'English';
+    tr.srclang=t.srclang||'en'; tr.src=t.file;
+    if(t.default) tr.default=true;
+    vid.appendChild(tr);
+  });
+}
+
 async function openPlayer(id,type,season,ep){
   season=season||1; ep=ep||1;
   pl={ id, type, season, ep, episodes:[], seasons:[], source:0, nextEp:null };
@@ -1105,9 +1230,22 @@ async function openPlayer(id,type,season,ep){
   if(type!=='movie'){u.searchParams.set('s',season);u.searchParams.set('e',ep);}
   history.pushState({id,type,season,ep},'',u);
 
-  // Load frame
-  $('vidFrame').src=srcUrl(id,type,season,ep,0);
-  $$('.src-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
+  // Load frame — anime uses megaplay.buzz MAL embeds, others use iframe
+  if(type==='anime'){
+    hideAnimePlayer();
+    $('vidFrame').style.display='block';
+    $('vidFrame').src=''; // will be set after MAL ID fetched
+    // Set SUB/DUB buttons immediately
+    $$('.src-btn').forEach((b,i)=>{
+      if(i<2){ b.style.display=''; b.textContent=i===0?'SUB':'DUB'; b.classList.toggle('on',i===0); b.onclick=()=>switchAnimeSrc(i,b); }
+      else { b.style.display='none'; }
+    });
+  } else {
+    hideAnimePlayer();
+    $('vidFrame').style.display='block';
+    $('vidFrame').src=srcUrl(id,type,season,ep,0);
+    $$('.src-btn').forEach((b,i)=>{ b.style.display=''; b.textContent='Server '+(i+1); b.classList.toggle('on',i===0); b.onclick=()=>setSource(i,b); });
+  }
 
   // Reset UI
   $('plTitle').textContent='Loading…'; $('plMeta').innerHTML='';
@@ -1147,7 +1285,25 @@ async function openPlayer(id,type,season,ep){
   saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
   // TV / Anime: load episodes
-  if(type!=='movie'){
+  if(type==='anime'){
+    $('epSec').style.display='block';
+    pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
+    buildSeasonRow();
+    // Fetch MAL ID from TMDB external IDs then load megaplay embed
+    const extIds = await api(`tv/${id}/external_ids`);
+    pl.malId = extIds?.imdb_id ? null : null; // reset
+    pl.malId = extIds?.tvdb_id ? null : null;
+    // TMDB gives mal_id directly for anime
+    pl.malId = extIds?.mal_id || null;
+    if(pl.malId){
+      $('vidFrame').src=srcUrl(id,type,season,ep,0);
+    } else {
+      // fallback: try AniList embed
+      showToast('⚠️ No MAL ID found, trying fallback...');
+      $('vidFrame').src=`https://megaplay.buzz/stream/mal/0/${ep}/sub`;
+    }
+    await loadEpisodes(season,ep);
+  } else if(type!=='movie'){
     $('epSec').style.display='block';
     pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
     buildSeasonRow();
@@ -1163,6 +1319,15 @@ function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
   $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
+}
+// Anime SUB/DUB switcher (0=sub, 1=dub)
+function switchAnimeSrc(idx,el){
+  pl.source=idx;
+  $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
+  if(pl.malId){
+    const lang=idx===0?'sub':'dub';
+    $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${pl.ep}/${lang}`;
+  }
 }
 function goFS(){
   const f=$('vidFrame');
@@ -1226,7 +1391,12 @@ function renderEps(eps,currentEp){
 }
 function playEp(season,ep){
   pl.season=season; pl.ep=ep;
-  $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
+  if(pl.type==='anime'&&pl.malId){
+    const lang=pl.source===1?'dub':'sub';
+    $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${ep}/${lang}`;
+  } else {
+    $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
+  }
   window.scrollTo(0,0);
   renderEps(pl.episodes,ep);
   updateNext();
@@ -1278,6 +1448,7 @@ function safePlay(id, type, season, ep){
 
 /* Close player */
 function closePlayer(){
+  hideAnimePlayer();
   $('vidFrame').src='';
   document.title='AethoFlix';
   const u=new URL(location.href.split('?')[0]);
@@ -1784,68 +1955,4 @@ function markRead(uid){
 }
 
 function markAllRead(){
-  const all=[...nData.movies,...nData.shows,...buildAnnounceItems()].map(i=>String(i.id));
-  lsSet('notifRead',all);
-  updateNotifBadge();
-  showCaughtUp();
-  showToast('✅ All marked as read');
-}
-
-function showCaughtUp(){
-  $('notifBody').innerHTML=`<div class="notif-empty notif-caughtup"><div class="notif-empty-ic">✅</div><div class="notif-empty-txt">You're all caught up</div></div>`;
-}
-
-async function updateNotifBadge(){
-  const read=lsGet('notifRead',[]);
-  // Count unread: announcements + recently released (last 14 days) movies/shows
-  const ann=buildAnnounceItems();
-  const annUnread=ann.filter(a=>!read.includes(String(a.id))).length;
-  // Count unread from fetched data
-  const allItems=[...nData.movies,...nData.shows,...ann];
-  const unread=allItems.filter(i=>!read.includes(String(i.id))).length;
-  const cnt=$('notifCount');
-  if(unread>0){
-    cnt.textContent=unread>9?'9+':unread;
-    cnt.classList.add('show');
-  } else {
-    cnt.classList.remove('show');
-  }
-}
-
-/* ══════════ ANNOUNCEMENT BANNER ══════════ */
-function checkAnnouncement(){
-  const msg=lsGet('broadcast','');
-  if(!msg){ $('annBanner').classList.remove('show'); return; }
-  const dismissed=lsGet('annDismissed','');
-  if(dismissed===msg){ $('annBanner').classList.remove('show'); return; }
-  $('annTxt').textContent=msg;
-  $('annBanner').classList.add('show');
-}
-function dismissAnn(){
-  const msg=lsGet('broadcast','');
-  lsSet('annDismissed',msg);
-  $('annBanner').classList.remove('show');
-}
-
-/* ══════════ BOOT ══════════ */
-(async function boot(){
-  const p=new URLSearchParams(location.search);
-  const id=p.get('id'), type=p.get('type');
-  const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
-  checkVipStatus();
-  checkAnnouncement();
-  initHome();
-  // Pre-fetch notif data in background + update badge
-  Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
-  if(id&&type) setTimeout(()=>openPlayer(id,type,s,e),200);
-})();
-
-window.addEventListener('popstate',()=>{
-  const p=new URLSearchParams(location.search);
-  const id=p.get('id'), type=p.get('type');
-  if(id&&type) openPlayer(id,type,parseInt(p.get('s'))||1,parseInt(p.get('e'))||1);
-  else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
-});
-</script>
-</body>
-</html>
+  const all=[...nData.movi
