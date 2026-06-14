@@ -154,6 +154,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .tg-txt{font-size:.73rem;color:var(--sub);line-height:1.5}
 .tg-txt b{color:var(--blue)}
 .watch-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px;font-family:var(--font);cursor:pointer;transition:.15s;margin-bottom:4px}
+.wl-btn{width:100%;padding:11px;background:rgba(255,255,255,.06);color:var(--text);border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font);cursor:pointer;transition:.15s;margin-bottom:10px}
+.wl-btn.on{background:rgba(229,9,20,.12);border-color:var(--accent);color:var(--accent)}
+.wl-btn:active{transform:scale(.98)}
 .watch-btn:active{transform:scale(.97);background:var(--accent2)}
 .watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
 .sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
@@ -266,8 +269,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .vip-close{position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
 
 /* ─── VIP BADGE in nav ─── */
-.vip-badge{display:none;align-items:center;gap:4px;background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;font-size:.56rem;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.5px;cursor:pointer}
-.vip-badge.show{display:flex}
+.vip-badge{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--sub);font-size:.56rem;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.5px;cursor:pointer;transition:.2s}
+.vip-badge.vip-on{background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;border-color:transparent}
 
 /* ─── ADMIN OVERLAY ─── */
 .admin-overlay{position:fixed;inset:0;z-index:9999;background:rgba(2,2,8,.97);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .25s;overflow-y:auto}
@@ -399,6 +402,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
   <div class="nav-r">
     <div class="vip-badge" id="vipBadge" onclick="openVipGate()">👑 VIP</div>
+    <div class="nav-icon" onclick="openWishlist()" title="My List">🔖</div>
     <div class="notif-btn" onclick="openNotif()">
       🔔
       <div class="notif-count" id="notifCount"></div>
@@ -498,6 +502,17 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
+<!-- ══════════ MY LIST / WISHLIST PAGE ══════════ -->
+<div class="pg" id="pg-wishlist">
+  <div class="srch-pg">
+    <div class="srch-ttl" style="display:flex;align-items:center;justify-content:space-between">
+      <span>🔖 My List</span>
+      <span class="row-more" onclick="goHome()">Back</span>
+    </div>
+    <div class="srch-grid" id="wlGrid"></div>
+  </div>
+</div>
+
 <!-- ══════════ DETAIL SHEET ══════════ -->
 <div class="overlay" id="detOverlay" onclick="if(event.target===this)closeDetail()">
   <div class="sheet">
@@ -517,7 +532,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         ▶ Watch on Telegram
         <span class="bot-lbl" id="watchBotLbl">@aetho_flixbot</span>
       </button>
-      <div class="sheet-cast" id="detCast"></div>
+      <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()">+ My List</button>
+      <div class="sheet-cast" id="detCast"></div></div>
     </div>
   </div>
 </div>
@@ -591,10 +607,11 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <div class="vip-box">
     <button class="vip-close" onclick="closeVipGate()">✕</button>
     <div class="vip-crown">👑</div>
-    <div class="vip-title">VIP Access</div>
-    <div class="vip-sub">Enter your VIP code to unlock the built-in player. Codes are provided by the admin.</div>
+    <div class="vip-title" id="vipGateTitle">VIP Access</div>
+    <div class="vip-sub" id="vipGateSub">Enter your VIP code to unlock the built-in player. Codes are provided by the admin.</div>
+    <div id="vipActiveBox" style="display:none;font-size:.74rem;color:var(--sub);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;text-align:left;line-height:1.6"></div>
     <input class="vip-inp" id="vipInp" placeholder="Enter VIP code" maxlength="12" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()">
-    <button class="vip-btn" onclick="redeemVip()">🔓 Unlock VIP</button>
+    <button class="vip-btn" id="vipRedeemBtn" onclick="redeemVip()">🔓 Unlock VIP</button>
     <div class="vip-err" id="vipErr"></div>
   </div>
 </div>
@@ -736,6 +753,7 @@ const BOT_A  = 'aethokaibot';     // anime
 let heroItems=[], heroIdx=0, heroTmr=null;
 let srchFilter='all', lastQ='', srchTmr=null;
 let pl = { id:null, type:null, season:1, ep:1, episodes:[], seasons:[], source:0, nextEp:null };
+let curDetail=null;
 let ovOpen = false;
 
 /* ══════════ UTILS ══════════ */
@@ -846,6 +864,8 @@ async function buildRows(){
   await addPoster(rows,'🗡️ Action Anime','discover/tv?with_genres=16,10759&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
   await addPoster(rows,'💕 Romance Anime','discover/tv?with_genres=16,10749&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
   await addPoster(rows,'😄 Comedy Anime','discover/tv?with_genres=16,35&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
+  renderContinueWatching();
+  renderWatchlist();
 }
 function divider(p,lbl){
   const el=document.createElement('div'); el.className='sdiv';
@@ -1025,7 +1045,22 @@ async function openDetail(id,type){
   $('detBot').textContent='@'+bot;
   $('watchBotLbl').textContent='@'+bot;
   if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
-  $('watchBtn').onclick=()=>window.open(tgUrl,'_blank');
+  const isVip=checkVipStatus();
+  if(isVip){
+    $('tgBox').style.display='none';
+    $('watchBtn').innerHTML='▶ Watch Now';
+    $('watchBtn').onclick=()=>{ closeDetail(); openPlayer(id,type,1,1); };
+  }else{
+    $('tgBox').style.display='';
+    $('watchBtn').innerHTML=`▶ Watch on Telegram<span class="bot-lbl" id="watchBotLbl">@${bot}</span>`;
+    $('watchBtn').onclick=()=>window.open(tgUrl,'_blank');
+  }
+  curDetail={id,type,title,poster:meta.poster_path};
+  updateWatchlistBtn(type,id);
+}
+function onWatchlistClick(){
+  if(!curDetail) return;
+  toggleWatchlist(curDetail.type,curDetail.id,curDetail.title,curDetail.poster);
 }
 function closeDetail(){ $('detOverlay').classList.remove('on'); document.body.style.overflow=''; }
 
@@ -1099,6 +1134,8 @@ async function openPlayer(id,type,season,ep){
   $('plMeta').innerHTML=metaHtml;
   $('plOv').textContent=meta.overview||'';
   if(cast) $('plCast').innerHTML=`<b style="color:var(--text)">Cast:</b> ${cast}`;
+
+  saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
   // TV / Anime: load episodes
   if(type!=='movie'){
@@ -1241,6 +1278,126 @@ function showToast(msg,dur=2200){
 // All data stored in localStorage under 'afx_' namespace
 function lsGet(k,def=null){ try{const v=localStorage.getItem('afx_'+k);return v===null?def:JSON.parse(v);}catch{return def;} }
 function lsSet(k,v){ try{localStorage.setItem('afx_'+k,JSON.stringify(v));}catch{} }
+
+/* ══════════ CONTINUE WATCHING ══════════ */
+function cwKey(item){ return `${item.type}_${item.id}`; }
+function saveContinueWatching(item){
+  let list=lsGet('continueWatching',[]);
+  const key=cwKey(item);
+  list=list.filter(i=>cwKey(i)!==key);
+  list.unshift({...item,ts:Date.now()});
+  if(list.length>10) list=list.slice(0,10);
+  lsSet('continueWatching',list);
+}
+function removeContinueWatching(type,id){
+  let list=lsGet('continueWatching',[]);
+  list=list.filter(i=>!(i.type===type&&String(i.id)===String(id)));
+  lsSet('continueWatching',list);
+  const rowEl=document.getElementById('row-continue');
+  if(rowEl){
+    if(list.length) renderContinueWatching(rowEl);
+    else rowEl.remove();
+  }
+}
+function renderContinueWatching(rowEl){
+  const list=lsGet('continueWatching',[]);
+  if(!list.length){ if(rowEl) rowEl.remove(); return; }
+  let h=`<div class="row-hdr"><div class="row-ttl">▶ Continue Watching</div></div><div class="slider">`;
+  list.forEach(item=>{
+    const epLabel=item.type!=='movie'?`S${item.season} · E${item.ep}`:'';
+    const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
+    h+=`<div class="pcard" style="position:relative" onclick="openPlayer(${item.id},'${item.type}',${item.season||1},${item.ep||1})">
+      <button onclick="event.stopPropagation();removeContinueWatching('${item.type}',${item.id})" style="position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.6rem;display:flex;align-items:center;justify-content:center;z-index:2">✕</button>
+      ${img}
+      <div class="pcard-name">${item.title||''}</div>
+      <div class="pcard-meta">${epLabel}</div>
+    </div>`;
+  });
+  h+='</div>';
+  if(!rowEl){
+    rowEl=document.createElement('div'); rowEl.className='row'; rowEl.id='row-continue';
+    $('homeRows').prepend(rowEl);
+  }
+  rowEl.innerHTML=h;
+}
+
+/* ══════════ WATCHLIST (MY LIST) ══════════ */
+function wlKey(type,id){ return `${type}_${id}`; }
+function isInWatchlist(type,id){
+  const list=lsGet('watchlist',[]);
+  return list.some(i=>wlKey(i.type,i.id)===wlKey(type,id));
+}
+function toggleWatchlist(type,id,title,poster){
+  let list=lsGet('watchlist',[]);
+  const key=wlKey(type,id);
+  const exists=list.some(i=>wlKey(i.type,i.id)===key);
+  if(exists){
+    list=list.filter(i=>wlKey(i.type,i.id)!==key);
+    showToast('Removed from My List');
+  }else{
+    list.unshift({type,id,title,poster,ts:Date.now()});
+    showToast('Added to My List');
+  }
+  lsSet('watchlist',list);
+  updateWatchlistBtn(type,id);
+  const rowEl=document.getElementById('row-watchlist');
+  if(rowEl) renderWatchlist(rowEl);
+}
+function updateWatchlistBtn(type,id){
+  const btn=$('wlBtn'); if(!btn) return;
+  const on=isInWatchlist(type,id);
+  btn.textContent=on?'✓ In My List':'+ My List';
+  btn.classList.toggle('on',on);
+}
+function renderWatchlist(rowEl){
+  const list=lsGet('watchlist',[]);
+  if(!list.length){ if(rowEl) rowEl.remove(); return; }
+  let h=`<div class="row-hdr"><div class="row-ttl">🔖 My List</div><span class="row-more" onclick="openWishlist()">See all</span></div><div class="slider">`;
+  list.forEach(item=>{
+    const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
+    h+=`<div class="pcard" onclick="openDetail(${item.id},'${item.type}')">
+      ${img}
+      <div class="pcard-name">${item.title||''}</div>
+    </div>`;
+  });
+  h+='</div>';
+  if(!rowEl){
+    rowEl=document.createElement('div'); rowEl.className='row'; rowEl.id='row-watchlist';
+    const cw=document.getElementById('row-continue');
+    if(cw) cw.after(rowEl); else $('homeRows').prepend(rowEl);
+  }
+  rowEl.innerHTML=h;
+}
+
+/* ══════════ MY LIST / WISHLIST PAGE ══════════ */
+function openWishlist(){
+  showPg('pg-wishlist');
+  $('nav').style.display='';
+  setNav('');
+  const grid=$('wlGrid');
+  const list=lsGet('watchlist',[]);
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-ic">🔖</div><div class="empty-txt">Your list is empty — tap "+ My List" on any title to save it here.</div></div>`;
+    return;
+  }
+  grid.innerHTML=list.map(item=>{
+    const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
+    return `<div class="pcard" style="width:100%;position:relative" onclick="openDetail(${item.id},'${item.type}')">
+      <button onclick="event.stopPropagation();removeFromWishlistPage('${item.type}',${item.id})" style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.65rem;display:flex;align-items:center;justify-content:center;z-index:2">✕</button>
+      ${img}
+      <div class="pcard-name">${item.title||''}</div>
+    </div>`;
+  }).join('');
+}
+function removeFromWishlistPage(type,id){
+  let list=lsGet('watchlist',[]);
+  list=list.filter(i=>!(i.type===type&&String(i.id)===String(id)));
+  lsSet('watchlist',list);
+  updateWatchlistBtn(type,id);
+  const rowEl=document.getElementById('row-watchlist');
+  if(rowEl) renderWatchlist(rowEl);
+  openWishlist();
+}
 
 /* ══════════ LOGO TAP → ADMIN ══════════ */
 let logoTaps=0, logoTmr=null;
@@ -1416,17 +1573,22 @@ function clearBroadcast(){
 /* ══════════ VIP SYSTEM ══════════ */
 function checkVipStatus(){
   const status=lsGet('vipStatus',null);
+  const badge=$('vipBadge');
+  badge.classList.add('show');
   if(status && status.active){
     // Check expiry
     if(status.expires && Date.now()>status.expires){
       lsSet('vipStatus',{active:false});
-      $('vipBadge').classList.remove('show');
+      badge.textContent='👑 Redeem';
+      badge.classList.remove('vip-on');
       return false;
     }
-    $('vipBadge').classList.add('show');
+    badge.textContent='👑 VIP';
+    badge.classList.add('vip-on');
     return true;
   }
-  $('vipBadge').classList.remove('show');
+  badge.textContent='👑 Redeem';
+  badge.classList.remove('vip-on');
   return false;
 }
 
@@ -1434,7 +1596,25 @@ function openVipGate(){
   $('vipGate').classList.add('on');
   $('vipInp').value=''; $('vipErr').textContent='';
   document.body.style.overflow='hidden';
-  setTimeout(()=>$('vipInp').focus(),300);
+  const status=lsGet('vipStatus',null);
+  const isVip=status&&status.active&&(!status.expires||Date.now()<status.expires);
+  const activeBox=$('vipActiveBox');
+  if(isVip){
+    $('vipGateTitle').textContent='You\'re VIP! 👑';
+    $('vipGateSub').textContent='Enjoy unlimited access to the built-in player.';
+    const expStr=status.expires?new Date(status.expires).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'Never';
+    activeBox.innerHTML=`<b style="color:var(--text)">Code:</b> ${status.code}<br><b style="color:var(--text)">Active since:</b> ${new Date(status.since).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}<br><b style="color:var(--text)">Expires:</b> ${expStr}`;
+    activeBox.style.display='block';
+    $('vipInp').style.display='none';
+    $('vipRedeemBtn').style.display='none';
+  }else{
+    $('vipGateTitle').textContent='VIP Access';
+    $('vipGateSub').textContent='Enter your VIP code to unlock the built-in player. Codes are provided by the admin.';
+    activeBox.style.display='none';
+    $('vipInp').style.display='';
+    $('vipRedeemBtn').style.display='';
+    setTimeout(()=>$('vipInp').focus(),300);
+  }
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
