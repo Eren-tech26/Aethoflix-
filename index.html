@@ -1247,7 +1247,7 @@ async function loadReco(id,tmdbType){
     const mt=r.media_type||tmdbType;
     const yr=(r.release_date||r.first_air_date||'').slice(0,4);
     const rat=(r.vote_average||0).toFixed(1);
-    return `<div class="reco-card" onclick="openPlayer(${r.id},'${mt}')">
+    return `<div class="reco-card" onclick="safePlay(${r.id},'${mt}')">
       <img class="reco-img" src="${IMG}w500${r.backdrop_path}" loading="lazy" alt="">
       <div class="reco-body">
         <div class="reco-name">${r.title||r.name||''}</div>
@@ -1255,6 +1255,16 @@ async function loadReco(id,tmdbType){
       </div>
     </div>`;
   }).join('');
+}
+
+/* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
+// Non-VIP users are sent to the bot via the detail sheet instead of directly to player
+function safePlay(id, type, season, ep){
+  if(checkVipStatus()){
+    openPlayer(id, type, season||1, ep||1);
+  } else {
+    openDetail(id, type);
+  }
 }
 
 /* Close player */
@@ -1306,7 +1316,7 @@ function renderContinueWatching(rowEl){
   list.forEach(item=>{
     const epLabel=item.type!=='movie'?`S${item.season} · E${item.ep}`:'';
     const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
-    h+=`<div class="pcard" style="position:relative" onclick="openPlayer(${item.id},'${item.type}',${item.season||1},${item.ep||1})">
+    h+=`<div class="pcard" style="position:relative" onclick="safePlay(${item.id},'${item.type}',${item.season||1},${item.ep||1})">
       <button onclick="event.stopPropagation();removeContinueWatching('${item.type}',${item.id})" style="position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.6rem;display:flex;align-items:center;justify-content:center;z-index:2">✕</button>
       ${img}
       <div class="pcard-name">${item.title||''}</div>
