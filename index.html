@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AethoFlix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- AdMob -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6855145866070467" crossorigin="anonymous"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -149,16 +151,16 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .sm-rat{color:var(--gold)}.sm-yr{color:var(--sub)}
 .sm-tag{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 7px;border-radius:3px;font-size:.58rem;color:var(--sub)}
 .sheet-ov{font-size:.78rem;color:#aaaac8;line-height:1.65;margin-bottom:14px}
-.tg-box{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.18);border-radius:9px;padding:11px 13px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.tg-ic{font-size:1.4rem;flex-shrink:0}
-.tg-txt{font-size:.73rem;color:var(--sub);line-height:1.5}
-.tg-txt b{color:var(--blue)}
+/* FREE badge box shown to all users */
+.free-box{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:10px 13px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.free-ic{font-size:1.3rem;flex-shrink:0}
+.free-txt{font-size:.73rem;color:var(--sub);line-height:1.5}
+.free-txt b{color:var(--green)}
 .watch-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px;font-family:var(--font);cursor:pointer;transition:.15s;margin-bottom:4px}
 .wl-btn{width:100%;padding:11px;background:rgba(255,255,255,.06);color:var(--text);border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font);cursor:pointer;transition:.15s;margin-bottom:10px}
 .wl-btn.on{background:rgba(229,9,20,.12);border-color:var(--accent);color:var(--accent)}
 .wl-btn:active{transform:scale(.98)}
 .watch-btn:active{transform:scale(.97);background:var(--accent2)}
-.watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
 .sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
 .sheet-cast b{color:var(--text)}
 .sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
@@ -167,11 +169,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .player-pg{display:none;min-height:100vh;background:var(--bg);padding-bottom:80px}
 .player-pg.on{display:block;animation:fadeUp .2s ease}
 
-/* Video wrapper — full width, 16:9, sticky on scroll */
 .vid-wrap{width:100%;background:#000;position:sticky;top:0;z-index:100;aspect-ratio:16/9}
 .vid-frame{width:100%;height:100%;border:none;display:block}
 
-/* Controls bar — sits directly under video */
 .ctrl-bar{background:#0a0a14;border-bottom:1px solid var(--border);padding:8px 4%;display:flex;flex-direction:column;gap:8px}
 .ctrl-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .ctrl-back{display:flex;align-items:center;gap:5px;font-size:.76rem;font-weight:700;color:var(--sub);cursor:pointer;background:none;border:none;flex-shrink:0}
@@ -180,7 +180,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ctrl-share{width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;flex-shrink:0}
 .ctrl-share:active{background:var(--card)}
 
-/* Source switcher */
 .src-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .src-lbl{font-size:.58rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
 .src-btn{padding:5px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;font-size:.64rem;font-weight:700;color:var(--sub);cursor:pointer;transition:.2s;white-space:nowrap;font-family:var(--font)}
@@ -189,7 +188,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ctrl-fs{padding:5px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;font-size:.64rem;font-weight:700;color:var(--sub);cursor:pointer;white-space:nowrap;font-family:var(--font);margin-left:auto}
 .ctrl-fs:active{background:var(--card);color:var(--text)}
 
-/* Player info below controls */
 .pl-info{padding:12px 4% 0}
 .pl-title{font-size:1.1rem;font-weight:900;line-height:1.15;margin-bottom:4px}
 .pl-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:.7rem;font-weight:600;margin-bottom:10px;color:var(--sub)}
@@ -201,7 +199,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .pl-cast{font-size:.68rem;color:var(--sub);line-height:1.5;margin-bottom:14px}
 .pl-cast b{color:var(--text)}
 
-/* Season/Episode selector */
 .ep-sec{padding:4px 0 0}
 .ep-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 4% 6px}
 .ep-ttl{font-size:.88rem;font-weight:800}
@@ -225,7 +222,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ep-ov{font-size:.66rem;color:var(--sub);line-height:1.5;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ep-load{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
 
-/* Next episode banner */
 .next-banner{margin:10px 4% 4px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 13px;display:none;align-items:center;gap:11px;cursor:pointer}
 .next-banner.show{display:flex}
 .next-banner:active{opacity:.8}
@@ -236,7 +232,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .nb-sub{font-size:.6rem;color:var(--sub)}
 .nb-play{font-size:1.2rem;flex-shrink:0;color:var(--accent)}
 
-/* Recommendations */
 .reco-sec{padding:14px 4% 0}
 .reco-hdr{font-size:.88rem;font-weight:800;margin-bottom:10px}
 .reco-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -254,6 +249,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ann-txt{flex:1;font-size:.76rem;font-weight:600;color:#c8d8f8;line-height:1.45}
 .ann-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .ann-close:active{background:rgba(255,255,255,.16)}
+
+/* ─── VIP GATE (cosmetic / optional premium) ─── */
 .vip-gate{position:fixed;inset:0;z-index:8000;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
 .vip-gate.on{opacity:1;pointer-events:auto}
 .vip-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:30px 24px;width:88%;max-width:340px;text-align:center;position:relative}
@@ -282,7 +279,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .admin-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .admin-body{padding:16px 18px 40px;display:flex;flex-direction:column;gap:18px}
 
-/* admin PIN gate */
 .apin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px}
 .apin-ic{font-size:2.8rem}
 .apin-title{font-size:1rem;font-weight:800}
@@ -296,7 +292,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .apin-key.del{font-size:.9rem;color:var(--sub)}
 .apin-err{font-size:.7rem;color:var(--accent);min-height:18px;text-align:center}
 
-/* admin sections */
 .adm-sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .adm-sec-hdr{padding:13px 15px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
 .adm-sec-ic{font-size:1.1rem}
@@ -304,7 +299,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .adm-sec-sub{font-size:.64rem;color:var(--sub);margin-left:auto}
 .adm-sec-body{padding:14px 15px}
 
-/* stats row */
 .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
 .stat-val{font-size:1.5rem;font-weight:900;margin-bottom:2px}
@@ -314,7 +308,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .stat-val.green{color:var(--green)}
 .stat-val.blue{color:var(--blue)}
 
-/* VIP code generator */
 .gen-row{display:flex;gap:8px;margin-bottom:12px}
 .gen-sel{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.76rem;font-family:var(--font);outline:none;-webkit-appearance:none}
 .gen-btn{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.76rem;font-weight:800;cursor:pointer;font-family:var(--font);white-space:nowrap}
@@ -334,7 +327,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .code-badge.revoked{background:rgba(229,9,20,.1);color:var(--accent);border:1px solid rgba(229,9,20,.2)}
 .no-codes{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
 
-/* admin tools */
 .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tool-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 12px;cursor:pointer;text-align:left;transition:.15s;font-family:var(--font)}
 .tool-btn:active{background:var(--surface)}
@@ -344,7 +336,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .tool-btn.danger .tool-name{color:var(--accent)}
 .tool-btn.danger{border-color:rgba(229,9,20,.2)}
 
-/* broadcast box */
 .bc-inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:.78rem;font-family:var(--font);outline:none;min-height:70px;resize:none;transition:.2s}
 .bc-inp:focus{border-color:var(--accent)}
 .bc-btn{width:100%;margin-top:8px;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:var(--font)}
@@ -352,8 +343,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 /* ─── NOTIFICATION BELL ─── */
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:.2s;flex-shrink:0}
 .notif-btn:active{background:rgba(255,255,255,.14)}
-.notif-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;background:var(--accent);border-radius:50%;border:1.5px solid var(--bg);display:none}
-.notif-dot.show{display:block}
 .notif-count{position:absolute;top:1px;right:1px;min-width:14px;height:14px;background:var(--accent);border-radius:7px;font-size:.46rem;font-weight:900;color:#fff;display:none;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg)}
 .notif-count.show{display:flex}
 
@@ -375,7 +364,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .notif-item.unread{background:rgba(229,9,20,.04)}
 .notif-item.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
 .notif-thumb{width:52px;aspect-ratio:2/3;object-fit:cover;border-radius:5px;flex-shrink:0;background:var(--card)}
-.notif-thumb.wide{aspect-ratio:16/9;width:72px}
 .notif-ic-box{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:var(--card)}
 .notif-info{flex:1;min-width:0}
 .notif-tag{font-size:.52rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:2px}
@@ -393,6 +381,35 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .notif-sk-line.short{width:55%}
 .notif-backdrop{position:fixed;inset:0;z-index:8400;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s}
 .notif-backdrop.show{opacity:1;pointer-events:auto}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:calc(var(--bnav)+12px);left:50%;transform:translateX(-50%) translateY(10px);background:rgba(30,30,50,.96);color:var(--text);padding:9px 18px;border-radius:22px;font-size:.76rem;font-weight:600;white-space:nowrap;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;border:1px solid var(--border)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── BANNER AD ─── */
+.ad-banner-wrap{width:100%;background:#0a0a14;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:60px;padding:4px 0}
+.ad-banner-wrap.hidden{display:none}
+
+/* ─── AD GATE ─── */
+.adgate-overlay{position:fixed;inset:0;z-index:9500;background:rgba(4,4,12,.97);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.adgate-overlay.on{opacity:1;pointer-events:auto}
+.adgate-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px 22px;width:90%;max-width:360px;text-align:center;position:relative}
+.adgate-ic{font-size:2.8rem;margin-bottom:10px}
+.adgate-title{font-size:1.1rem;font-weight:900;margin-bottom:6px}
+.adgate-sub{font-size:.75rem;color:var(--sub);margin-bottom:20px;line-height:1.55}
+.adgate-progress{display:flex;gap:10px;justify-content:center;margin-bottom:22px}
+.adgate-dot{width:16px;height:16px;border-radius:50%;background:var(--border);border:2px solid var(--muted);transition:.3s}
+.adgate-dot.done{background:var(--green);border-color:var(--green)}
+.adgate-dot.active{background:var(--accent);border-color:var(--accent);animation:pulse-dot 1s infinite}
+@keyframes pulse-dot{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.adgate-ad-area{background:var(--card);border:1px solid var(--border);border-radius:10px;min-height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;overflow:hidden;font-size:.7rem;color:var(--muted)}
+.adgate-countdown{font-size:.78rem;color:var(--sub);margin-bottom:14px;min-height:20px}
+.adgate-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.88rem;font-weight:800;cursor:pointer;transition:.15s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px}
+.adgate-btn:disabled{background:var(--muted);cursor:not-allowed;opacity:.6}
+.adgate-btn:not(:disabled):active{transform:scale(.97)}
+.adgate-vip{font-size:.66rem;color:var(--gold);margin-top:10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.adgate-skip{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-size:.7rem;cursor:pointer;padding:4px 8px;border-radius:5px}
+.adgate-skip:active{background:rgba(255,255,255,.07)}
 </style>
 </head>
 <body>
@@ -430,6 +447,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <button class="ntab" id="ntab-shows" onclick="switchNTab('shows',this)">📺 Shows</button>
   </div>
   <div class="notif-body" id="notifBody"></div>
+</div>
+
+<!-- BANNER AD -->
+<div class="ad-banner-wrap" id="adBannerWrap">
+  <ins class="adsbygoogle"
+    style="display:inline-block;width:320px;height:50px"
+    data-ad-client="ca-pub-6855145866070467"
+    data-ad-slot="7318450917"></ins>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -524,16 +549,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <div class="sheet-title" id="detTitle">Loading…</div>
       <div class="sheet-meta" id="detMeta"></div>
       <div class="sheet-ov" id="detOv"></div>
-      <div class="tg-box" id="tgBox">
-        <div class="tg-ic">🤖</div>
-        <div class="tg-txt">Stream instantly via <b id="detBot">@aetho_flixbot</b> — tap Watch to open Telegram and play.</div>
+      <!-- FREE access note — shown to all users -->
+      <div class="free-box">
+        <div class="free-ic">🎬</div>
+        <div class="free-txt">Watch <b>free</b> — no account needed. Tap Watch to play instantly in the built-in player.</div>
       </div>
-      <button class="watch-btn" id="watchBtn">
-        ▶ Watch on Telegram
-        <span class="bot-lbl" id="watchBotLbl">@aetho_flixbot</span>
-      </button>
+      <button class="watch-btn" id="watchBtn">▶ Watch Now</button>
       <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()">+ My List</button>
-      <div class="sheet-cast" id="detCast"></div></div>
+      <div class="sheet-cast" id="detCast"></div>
     </div>
   </div>
 </div>
@@ -541,7 +564,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <!-- ══════════ PLAYER PAGE ══════════ -->
 <div class="player-pg" id="pg-player">
 
-  <!-- Sticky video + controls -->
   <div class="vid-wrap">
     <iframe class="vid-frame" id="vidFrame" src=""
       allowfullscreen allow="autoplay; fullscreen; picture-in-picture"
@@ -549,13 +571,11 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 
   <div class="ctrl-bar">
-    <!-- Row 1: back · title · share -->
     <div class="ctrl-top">
       <button class="ctrl-back" onclick="closePlayer()">← Back</button>
       <div class="ctrl-title" id="ctrlTitle"></div>
       <button class="ctrl-share" onclick="shareUrl()" title="Share">🔗</button>
     </div>
-    <!-- Row 2: source switcher + fullscreen -->
     <div class="src-row">
       <span class="src-lbl">Source:</span>
       <button class="src-btn on" onclick="setSource(0,this)">VidLink</button>
@@ -565,7 +585,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     </div>
   </div>
 
-  <!-- Info -->
   <div class="pl-info">
     <div class="pl-title" id="plTitle">Loading…</div>
     <div class="pl-meta" id="plMeta"></div>
@@ -574,7 +593,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="pl-cast" id="plCast"></div>
   </div>
 
-  <!-- Next episode banner -->
   <div class="next-banner" id="nextBanner" onclick="playNextEp()">
     <img class="nb-img" id="nbImg" src="" alt="">
     <div class="nb-info">
@@ -585,40 +603,63 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="nb-play">▶</div>
   </div>
 
-  <!-- Episode / Season -->
   <div class="ep-sec" id="epSec" style="display:none">
     <div class="ep-hdr"><div class="ep-ttl">Episodes</div></div>
     <div class="season-row" id="seasonRow"></div>
     <div class="ep-list" id="epList"><div class="ep-load">Loading…</div></div>
   </div>
 
-  <!-- Recommendations -->
   <div class="reco-sec">
     <div class="reco-hdr">More Like This</div>
     <div class="reco-grid" id="recoGrid"></div>
   </div>
 </div>
 
+<!-- AD GATE -->
+<div class="adgate-overlay" id="adGate">
+  <div class="adgate-box">
+    <button class="adgate-skip" id="adGateSkip" style="display:none" onclick="adGateSkipBtn()">Skip ✕</button>
+    <div class="adgate-ic">🎬</div>
+    <div class="adgate-title" id="adGateTitle">Watch 2 Short Ads</div>
+    <div class="adgate-sub" id="adGateSub">Support AethoFlix by watching 2 quick ads to unlock this content for free.</div>
+    <div class="adgate-progress">
+      <div class="adgate-dot active" id="adDot0"></div>
+      <div class="adgate-dot" id="adDot1"></div>
+    </div>
+    <div class="adgate-ad-area" id="adGateAdArea">
+      <ins class="adsbygoogle"
+        style="display:block;width:300px;height:100px"
+        data-ad-client="ca-pub-6855145866070467"
+        data-ad-slot="4926961999"
+        data-ad-format="auto"
+        data-full-width-responsive="false"
+        id="adGateIns"></ins>
+    </div>
+    <div class="adgate-countdown" id="adGateCountdown">Please wait…</div>
+    <button class="adgate-btn" id="adGateBtn" disabled onclick="adGateNext()">⏳ Watch Ad 1 of 2</button>
+    <div class="adgate-vip" onclick="openVipGate()">👑 Have VIP? Skip all ads</div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ══════════ VIP GATE ══════════ -->
+<!-- ══════════ VIP GATE (cosmetic premium badge — watching is FREE for all) ══════════ -->
 <div class="vip-gate" id="vipGate">
   <div class="vip-box">
     <button class="vip-close" onclick="closeVipGate()">✕</button>
     <div class="vip-crown">👑</div>
-    <div class="vip-title" id="vipGateTitle">VIP Access</div>
-    <div class="vip-sub" id="vipGateSub">Enter your VIP code to unlock the built-in player. Codes are provided by the admin.</div>
+    <div class="vip-title" id="vipGateTitle">VIP Badge</div>
+    <div class="vip-sub" id="vipGateSub">Enter a VIP code from the admin to get your golden badge. <b>Everyone can watch for free</b> — VIP is just a premium cosmetic.</div>
     <div id="vipActiveBox" style="display:none;font-size:.74rem;color:var(--sub);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;text-align:left;line-height:1.6"></div>
     <input class="vip-inp" id="vipInp" placeholder="Enter VIP code" maxlength="12" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()">
-    <button class="vip-btn" id="vipRedeemBtn" onclick="redeemVip()">🔓 Unlock VIP</button>
+    <button class="vip-btn" id="vipRedeemBtn" onclick="redeemVip()">👑 Redeem Badge</button>
     <div class="vip-err" id="vipErr"></div>
   </div>
 </div>
 
 <!-- ══════════ ADMIN PANEL ══════════ -->
 <div class="admin-overlay" id="adminOverlay">
-  <!-- PIN gate (shown first) -->
   <div id="adminPin">
     <div class="apin-wrap">
       <div class="apin-ic">🔐</div>
@@ -648,7 +689,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     </div>
   </div>
 
-  <!-- Admin dashboard (shown after PIN) -->
   <div id="adminDash" style="display:none">
     <div class="admin-header">
       <div style="display:flex;align-items:center;gap:6px">
@@ -659,7 +699,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     </div>
     <div class="admin-body">
 
-      <!-- Stats -->
       <div class="adm-sec">
         <div class="adm-sec-hdr"><span class="adm-sec-ic">📊</span><span class="adm-sec-ttl">Overview</span></div>
         <div class="adm-sec-body">
@@ -672,9 +711,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         </div>
       </div>
 
-      <!-- VIP Code Generator -->
       <div class="adm-sec">
-        <div class="adm-sec-hdr"><span class="adm-sec-ic">🎟️</span><span class="adm-sec-ttl">VIP Code Generator</span></div>
+        <div class="adm-sec-hdr"><span class="adm-sec-ic">🎟️</span><span class="adm-sec-ttl">VIP Badge Code Generator</span></div>
         <div class="adm-sec-body">
           <div class="gen-row">
             <select class="gen-sel" id="codeType">
@@ -689,7 +727,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         </div>
       </div>
 
-      <!-- Admin Tools -->
       <div class="adm-sec">
         <div class="adm-sec-hdr"><span class="adm-sec-ic">🛠️</span><span class="adm-sec-ttl">Admin Tools</span></div>
         <div class="adm-sec-body">
@@ -722,13 +759,12 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
             <button class="tool-btn danger" onclick="toolWipeVip()">
               <div class="tool-ic">💣</div>
               <div class="tool-name">Wipe VIP Data</div>
-              <div class="tool-desc">Delete all codes & VIP access</div>
+              <div class="tool-desc">Delete all codes & VIP badges</div>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Broadcast / Announcement -->
       <div class="adm-sec">
         <div class="adm-sec-hdr"><span class="adm-sec-ic">📢</span><span class="adm-sec-ttl">Site Announcement</span></div>
         <div class="adm-sec-body">
@@ -744,10 +780,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 
 <script>
 /* ══════════ CONFIG ══════════ */
-const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
-const IMG    = 'https://image.tmdb.org/t/p/';
-const BOT_M  = 'aetho_flixbot';   // movies + series
-const BOT_A  = 'aethokaibot';     // anime
+const TMDB = 'fca1c3fa675f74cf4aa8d24b72dd4807';
+const IMG  = 'https://image.tmdb.org/t/p/';
 
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
@@ -836,7 +870,7 @@ function setHero(i){
   $('hTitle').textContent=item.title||item.name||'';
   $('hMeta').innerHTML=`<span class="h-rat">★ ${rat}</span><span class="h-yr">${yr}</span>${genres?`<span class="h-tag">${genres}</span>`:''}`;
   $('hDesc').textContent=item.overview||'';
-  $('hPlay').onclick=()=>openDetail(item.id,mt);
+  $('hPlay').onclick=()=>openPlayer(item.id,mt,1,1);
   $('hInfo').onclick=()=>openDetail(item.id,mt);
 }
 
@@ -881,7 +915,7 @@ async function addTop10(p){
   let h='';
   data.results.filter(i=>i.poster_path).slice(0,10).forEach((item,i)=>{
     const mt=item.media_type==='movie'?'movie':'tv';
-    h+=`<div class="t10card" onclick="openDetail(${item.id},'${mt}')"><div class="t10-num">${i+1}</div><img src="${IMG}w342${item.poster_path}" class="t10-img" loading="lazy" alt=""></div>`;
+    h+=`<div class="t10card" onclick="openPlayer(${item.id},'${mt}',1,1)"><div class="t10-num">${i+1}</div><img src="${IMG}w342${item.poster_path}" class="t10-img" loading="lazy" alt=""></div>`;
   });
   $(uid).innerHTML=h;
 }
@@ -896,7 +930,7 @@ async function addWide(p,title,endpoint,ft){
     const mt=ft||item.media_type; if(!mt||mt==='person')return;
     const yr=(item.release_date||item.first_air_date||'').slice(0,4);
     const rat=(item.vote_average||0).toFixed(1);
-    h+=`<div class="wcard" onclick="openDetail(${item.id},'${mt}')"><img src="${IMG}w780${item.backdrop_path}" class="wcard-img" loading="lazy" alt=""><div class="wcard-over"><div class="wcard-title">${item.title||item.name||''}</div><div class="wcard-sub">★ ${rat} · ${yr}</div></div></div>`;
+    h+=`<div class="wcard" onclick="openPlayer(${item.id},'${mt}',1,1)"><img src="${IMG}w780${item.backdrop_path}" class="wcard-img" loading="lazy" alt=""><div class="wcard-over"><div class="wcard-title">${item.title||item.name||''}</div><div class="wcard-sub">★ ${rat} · ${yr}</div></div></div>`;
   });
   $(uid).innerHTML=h;
 }
@@ -913,7 +947,7 @@ async function addPoster(p,title,endpoint,ft){
     const yr=(item.release_date||item.first_air_date||'').slice(0,4);
     const rat=(item.vote_average||0).toFixed(1);
     const isNew=(item.release_date||item.first_air_date||'').slice(0,7)>=new Date().toISOString().slice(0,7);
-    h+=`<div class="pcard" onclick="openDetail(${item.id},'${mt}')">${isNew?'<span class="pcard-new">NEW</span>':''}<img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
+    h+=`<div class="pcard" onclick="openPlayer(${item.id},'${mt}',1,1)">${isNew?'<span class="pcard-new">NEW</span>':''}<img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
   });
   $(uid).innerHTML=h;
 }
@@ -953,7 +987,7 @@ async function browseType(type,label){
   $('srchTtl').textContent=label||type;
   lastQ='';
   const grid=$('srchGrid');
-  grid.innerHTML=sk('sk-p',16).replace(/sk-p/g,'sk-p" style="width:100%;aspect-ratio:2/3');
+  grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
   const pathMap={
     movie:'movie/popular',
     tv:'tv/popular',
@@ -963,7 +997,6 @@ async function browseType(type,label){
   renderGrid(grid,data,type);
 }
 
-/* See all for a specific home row — uses that row's exact endpoint/filter */
 async function browsePage(endpoint,label,ft){
   showPg('pg-search');
   $('nav').style.display='none';
@@ -974,7 +1007,7 @@ async function browsePage(endpoint,label,ft){
   $('srchTtl').textContent=label||'';
   lastQ='';
   const grid=$('srchGrid');
-  grid.innerHTML=sk('sk-p',16).replace(/sk-p/g,'sk-p" style="width:100%;aspect-ratio:2/3');
+  grid.innerHTML=Array(16).fill(`<div class="sk sk-p" style="width:100%;aspect-ratio:2/3"></div>`).join('');
   const data=await api(endpoint);
   renderGrid(grid,data,ft==='undefined'?null:ft);
 }
@@ -1009,17 +1042,18 @@ function renderGrid(container,data,ft){
     let mt=ft||item.media_type; if(!mt||mt==='person')return;
     const yr=(item.release_date||item.first_air_date||'').slice(0,4);
     const rat=(item.vote_average||0).toFixed(1);
-    container.innerHTML+=`<div class="pcard" style="width:100%" onclick="openDetail(${item.id},'${mt}')"><img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
+    // ← All cards in search go directly to player, no gate
+    container.innerHTML+=`<div class="pcard" style="width:100%" onclick="openPlayer(${item.id},'${mt}',1,1)"><img src="${IMG}w342${item.poster_path}" class="pcard-img" loading="lazy" alt=""><div class="pcard-name">${item.title||item.name||''}</div><div class="pcard-meta">${yr} · ★${rat}</div></div>`;
   });
 }
 
 /* ══════════ DETAIL SHEET ══════════ */
+// Still available for "More Info" button — but Watch goes straight to player
 async function openDetail(id,type){
   const ov=$('detOverlay');
   $('detImg').src=''; $('detTitle').textContent='Loading…';
   $('detPill').textContent=''; $('detMeta').innerHTML='';
   $('detOv').textContent=''; $('detCast').textContent='';
-  $('watchBtn').onclick=null;
   ov.classList.add('on'); document.body.style.overflow='hidden';
 
   const tmdbType=type==='anime'?'tv':type;
@@ -1032,9 +1066,6 @@ async function openDetail(id,type){
   const genres=(meta.genres||[]).slice(0,3).map(g=>g.name).join(' · ');
   const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
   const cast=(meta.credits?.cast||[]).slice(0,5).map(c=>c.name).join(', ');
-  const isAnime=type==='anime';
-  const bot=isAnime?BOT_A:BOT_M;
-  const tgUrl=`https://t.me/${bot}?start=play_${type}_${id}`;
   const imgSrc=meta.backdrop_path?`${IMG}w780${meta.backdrop_path}`:(meta.poster_path?`${IMG}w500${meta.poster_path}`:'');
 
   $('detImg').src=imgSrc;
@@ -1042,19 +1073,11 @@ async function openDetail(id,type){
   $('detTitle').textContent=title;
   $('detMeta').innerHTML=`<span class="sm-rat">★ ${rat}</span><span class="sm-yr">${yr}</span>${runtime?`<span class="sm-tag">${runtime}</span>`:''}${genres?`<span class="sm-tag">${genres}</span>`:''}`;
   $('detOv').textContent=meta.overview||'';
-  $('detBot').textContent='@'+bot;
-  $('watchBotLbl').textContent='@'+bot;
   if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
-  const isVip=checkVipStatus();
-  if(isVip){
-    $('tgBox').style.display='none';
-    $('watchBtn').innerHTML='▶ Watch Now';
-    $('watchBtn').onclick=()=>{ closeDetail(); openPlayer(id,type,1,1); };
-  }else{
-    $('tgBox').style.display='';
-    $('watchBtn').innerHTML=`▶ Watch on Telegram<span class="bot-lbl" id="watchBotLbl">@${bot}</span>`;
-    $('watchBtn').onclick=()=>window.open(tgUrl,'_blank');
-  }
+
+  // ← ALWAYS open built-in player, no Telegram redirect, no VIP check
+  $('watchBtn').onclick=()=>{ closeDetail(); openPlayer(id,type,1,1); };
+
   curDetail={id,type,title,poster:meta.poster_path};
   updateWatchlistBtn(type,id);
 }
@@ -1084,23 +1107,37 @@ async function openPlayer(id,type,season,ep){
   season=season||1; ep=ep||1;
   pl={ id, type, season, ep, episodes:[], seasons:[], source:0, nextEp:null };
 
-  // Switch to player page
+  const isVip=checkVipStatus();
+
+  // Show ad gate for non-VIP unless already passed today
+  if(!isVip){
+    const gateKey=`gate_${id}_${type}`;
+    const passed=lsGet(gateKey,0);
+    const oneDay=86400000;
+    if(Date.now()-passed > oneDay){
+      pendingPlayerArgs={id,type,season,ep,srcIdx:0};
+      openAdGate();
+      return;
+    }
+  }
+
+  _doOpenPlayer(id,type,season,ep);
+}
+
+async function _doOpenPlayer(id,type,season,ep){
   $$('.pg,.player-pg').forEach(p=>p.classList.remove('on'));
   $('pg-player').classList.add('on');
   $('nav').style.display='none';
   window.scrollTo(0,0);
 
-  // Update URL
   const u=new URL(location.href.split('?')[0]);
   u.searchParams.set('id',id); u.searchParams.set('type',type);
   if(type!=='movie'){u.searchParams.set('s',season);u.searchParams.set('e',ep);}
   history.pushState({id,type,season,ep},'',u);
 
-  // Load frame
-  $('vidFrame').src=srcUrl(id,type,season,ep,0);
+  loadFrame(id,type,season,ep,0);
   $$('.src-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
 
-  // Reset UI
   $('plTitle').textContent='Loading…'; $('plMeta').innerHTML='';
   $('plOv').textContent=''; $('plOv').classList.remove('show');
   $('plCast').textContent=''; $('plOvBtn').textContent='▼ Overview';
@@ -1109,7 +1146,6 @@ async function openPlayer(id,type,season,ep){
   $('nextBanner').classList.remove('show');
   $('recoGrid').innerHTML='';
 
-  // Fetch metadata
   const tmdbType=type==='anime'?'tv':type;
   const meta=await api(`${tmdbType}/${id}?append_to_response=credits`);
   if(!meta)return;
@@ -1137,7 +1173,6 @@ async function openPlayer(id,type,season,ep){
 
   saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
-  // TV / Anime: load episodes
   if(type!=='movie'){
     $('epSec').style.display='block';
     pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
@@ -1145,15 +1180,27 @@ async function openPlayer(id,type,season,ep){
     await loadEpisodes(season,ep);
   }
 
-  // Recommendations
   loadReco(id,tmdbType);
 }
 
-/* Source switcher & fullscreen */
 function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
-  $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
+  const isVip=checkVipStatus();
+  // VIP: switch directly. Non-VIP on VidLink: ad gate first
+  if(!isVip && idx===0 && pl.id){
+    pendingPlayerArgs={id:pl.id,type:pl.type,season:pl.season,ep:pl.ep,srcIdx:idx};
+    openAdGate();
+    return;
+  }
+  loadFrame(pl.id,pl.type,pl.season,pl.ep,idx);
+}
+function loadFrame(id,type,season,ep,srcIdx){
+  const url=srcUrl(id,type,season,ep,srcIdx);
+  const frame=$('vidFrame');
+  // Block popups/redirects from VidLink & others via sandbox
+  frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-presentation allow-fullscreen');
+  frame.src=url;
 }
 function goFS(){
   const f=$('vidFrame');
@@ -1172,7 +1219,6 @@ function toggleOv(){
   $('plOvBtn').textContent=ovOpen?'▲ Hide Overview':'▼ Overview';
 }
 
-/* Season picker */
 function buildSeasonRow(){
   const s=pl.seasons;
   if(!s.length){
@@ -1186,7 +1232,7 @@ async function switchSeason(n,el){
   $$('.s-pill').forEach(p=>p.classList.remove('on')); el.classList.add('on');
   pl.season=n; pl.ep=1;
   $('epList').innerHTML=`<div class="ep-load">Loading…</div>`;
-  $('vidFrame').src=srcUrl(pl.id,pl.type,n,1,pl.source);
+  loadFrame(pl.id,pl.type,n,1,pl.source);
   window.scrollTo(0,0);
   await loadEpisodes(n,1);
 }
@@ -1217,7 +1263,7 @@ function renderEps(eps,currentEp){
 }
 function playEp(season,ep){
   pl.season=season; pl.ep=ep;
-  $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
+  loadFrame(pl.id,pl.type,season,ep,pl.source);
   window.scrollTo(0,0);
   renderEps(pl.episodes,ep);
   updateNext();
@@ -1238,7 +1284,6 @@ function updateNext(){
 }
 function playNextEp(){ if(pl.nextEp) playEp(pl.nextEp.season_number,pl.nextEp.episode_number); }
 
-/* Recommendations */
 async function loadReco(id,tmdbType){
   const data=await api(`${tmdbType}/${id}/recommendations`);
   const grid=$('recoGrid');
@@ -1247,7 +1292,7 @@ async function loadReco(id,tmdbType){
     const mt=r.media_type||tmdbType;
     const yr=(r.release_date||r.first_air_date||'').slice(0,4);
     const rat=(r.vote_average||0).toFixed(1);
-    return `<div class="reco-card" onclick="safePlay(${r.id},'${mt}')">
+    return `<div class="reco-card" onclick="openPlayer(${r.id},'${mt}',1,1)">
       <img class="reco-img" src="${IMG}w500${r.backdrop_path}" loading="lazy" alt="">
       <div class="reco-body">
         <div class="reco-name">${r.title||r.name||''}</div>
@@ -1257,17 +1302,6 @@ async function loadReco(id,tmdbType){
   }).join('');
 }
 
-/* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
-// Non-VIP users are sent to the bot via the detail sheet instead of directly to player
-function safePlay(id, type, season, ep){
-  if(checkVipStatus()){
-    openPlayer(id, type, season||1, ep||1);
-  } else {
-    openDetail(id, type);
-  }
-}
-
-/* Close player */
 function closePlayer(){
   $('vidFrame').src='';
   document.title='AethoFlix';
@@ -1285,7 +1319,6 @@ function showToast(msg,dur=2200){
 }
 
 /* ══════════ STORAGE HELPERS ══════════ */
-// All data stored in localStorage under 'afx_' namespace
 function lsGet(k,def=null){ try{const v=localStorage.getItem('afx_'+k);return v===null?def:JSON.parse(v);}catch{return def;} }
 function lsSet(k,v){ try{localStorage.setItem('afx_'+k,JSON.stringify(v));}catch{} }
 
@@ -1316,7 +1349,7 @@ function renderContinueWatching(rowEl){
   list.forEach(item=>{
     const epLabel=item.type!=='movie'?`S${item.season} · E${item.ep}`:'';
     const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
-    h+=`<div class="pcard" style="position:relative" onclick="safePlay(${item.id},'${item.type}',${item.season||1},${item.ep||1})">
+    h+=`<div class="pcard" style="position:relative" onclick="openPlayer(${item.id},'${item.type}',${item.season||1},${item.ep||1})">
       <button onclick="event.stopPropagation();removeContinueWatching('${item.type}',${item.id})" style="position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.6rem;display:flex;align-items:center;justify-content:center;z-index:2">✕</button>
       ${img}
       <div class="pcard-name">${item.title||''}</div>
@@ -1331,7 +1364,7 @@ function renderContinueWatching(rowEl){
   rowEl.innerHTML=h;
 }
 
-/* ══════════ WATCHLIST (MY LIST) ══════════ */
+/* ══════════ WATCHLIST ══════════ */
 function wlKey(type,id){ return `${type}_${id}`; }
 function isInWatchlist(type,id){
   const list=lsGet('watchlist',[]);
@@ -1365,10 +1398,7 @@ function renderWatchlist(rowEl){
   let h=`<div class="row-hdr"><div class="row-ttl">🔖 My List</div><span class="row-more" onclick="openWishlist()">See all</span></div><div class="slider">`;
   list.forEach(item=>{
     const img=item.poster?`<img src="${IMG}w342${item.poster}" class="pcard-img" loading="lazy" alt="">`:`<div class="pcard-img" style="background:var(--card)"></div>`;
-    h+=`<div class="pcard" onclick="openDetail(${item.id},'${item.type}')">
-      ${img}
-      <div class="pcard-name">${item.title||''}</div>
-    </div>`;
+    h+=`<div class="pcard" onclick="openDetail(${item.id},'${item.type}')">${img}<div class="pcard-name">${item.title||''}</div></div>`;
   });
   h+='</div>';
   if(!rowEl){
@@ -1379,7 +1409,7 @@ function renderWatchlist(rowEl){
   rowEl.innerHTML=h;
 }
 
-/* ══════════ MY LIST / WISHLIST PAGE ══════════ */
+/* ══════════ MY LIST PAGE ══════════ */
 function openWishlist(){
   showPg('pg-wishlist');
   $('nav').style.display='';
@@ -1457,7 +1487,6 @@ function checkPin(){
   }
 }
 
-/* ══════════ ADMIN DASHBOARD ══════════ */
 function loadAdminDash(){
   const codes=lsGet('vipCodes',[]);
   $('statTotal').textContent=codes.length;
@@ -1465,7 +1494,6 @@ function loadAdminDash(){
   $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
   $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
   renderCodeList(codes);
-  // Load broadcast
   const bc=lsGet('broadcast','');
   $('bcInp').value=bc||'';
 }
@@ -1516,34 +1544,28 @@ function copyCode(code){
   navigator.clipboard?.writeText(code).then(()=>showToast('📋 Copied: '+code));
 }
 
-/* ══════════ ADMIN TOOLS ══════════ */
 function toolExportCodes(){
   const codes=lsGet('vipCodes',[]);
   if(!codes.length){showToast('No codes to export');return;}
   const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
   navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
 }
-
 function toolClearCache(){
-  // Clear any cached session data
   sessionStorage.clear();
   showToast('🧹 Cache cleared');
 }
-
 function toolVipStats(){
   const redemptions=lsGet('vipRedemptions',[]);
   if(!redemptions.length){showToast('No redemptions recorded yet');return;}
   const msg=redemptions.map(r=>`${r.code} redeemed at ${new Date(r.at).toLocaleString()}`).join('\n');
   alert('VIP Redemptions:\n\n'+msg);
 }
-
 function toolChangePin(){
   const np=prompt('Enter new 4-digit PIN:');
   if(!np||!/^\d{4}$/.test(np)){showToast('❌ Must be exactly 4 digits');return;}
   lsSet('adminPin',np);
   showToast('🔑 PIN updated successfully');
 }
-
 function toolRevokeAll(){
   if(!confirm('Revoke ALL active codes? This cannot be undone.'))return;
   const codes=lsGet('vipCodes',[]);
@@ -1552,9 +1574,8 @@ function toolRevokeAll(){
   loadAdminDash();
   showToast('🚫 All active codes revoked');
 }
-
 function toolWipeVip(){
-  if(!confirm('⚠️ This will delete ALL codes and revoke ALL VIP access. Are you sure?'))return;
+  if(!confirm('⚠️ This will delete ALL codes and revoke ALL VIP badges. Are you sure?'))return;
   localStorage.removeItem('afx_vipCodes');
   localStorage.removeItem('afx_vipRedemptions');
   localStorage.removeItem('afx_vipStatus');
@@ -1562,12 +1583,11 @@ function toolWipeVip(){
   checkVipStatus();
   showToast('💣 All VIP data wiped');
 }
-
 function saveBroadcast(){
   const msg=$('bcInp').value.trim();
   lsSet('broadcast',msg);
-  lsSet('annDismissed',''); // reset dismiss so banner shows again
-  nData.shows=[]; nData.movies=[]; // reset cache so announce shows fresh
+  lsSet('annDismissed','');
+  nData.shows=[]; nData.movies=[];
   checkAnnouncement();
   updateNotifBadge();
   showToast('📢 Announcement saved & live');
@@ -1580,26 +1600,28 @@ function clearBroadcast(){
   showToast('🗑️ Announcement cleared');
 }
 
-/* ══════════ VIP SYSTEM ══════════ */
+/* ══════════ VIP SYSTEM (cosmetic badge only — no paywall) ══════════ */
 function checkVipStatus(){
   const status=lsGet('vipStatus',null);
   const badge=$('vipBadge');
-  badge.classList.add('show');
+  let isVip=false;
   if(status && status.active){
-    // Check expiry
     if(status.expires && Date.now()>status.expires){
       lsSet('vipStatus',{active:false});
-      badge.textContent='👑 Redeem';
+      badge.textContent='👑 VIP';
       badge.classList.remove('vip-on');
-      return false;
+    } else {
+      badge.textContent='👑 VIP';
+      badge.classList.add('vip-on');
+      isVip=true;
     }
+  } else {
     badge.textContent='👑 VIP';
-    badge.classList.add('vip-on');
-    return true;
+    badge.classList.remove('vip-on');
   }
-  badge.textContent='👑 Redeem';
-  badge.classList.remove('vip-on');
-  return false;
+  const bannerWrap=$('adBannerWrap');
+  if(bannerWrap) bannerWrap.classList.toggle('hidden',isVip);
+  return isVip;
 }
 
 function openVipGate(){
@@ -1611,15 +1633,15 @@ function openVipGate(){
   const activeBox=$('vipActiveBox');
   if(isVip){
     $('vipGateTitle').textContent='You\'re VIP! 👑';
-    $('vipGateSub').textContent='Enjoy unlimited access to the built-in player.';
+    $('vipGateSub').textContent='Your golden badge is active. Watching is free for everyone!';
     const expStr=status.expires?new Date(status.expires).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'Never';
     activeBox.innerHTML=`<b style="color:var(--text)">Code:</b> ${status.code}<br><b style="color:var(--text)">Active since:</b> ${new Date(status.since).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}<br><b style="color:var(--text)">Expires:</b> ${expStr}`;
     activeBox.style.display='block';
     $('vipInp').style.display='none';
     $('vipRedeemBtn').style.display='none';
   }else{
-    $('vipGateTitle').textContent='VIP Access';
-    $('vipGateSub').textContent='Enter your VIP code to unlock the built-in player. Codes are provided by the admin.';
+    $('vipGateTitle').textContent='VIP Badge';
+    $('vipGateSub').textContent='Redeem a VIP code from admin to get your golden badge. Everyone can watch for free — this is just a cosmetic perk!';
     activeBox.style.display='none';
     $('vipInp').style.display='';
     $('vipRedeemBtn').style.display='';
@@ -1638,18 +1660,15 @@ function redeemVip(){
   if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
   if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
   if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
-  // Mark used if 1-time
   if(code.type==='1use') codes[idx].status='used';
   lsSet('vipCodes',codes);
-  // Save VIP status
   lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
-  // Log redemption
   const rr=lsGet('vipRedemptions',[]);
   rr.push({code:entered,at:Date.now()});
   lsSet('vipRedemptions',rr);
   closeVipGate();
   checkVipStatus();
-  showToast('👑 VIP unlocked! Welcome.',3000);
+  showToast('👑 VIP badge unlocked!',3000);
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
@@ -1675,13 +1694,10 @@ function switchNTab(tab, el){
 async function loadNotifTab(tab){
   const body=$('notifBody');
   body.innerHTML=`<div class="notif-load">${Array(5).fill(`<div class="notif-sk-row"><div class="sk notif-sk-img"></div><div class="notif-sk-lines"><div class="sk notif-sk-line"></div><div class="sk notif-sk-line"></div><div class="sk notif-sk-line short"></div></div></div>`).join('')}</div>`;
-
   const read=lsGet('notifRead',[]);
-
   if(tab==='announce'){ await fetchMovieNotifs(); await fetchShowNotifs(); if(allRead('announce',read)){showCaughtUp();return;} renderAnnounce(read); return; }
   if(tab==='movies'){ await fetchMovieNotifs(); if(allRead('movies',read)){showCaughtUp();return;} renderMovies(read); return; }
   if(tab==='shows'){ await fetchShowNotifs(); if(allRead('shows',read)){showCaughtUp();return;} renderShows(read); return; }
-  // All tab
   await Promise.all([fetchMovieNotifs(), fetchShowNotifs()]);
   if(allRead('all',read)){showCaughtUp();return;}
   renderAll(read);
@@ -1693,7 +1709,7 @@ function allRead(tab,read){
   else if(tab==='movies') items=nData.movies;
   else if(tab==='shows') items=nData.shows;
   else items=[...buildAnnounceItems(),...nData.movies,...nData.shows];
-  if(!items.length) return false; // let empty-state messages show normally
+  if(!items.length) return false;
   return items.every(i=>read.includes(String(i.id)));
 }
 
@@ -1750,7 +1766,7 @@ function notifCard(item, read){
     :`<div class="notif-ic-box">${item.category==='announce'?'📢':item.type==='movie'?'🎬':'📺'}</div>`;
   const rat=item.rating?`★${Number(item.rating).toFixed(1)} · `:'';
   const dateStr=item.date?new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-  const onclick=item.category==='announce'?'':`onclick="closeNotif();openDetail(${item.id},'${item.type}')"`;
+  const onclick=item.category==='announce'?'':`onclick="closeNotif();openPlayer(${item.id},'${item.type}',1,1)"`;
   return `<div class="notif-item${isRead?'':' unread'}" ${onclick} data-uid="${uid}" ontouchstart="markRead('${uid}')">
     ${thumb}
     <div class="notif-info">
@@ -1783,15 +1799,12 @@ function markAllRead(){
 }
 
 function showCaughtUp(){
-  $('notifBody').innerHTML=`<div class="notif-empty notif-caughtup"><div class="notif-empty-ic">✅</div><div class="notif-empty-txt">You're all caught up</div></div>`;
+  $('notifBody').innerHTML=`<div class="notif-empty"><div class="notif-empty-ic">✅</div><div class="notif-empty-txt">You're all caught up</div></div>`;
 }
 
 async function updateNotifBadge(){
   const read=lsGet('notifRead',[]);
-  // Count unread: announcements + recently released (last 14 days) movies/shows
   const ann=buildAnnounceItems();
-  const annUnread=ann.filter(a=>!read.includes(String(a.id))).length;
-  // Count unread from fetched data
   const allItems=[...nData.movies,...nData.shows,...ann];
   const unread=allItems.filter(i=>!read.includes(String(i.id))).length;
   const cnt=$('notifCount');
@@ -1818,15 +1831,108 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
+/* ══════════ AD GATE ══════════ */
+let pendingPlayerArgs=null, adGateStep=0, adGateTimer=null, adGateSeconds=0;
+const AD_WAIT=10; // seconds per ad
+
+function openAdGate(){
+  adGateStep=0;
+  $('adGate').classList.add('on');
+  document.body.style.overflow='hidden';
+  $('adGateSkip').style.display='none';
+  renderAdGateStep();
+}
+
+function renderAdGateStep(){
+  clearInterval(adGateTimer);
+  // Update dots
+  for(let i=0;i<2;i++){
+    const dot=$('adDot'+i);
+    dot.classList.remove('done','active');
+    if(i<adGateStep) dot.classList.add('done');
+    else if(i===adGateStep) dot.classList.add('active');
+  }
+  const btn=$('adGateBtn');
+  btn.disabled=true;
+  btn.textContent=`⏳ Watch Ad ${adGateStep+1} of 2`;
+  $('adGateCountdown').textContent='Please wait…';
+
+  // Push new ad into slot
+  try{
+    const oldIns=$('adGateIns');
+    if(oldIns){
+      const newIns=document.createElement('ins');
+      newIns.className='adsbygoogle';
+      newIns.style.cssText='display:block;width:300px;height:100px';
+      newIns.setAttribute('data-ad-client','ca-pub-6855145866070467');
+      newIns.setAttribute('data-ad-slot','4926961999');
+      newIns.id='adGateIns';
+      oldIns.replaceWith(newIns);
+      (adsbygoogle=window.adsbygoogle||[]).push({});
+    }
+  }catch(e){}
+
+  // Countdown
+  adGateSeconds=AD_WAIT;
+  adGateTimer=setInterval(()=>{
+    adGateSeconds--;
+    if(adGateSeconds<=0){
+      clearInterval(adGateTimer);
+      $('adGateCountdown').textContent='Ad watched! ✅';
+      btn.disabled=false;
+      btn.textContent=adGateStep===0?'▶ Watch Ad 2 of 2':'🎬 Play Now!';
+      // Show skip after both ads done
+      if(adGateStep===1) $('adGateSkip').style.display='';
+    } else {
+      $('adGateCountdown').textContent=`Please wait ${adGateSeconds}s…`;
+    }
+  },1000);
+}
+
+function adGateNext(){
+  if(adGateStep===0){
+    adGateStep=1;
+    renderAdGateStep();
+  } else {
+    // Both ads watched — unlock
+    adGateUnlock();
+  }
+}
+
+function adGateSkipBtn(){
+  // Allow manual close after both ads done
+  if(adGateStep>=1 && !$('adGateBtn').disabled) adGateUnlock();
+}
+
+function adGateUnlock(){
+  clearInterval(adGateTimer);
+  $('adGate').classList.remove('on');
+  document.body.style.overflow='';
+  if(pendingPlayerArgs){
+    const {id,type,season,ep}=pendingPlayerArgs;
+    // Save gate pass for 24h
+    lsSet(`gate_${id}_${type}`,Date.now());
+    pendingPlayerArgs=null;
+    _doOpenPlayer(id,type,season,ep);
+  }
+}
+
+/* ══════════ BANNER AD INIT ══════════ */
+function initBannerAd(){
+  try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
+}
+
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
-  checkVipStatus();
+  const isVip=checkVipStatus();
   checkAnnouncement();
   initHome();
-  // Pre-fetch notif data in background + update badge
+  // Hide banner for VIP
+  if(isVip) $('adBannerWrap').classList.add('hidden');
+  else initBannerAd();
   Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
   if(id&&type) setTimeout(()=>openPlayer(id,type,s,e),200);
 })();
@@ -1835,9 +1941,4 @@ window.addEventListener('popstate',()=>{
   const p=new URLSearchParams(location.search);
   const id=p.get('id'), type=p.get('type');
   if(id&&type) openPlayer(id,type,parseInt(p.get('s'))||1,parseInt(p.get('e'))||1);
-  else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
-});
-</script>
-</body>
-</html>
-
+  else{ $('vidFrame').src=''; document.title='
