@@ -742,12 +742,45 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp }                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, getDocs,
+         setDoc, updateDoc, collection }           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+/* ══════════ FIREBASE CONFIG — paste yours here ══════════ */
+const firebaseConfig = {
+  apiKey:            "PASTE_API_KEY",
+  authDomain:        "PASTE_AUTH_DOMAIN",
+  projectId:         "PASTE_PROJECT_ID",
+  storageBucket:     "PASTE_STORAGE_BUCKET",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId:             "PASTE_APP_ID"
+};
+const _app = initializeApp(firebaseConfig);
+const _db  = getFirestore(_app);
+
+/* Firestore helpers */
+const fbGet  = (col,id)       => getDoc(doc(_db,col,id));
+const fbSet  = (col,id,data)  => setDoc(doc(_db,col,id),data);
+const fbUpd  = (col,id,data)  => updateDoc(doc(_db,col,id),data);
+const fbAll  = (col)          => getDocs(collection(_db,col));
+
 /* ══════════ CONFIG ══════════ */
 const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
 const IMG    = 'https://image.tmdb.org/t/p/';
 const BOT_M  = 'aetho_flixbot';   // movies + series
 const BOT_A  = 'aethokaibot';     // anime
+const VIP_API = 'https://aethoflix-acc.onrender.com';
+
+/* ── VIP API helper ── */
+async function vipApi(path, body){
+  const r = await fetch(VIP_API + path, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
 
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
@@ -1257,14 +1290,10 @@ async function loadReco(id,tmdbType){
   }).join('');
 }
 
-/* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
-// Non-VIP users are sent to the bot via the detail sheet instead of directly to player
-function safePlay(id, type, season, ep){
-  if(checkVipStatus()){
-    openPlayer(id, type, season||1, ep||1);
-  } else {
-    openDetail(id, type);
-  }
+/* ══════════ SAFE PLAY — non-VIP goes to bot, VIP plays directly ══════════ */
+function safePlay(id,type,season,ep){
+  if(checkVipStatus()) openPlayer(id,type,season||1,ep||1);
+  else openDetail(id,type);
 }
 
 /* Close player */
@@ -1458,14 +1487,19 @@ function checkPin(){
 }
 
 /* ══════════ ADMIN DASHBOARD ══════════ */
-function loadAdminDash(){
-  const codes=lsGet('vipCodes',[]);
-  $('statTotal').textContent=codes.length;
-  $('statActive').textContent=codes.filter(c=>c.status==='active').length;
-  $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
-  $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
-  renderCodeList(codes);
-  // Load broadcast
+async function loadAdminDash(){
+  $('statTotal').textContent='…';$('statActive').textContent='…';
+  $('statUsed').textContent='…';$('statRevoked').textContent='…';
+  $('codeList').innerHTML='<div class="no-codes">Loading…</div>';
+  try{
+    const codes=await vipApi('/codes',{password:'2611'});
+    if(!Array.isArray(codes)){$('codeList').innerHTML='<div class="no-codes">❌ Failed to load</div>';return;}
+    $('statTotal').textContent=codes.length;
+    $('statActive').textContent=codes.filter(c=>c.status==='active').length;
+    $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
+    $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
+    renderCodeList(codes);
+  }catch(e){$('codeList').innerHTML='<div class="no-codes">❌ Server unreachable</div>';}
   const bc=lsGet('broadcast','');
   $('bcInp').value=bc||'';
 }
@@ -1473,8 +1507,7 @@ function loadAdminDash(){
 function renderCodeList(codes){
   const list=$('codeList');
   if(!codes.length){ list.innerHTML='<div class="no-codes">No codes yet.</div>'; return; }
-  list.innerHTML=[...codes].reverse().map((c,ri)=>{
-    const i=codes.length-1-ri;
+  list.innerHTML=[...codes].reverse().map(c=>{
     const statusLabel=c.status==='active'?'ACTIVE':c.status==='used'?'USED':'REVOKED';
     const exp=c.expires?`Exp: ${new Date(c.expires).toLocaleDateString()}`:(c.type==='1use'?'1-time use':'Permanent');
     return `<div class="code-row${c.status!=='active'?' code-used':''}">
@@ -1484,32 +1517,28 @@ function renderCodeList(codes){
       </div>
       <span class="code-badge ${c.status}">${statusLabel}</span>
       <button class="code-copy" onclick="copyCode('${c.code}')">Copy</button>
-      ${c.status==='active'?`<button class="code-revoke" onclick="revokeCode(${i})">Revoke</button>`:''}
+      ${c.status==='active'?`<button class="code-revoke" onclick="revokeCode('${c.code}')">Revoke</button>`:''}
     </div>`;
   }).join('');
 }
 
-function generateCode(){
+async function generateCode(){
   const type=$('codeType').value;
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code='VIP-';
-  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
-  let expires=null;
-  if(type==='7d') expires=Date.now()+7*86400000;
-  if(type==='30d') expires=Date.now()+30*86400000;
-  const codes=lsGet('vipCodes',[]);
-  codes.push({code,type,status:'active',expires,created:Date.now()});
-  lsSet('vipCodes',codes);
-  loadAdminDash();
-  showToast('✅ Code generated: '+code);
+  try{
+    const r=await vipApi('/generate',{password:'2611',type});
+    if(r.error){showToast('❌ '+r.error);return;}
+    showToast('✅ Code generated: '+r.code);
+    loadAdminDash();
+  }catch(e){showToast('❌ Server error');}
 }
 
-function revokeCode(idx){
-  const codes=lsGet('vipCodes',[]);
-  if(codes[idx]) codes[idx].status='revoked';
-  lsSet('vipCodes',codes);
-  loadAdminDash();
-  showToast('🚫 Code revoked');
+async function revokeCode(code){
+  try{
+    const r=await vipApi('/revoke',{password:'2611',code});
+    if(r.error){showToast('❌ '+r.error);return;}
+    showToast('🚫 Code revoked');
+    loadAdminDash();
+  }catch(e){showToast('❌ Server error');}
 }
 
 function copyCode(code){
@@ -1517,11 +1546,13 @@ function copyCode(code){
 }
 
 /* ══════════ ADMIN TOOLS ══════════ */
-function toolExportCodes(){
-  const codes=lsGet('vipCodes',[]);
-  if(!codes.length){showToast('No codes to export');return;}
-  const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
-  navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
+async function toolExportCodes(){
+  try{
+    const codes=await vipApi('/codes',{password:'2611'});
+    if(!Array.isArray(codes)||!codes.length){showToast('No codes to export');return;}
+    const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
+    navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
+  }catch(e){showToast('❌ Server error');}
 }
 
 function toolClearCache(){
@@ -1530,11 +1561,13 @@ function toolClearCache(){
   showToast('🧹 Cache cleared');
 }
 
-function toolVipStats(){
-  const redemptions=lsGet('vipRedemptions',[]);
-  if(!redemptions.length){showToast('No redemptions recorded yet');return;}
-  const msg=redemptions.map(r=>`${r.code} redeemed at ${new Date(r.at).toLocaleString()}`).join('\n');
-  alert('VIP Redemptions:\n\n'+msg);
+async function toolVipStats(){
+  try{
+    const codes=await vipApi('/codes',{password:'2611'});
+    const used=(codes||[]).filter(c=>c.status==='used');
+    if(!used.length){showToast('No redeemed codes yet');return;}
+    alert('Redeemed Codes:\n\n'+used.map(c=>`${c.code} · ${c.type}`).join('\n'));
+  }catch(e){showToast('❌ Server error');}
 }
 
 function toolChangePin(){
@@ -1544,23 +1577,24 @@ function toolChangePin(){
   showToast('🔑 PIN updated successfully');
 }
 
-function toolRevokeAll(){
+async function toolRevokeAll(){
   if(!confirm('Revoke ALL active codes? This cannot be undone.'))return;
-  const codes=lsGet('vipCodes',[]);
-  codes.forEach(c=>{if(c.status==='active')c.status='revoked';});
-  lsSet('vipCodes',codes);
-  loadAdminDash();
-  showToast('🚫 All active codes revoked');
+  try{
+    await vipApi('/revoke-all',{password:'2611'});
+    loadAdminDash();
+    showToast('🚫 All active codes revoked');
+  }catch(e){showToast('❌ Server error');}
 }
 
-function toolWipeVip(){
+async function toolWipeVip(){
   if(!confirm('⚠️ This will delete ALL codes and revoke ALL VIP access. Are you sure?'))return;
-  localStorage.removeItem('afx_vipCodes');
-  localStorage.removeItem('afx_vipRedemptions');
-  localStorage.removeItem('afx_vipStatus');
-  loadAdminDash();
-  checkVipStatus();
-  showToast('💣 All VIP data wiped');
+  try{
+    await vipApi('/wipe',{password:'2611'});
+    lsSet('vipStatus',null);
+    loadAdminDash();
+    checkVipStatus();
+    showToast('💣 All VIP data wiped');
+  }catch(e){showToast('❌ Server error');}
 }
 
 function saveBroadcast(){
@@ -1628,28 +1662,22 @@ function openVipGate(){
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
-function redeemVip(){
+async function redeemVip(){
   const entered=$('vipInp').value.trim().toUpperCase();
   if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  const codes=lsGet('vipCodes',[]);
-  const idx=codes.findIndex(c=>c.code===entered);
-  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
-  const code=codes[idx];
-  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
-  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
-  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
-  // Mark used if 1-time
-  if(code.type==='1use') codes[idx].status='used';
-  lsSet('vipCodes',codes);
-  // Save VIP status
-  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
-  // Log redemption
-  const rr=lsGet('vipRedemptions',[]);
-  rr.push({code:entered,at:Date.now()});
-  lsSet('vipRedemptions',rr);
-  closeVipGate();
-  checkVipStatus();
-  showToast('👑 VIP unlocked! Welcome.',3000);
+  $('vipRedeemBtn').textContent='Checking…'; $('vipRedeemBtn').disabled=true;
+  try{
+    const r=await vipApi('/redeem',{code:entered});
+    if(r.error){ $('vipErr').textContent='❌ '+r.error; return; }
+    lsSet('vipStatus',{active:true,code:entered,expires:r.expires||null,since:Date.now()});
+    closeVipGate();
+    checkVipStatus();
+    showToast('👑 VIP unlocked! Welcome.',3000);
+  }catch(e){
+    $('vipErr').textContent='❌ Server error. Try again.';
+  }finally{
+    $('vipRedeemBtn').textContent='🔓 Unlock VIP'; $('vipRedeemBtn').disabled=false;
+  }
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
