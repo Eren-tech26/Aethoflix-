@@ -558,9 +558,12 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <!-- Row 2: source switcher + fullscreen -->
     <div class="src-row">
       <span class="src-lbl">Source:</span>
-      <button class="src-btn on" onclick="setSource(0,this)">VidLink</button>
-      <button class="src-btn" onclick="setSource(1,this)">VidSrc</button>
-      <button class="src-btn" onclick="setSource(2,this)">EmbedSu</button>
+      <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
+      <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
+      <button class="src-btn" onclick="setSource(2,this)">Server 3</button>
+      <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
+      <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
+      <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
       <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
     </div>
   </div>
@@ -1069,13 +1072,19 @@ function srcUrl(id,type,season,ep,src){
   src=src??pl.source;
   const isTV=(type!=='movie');
   const urls=isTV?[
+    `https://indraembed.netlify.app/tv/${id}/${season}/${ep}`,
+    `https://player.videasy.net/tv/${id}/${season}/${ep}`,
     `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true`,
-    `https://vidsrc.xyz/embed/tv/${id}/${season}/${ep}`,
-    `https://embed.su/embed/tv/${id}/${season}/${ep}`,
+    `https://vidlux.xyz/embed/tv/${id}/${season}/${ep}`,
+    `https://player.autoembed.cc/embed/tv/${id}/${season}/${ep}`,
+    `https://embed.filmu.in/tv/${id}/${season}/${ep}`,
   ]:[
+    `https://indraembed.netlify.app/movie/${id}`,
+    `https://player.videasy.net/movie/${id}`,
     `https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true`,
-    `https://vidsrc.xyz/embed/movie/${id}`,
-    `https://embed.su/embed/movie/${id}`,
+    `https://vidlux.xyz/embed/movie/${id}`,
+    `https://player.autoembed.cc/embed/movie/${id}`,
+    `https://embed.filmu.in/movie/${id}`,
   ];
   return urls[src]||urls[0];
 }
@@ -1840,4 +1849,3 @@ window.addEventListener('popstate',()=>{
 </script>
 </body>
 </html>
-
