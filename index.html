@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{touch-action:manipulation}
 :root{
   --bg:#080810;--surface:#0f0f1a;--card:#14141f;--border:#1e1e2e;
   --accent:#e50914;--accent2:#ff2233;
@@ -87,19 +88,19 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .slider::-webkit-scrollbar{display:none}
 
 /* ─── CARDS ─── */
-.pcard{min-width:96px;width:96px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;position:relative}
+.pcard{min-width:96px;width:96px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;position:relative;touch-action:manipulation}
 .pcard:active{transform:scale(.93)}
 .pcard-img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:7px;background:var(--card)}
 .pcard-name{font-size:.58rem;font-weight:600;margin-top:4px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard-meta{font-size:.53rem;color:var(--muted);margin-top:1px}
 .pcard-new{position:absolute;top:5px;left:5px;background:var(--accent);color:#fff;font-size:.46rem;font-weight:900;padding:2px 5px;border-radius:3px;letter-spacing:.5px}
-.wcard{min-width:190px;width:190px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:7px;overflow:hidden;position:relative}
+.wcard{min-width:190px;width:190px;flex-shrink:0;cursor:pointer;scroll-snap-align:start;border-radius:7px;overflow:hidden;position:relative;touch-action:manipulation}
 .wcard:active{transform:scale(.96)}
 .wcard-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--card)}
 .wcard-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:8px}
 .wcard-title{font-size:.7rem;font-weight:700;line-height:1.2}
 .wcard-sub{font-size:.55rem;color:var(--sub);margin-top:2px}
-.t10card{min-width:124px;width:124px;flex-shrink:0;display:flex;align-items:flex-end;cursor:pointer;position:relative;scroll-snap-align:start}
+.t10card{min-width:124px;width:124px;flex-shrink:0;display:flex;align-items:flex-end;cursor:pointer;position:relative;scroll-snap-align:start;touch-action:manipulation}
 .t10card:active{transform:scale(.95)}
 .t10-num{font-size:4.5rem;font-weight:900;color:var(--bg);-webkit-text-stroke:2px var(--muted);line-height:1;position:absolute;left:0;bottom:-4px;z-index:1;letter-spacing:-4px}
 .t10-img{width:76px;aspect-ratio:2/3;object-fit:cover;border-radius:7px;margin-left:38px;z-index:2;box-shadow:0 4px 16px rgba(0,0,0,.7)}
@@ -139,7 +140,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .overlay{position:fixed;inset:0;background:rgba(4,4,12,.85);z-index:9000;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
 .overlay.on{opacity:1;pointer-events:auto}
 .sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-height:91vh;overflow-y:auto;transform:translateY(50px);transition:transform .3s cubic-bezier(.22,1,.36,1);border-top:1px solid var(--border);position:relative}
-.overlay.on .sheet{transform:translateY(0)}
+.overlay .sheet-close{display:none}
+.overlay.on .sheet-close{display:flex}
 .sheet-back{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--card);display:block}
 .sheet-fade{height:56px;margin-top:-56px;background:linear-gradient(to top,var(--surface),transparent)}
 .sheet-body{padding:2px 18px 34px}
@@ -161,7 +163,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
 .sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
 .sheet-cast b{color:var(--text)}
-.sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
+.sheet-close{position:fixed;top:max(env(safe-area-inset-top,0px) + 10px, 10px);right:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;border:none;touch-action:manipulation}
 
 /* ─── PLAYER PAGE ─── */
 .player-pg{display:none;min-height:100vh;background:var(--bg);padding-bottom:80px}
@@ -252,7 +254,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ann-banner.show{display:flex}
 .ann-ic{font-size:1.1rem;flex-shrink:0}
 .ann-txt{flex:1;font-size:.76rem;font-weight:600;color:#c8d8f8;line-height:1.45}
-.ann-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ann-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 .ann-close:active{background:rgba(255,255,255,.16)}
 .vip-gate{position:fixed;inset:0;z-index:8000;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
 .vip-gate.on{opacity:1;pointer-events:auto}
@@ -266,7 +268,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .vip-btn{width:100%;padding:12px;background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;border:none;border-radius:8px;font-size:.88rem;font-weight:900;cursor:pointer;transition:.15s;font-family:var(--font)}
 .vip-btn:active{transform:scale(.97)}
 .vip-err{font-size:.7rem;color:var(--accent);margin-top:8px;min-height:18px}
-.vip-close{position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.vip-close{position:absolute;top:10px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;touch-action:manipulation}
 
 /* ─── VIP BADGE in nav ─── */
 .vip-badge{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--sub);font-size:.56rem;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.5px;cursor:pointer;transition:.2s}
@@ -279,7 +281,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .admin-logo{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:-.5px}
 .admin-logo span{color:var(--text);font-weight:300}
 .admin-badge{font-size:.54rem;font-weight:900;background:var(--accent);color:#fff;padding:2px 7px;border-radius:4px;letter-spacing:1px;margin-left:6px}
-.admin-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.admin-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
 .admin-body{padding:16px 18px 40px;display:flex;flex-direction:column;gap:18px}
 
 /* admin PIN gate */
@@ -364,7 +366,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .notif-drw-title{font-size:.9rem;font-weight:900}
 .notif-drw-actions{display:flex;gap:8px;align-items:center}
 .notif-mark-all{font-size:.64rem;color:var(--accent);font-weight:700;cursor:pointer;background:none;border:none;font-family:var(--font)}
-.notif-drw-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}
+.notif-drw-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;touch-action:manipulation}
 .notif-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
 .ntab{flex:1;padding:10px 8px;font-size:.66rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font)}
 .ntab.on{color:var(--text);border-bottom-color:var(--accent)}
@@ -1441,11 +1443,11 @@ function removeFromWishlistPage(type,id){
 /* ══════════ LOGO TAP → ADMIN ══════════ */
 let logoTaps=0, logoTmr=null;
 function logoTap(){
-  goHome();
   logoTaps++;
   clearTimeout(logoTmr);
   if(logoTaps>=5){ logoTaps=0; openAdmin(); return; }
-  logoTmr=setTimeout(()=>logoTaps=0,2000);
+  logoTmr=setTimeout(()=>{ logoTaps=0; goHome(); },3000);
+  if(logoTaps===1) goHome();
 }
 
 /* ══════════ ADMIN PANEL ══════════ */
@@ -1845,6 +1847,24 @@ function dismissAnn(){
   lsSet('annDismissed',msg);
   $('annBanner').classList.remove('show');
 }
+
+/* ══════════ TOUCH — distinguish tap vs scroll on sliders ══════════ */
+let _touchStartX=0, _touchStartY=0, _touchMoved=false;
+document.addEventListener('touchstart',e=>{
+  _touchStartX=e.touches[0].clientX;
+  _touchStartY=e.touches[0].clientY;
+  _touchMoved=false;
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  const dx=Math.abs(e.touches[0].clientX-_touchStartX);
+  const dy=Math.abs(e.touches[0].clientY-_touchStartY);
+  if(dx>8||dy>8) _touchMoved=true;
+},{passive:true});
+// Wrap openDetail and safePlay to ignore swipe-triggered clicks
+const _openDetail=openDetail;
+window.openDetail=function(id,type){ if(_touchMoved)return; _openDetail(id,type); };
+const _safePlay=safePlay;
+window.safePlay=function(id,type,s,e){ if(_touchMoved)return; _safePlay(id,type,s,e); };
 
 /* ══════════ BOOT ══════════ */
 (async function boot(){
