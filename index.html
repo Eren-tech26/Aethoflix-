@@ -556,7 +556,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="ctrl-share" onclick="shareUrl()" title="Share">🔗</button>
     </div>
     <!-- Row 2: source switcher + fullscreen -->
-    <div class="src-row">
+    <div class="src-row" id="srcRow">
       <span class="src-lbl">Source:</span>
       <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
       <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
@@ -747,10 +747,11 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 
 <script>
 /* ══════════ CONFIG ══════════ */
-const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
-const IMG    = 'https://image.tmdb.org/t/p/';
-const BOT_M  = 'aetho_flixbot';   // movies + series
-const BOT_A  = 'aethokaibot';     // anime
+const TMDB       = 'fca1c3fa675f74cf4aa8d24b72dd4807';
+const IMG        = 'https://image.tmdb.org/t/p/';
+const BOT_M      = 'aetho_flixbot';   // movies + series
+const BOT_A      = 'aethokaibot';     // anime
+const ANIME_API  = 'https://scrape-bbhj.onrender.com'; // AnimePahe backend
 
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
@@ -758,6 +759,8 @@ let srchFilter='all', lastQ='', srchTmr=null;
 let pl = { id:null, type:null, season:1, ep:1, episodes:[], seasons:[], source:0, nextEp:null };
 let curDetail=null;
 let ovOpen = false;
+// Anime (AnimePahe) state
+let animeSession=null, animeEpisodes=[], animeCurrentEp=null, animeQuality='1080p';
 
 /* ══════════ UTILS ══════════ */
 const $  = id => document.getElementById(id);
@@ -1070,6 +1073,7 @@ function closeDetail(){ $('detOverlay').classList.remove('on'); document.body.st
 /* ══════════ PLAYER PAGE ══════════ */
 function srcUrl(id,type,season,ep,src){
   src=src??pl.source;
+  // Anime uses AnimePahe — handled separately via loadAnimeEpisodes
   const isTV=(type!=='movie');
   const urls=isTV?[
     `https://indraembed.netlify.app/tv/${id}/${season}/${ep}`,
@@ -1089,7 +1093,198 @@ function srcUrl(id,type,season,ep,src){
   return urls[src]||urls[0];
 }
 
+/* ══════════ ANIME (ANIMEPAHE) PLAYER ══════════ */
+async function openAnimePlayer(id, title, poster){
+  // Switch to player page
+  $$('.pg,.player-pg').forEach(p=>p.classList.remove('on'));
+  $('pg-player').classList.add('on');
+  $('nav').style.display='none';
+  window.scrollTo(0,0);
+
+  // Reset UI
+  $('vidFrame').src='about:blank';
+  $('plTitle').textContent=title||'Loading…';
+  $('plMeta').innerHTML='<span style="color:var(--accent)">🏮 Anime · AnimePahe</span>';
+  $('plOv').textContent=''; $('plOv').classList.remove('show');
+  $('plCast').textContent=''; $('plOvBtn').textContent='▼ Overview';
+  $('epSec').style.display='block';
+  $('seasonRow').innerHTML='';
+  $('nextBanner').classList.remove('show');
+  $('recoGrid').innerHTML='';
+  $('epList').innerHTML='<div class="ep-load">🔍 Searching AnimePahe…</div>';
+  $('ctrlTitle').textContent=title||'Anime';
+  document.title=(title||'Anime')+' — AethoFlix';
+
+  // Hide normal source buttons, show quality buttons
+  renderAnimeSourceBar();
+
+  // Search AnimePahe for this anime title
+  animeSession=null; animeEpisodes=[]; animeCurrentEp=null;
+  try{
+    const res=await fetch(`${ANIME_API}/api/search?q=${encodeURIComponent(title)}`);
+    const data=await res.json();
+    const results=data?.data||[];
+    if(!results.length){ $('epList').innerHTML='<div class="ep-load">❌ Not found on AnimePahe</div>'; return; }
+    const match=results.find(r=>r.title.toLowerCase().includes(title.toLowerCase().slice(0,8)))||results[0];
+    animeSession=match.session;
+    $('plMeta').innerHTML=`<span style="color:var(--accent)">🏮 Anime</span><span style="color:var(--sub)">${match.year||''}</span><span class="pl-tag">AnimePahe</span>`;
+    await loadAnimeEpisodes(match.session);
+  }catch(e){
+    $('epList').innerHTML='<div class="ep-load">❌ Failed to connect to anime server</div>';
+  }
+}
+
+function renderAnimeSourceBar(){
+  // Replace source buttons with quality selector for anime
+  const srcRow=$('srcRow');
+  if(!srcRow) return;
+  srcRow.innerHTML=`
+    <span class="src-lbl">Quality:</span>
+    <button class="src-btn on" onclick="setAnimeQuality('1080p',this)">1080p</button>
+    <button class="src-btn" onclick="setAnimeQuality('720p',this)">720p</button>
+    <button class="src-btn" onclick="setAnimeQuality('360p',this)">360p</button>
+    <span class="src-lbl" style="margin-left:8px">Audio:</span>
+    <button class="src-btn on" id="subBtn" onclick="setAnimeAudio('jpn',this)">SUB</button>
+    <button class="src-btn" id="dubBtn" onclick="setAnimeAudio('eng',this)">DUB</button>
+    <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
+  `;
+}
+
+function setAnimeQuality(q,el){
+  animeQuality=q;
+  $$('.src-btn').forEach(b=>{ if(['1080p','720p','360p'].includes(b.textContent)) b.classList.remove('on'); });
+  el.classList.add('on');
+  if(animeCurrentEp) playAnimeEpisode(animeCurrentEp);
+}
+
+let animeAudio='jpn';
+function setAnimeAudio(lang,el){
+  animeAudio=lang;
+  $$('#subBtn,#dubBtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  if(animeCurrentEp) playAnimeEpisode(animeCurrentEp);
+}
+
+async function loadAnimeEpisodes(session){
+  $('epList').innerHTML='<div class="ep-load">📋 Loading episodes…</div>';
+  try{
+    const res=await fetch(`${ANIME_API}/api/${session}/releases?sort=episode_asc&page=1`);
+    const json=await res.json();
+    animeEpisodes=(json?.data||json||[]).map(ep=>({
+      ...ep,
+      number:ep.episode||ep.number||'?',
+      title:ep.title||('Episode '+(ep.episode||ep.number||'')),
+      session:ep.session||ep.id
+    }));
+    if(!animeEpisodes.length){ $('epList').innerHTML='<div class="ep-load">No episodes found.</div>'; return; }
+    renderAnimeEpList(null);
+    await playAnimeEpisode(animeEpisodes[0]);
+  }catch(e){
+    console.error('Ep load:',e);
+    $('epList').innerHTML='<div class="ep-load">❌ Failed to load episodes</div>';
+  }
+}
+
+function renderAnimeEpList(currentEp){
+  $('epList').innerHTML=animeEpisodes.map(ep=>{
+    const playing=currentEp&&ep.session===currentEp.session;
+    const thumb=ep.snapshot?`<img class="ep-thumb" src="${ep.snapshot}" loading="lazy" alt="">`:
+      `<div class="ep-thumb" style="background:var(--card);border-radius:5px;width:108px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.5rem">▶</div>`;
+    return `<div class="ep-item${playing?' active':''}" onclick="playAnimeEpisode(${JSON.stringify(ep).replace(/"/g,'&quot;')})">
+      <div class="ep-thumb-box">
+        ${thumb}
+        <div class="ep-now">▶</div>
+      </div>
+      <div class="ep-info">
+        <div class="ep-num">EP ${ep.number}</div>
+        <div class="ep-name">${ep.title||'Episode '+ep.number}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function playAnimeEpisode(ep){
+  if(typeof ep==='string') ep=JSON.parse(ep);
+  animeCurrentEp=ep;
+  renderAnimeEpList(ep);
+  $('vidFrame').src='about:blank';
+  $('epList').querySelector('.ep-item.active')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Show loading in iframe area
+  $('ctrlTitle').textContent='EP '+ep.number+(ep.title?' — '+ep.title:'');
+
+  try{
+    // ElijahCodes API: GET /api/play/:session?episodeId=episodeSession&downloads=false
+    // Returns {sources:[{quality,audio,url,kwik,...}], ...}
+    const res=await fetch(`${ANIME_API}/api/play/${animeSession}?episodeId=${ep.session}&downloads=false`);
+    const playData=await res.json();
+    const sources=playData?.sources||playData||[];
+    if(!sources.length){ showToast('❌ No sources for this episode'); return; }
+
+    // Filter by audio preference
+    let filtered=sources.filter(s=>s.audio===animeAudio||s.fansub?.toLowerCase().includes(animeAudio==='eng'?'dub':'sub'));
+    if(!filtered.length) filtered=sources;
+
+    // Pick quality
+    let src=filtered.find(s=>s.quality===animeQuality)||filtered.find(s=>s.quality==='720p')||filtered[0];
+    const streamUrl=src.kwik||src.url||src.src||src.hls;
+    if(!streamUrl){ showToast('❌ No stream URL found'); return; }
+    loadAnimeStream(streamUrl, ep);
+  }catch(e){
+    console.error('Play error:',e);
+    showToast('❌ Failed to load episode sources');
+  }
+}
+
+async function loadAnimeStream(kwikUrl, ep){
+  // Try direct kwik iframe first
+  $('vidFrame').src=kwikUrl;
+
+  // Also try m3u8 resolution in background for quality
+  try{
+    const res=await fetch(`${ANIME_API}/api/play/download-links?url=${encodeURIComponent(kwikUrl)}`);
+    const data=await res.json();
+    if(data?.m3u8){
+      // Build a simple HLS player page as data URL
+      const hlsPage=buildHlsPage(data.m3u8, ep);
+      $('vidFrame').srcdoc=hlsPage;
+    }
+  }catch(e){
+    // Keep kwik iframe if m3u8 fails
+  }
+}
+
+function buildHlsPage(m3u8Url, ep){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#000;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}video{width:100%;height:100%}#err{color:#fff;font-family:sans-serif;font-size:.8rem;padding:20px;text-align:center;display:none}</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>
+</head><body>
+<video id="v" controls autoplay playsinline></video>
+<div id="err">⚠️ Stream error — try another quality</div>
+<script>
+const v=document.getElementById('v');
+const src="${m3u8Url}";
+if(Hls.isSupported()){
+  const hls=new Hls();
+  hls.loadSource(src);
+  hls.attachMedia(v);
+  hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+  hls.on(Hls.Events.ERROR,(e,d)=>{ if(d.fatal) document.getElementById('err').style.display='block'; });
+}else if(v.canPlayType('application/vnd.apple.mpegurl')){
+  v.src=src; v.play().catch(()=>{});
+}else{ document.getElementById('err').style.display='block'; }
+<\/script></body></html>`;
+}
+
 async function openPlayer(id,type,season,ep){
+  // Route anime to dedicated AnimePahe player
+  if(type==='anime'){
+    const meta=await api(`tv/${id}`);
+    const title=meta?.name||meta?.title||'Anime';
+    openAnimePlayer(id, title, null);
+    return;
+  }
   season=season||1; ep=ep||1;
   pl={ id, type, season, ep, episodes:[], seasons:[], source:0, nextEp:null };
 
@@ -1160,6 +1355,7 @@ async function openPlayer(id,type,season,ep){
 
 /* Source switcher & fullscreen */
 function setSource(idx,el){
+  if(pl.type==='anime') return; // anime uses quality buttons instead
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
   $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
@@ -1284,6 +1480,18 @@ function closePlayer(){
   history.pushState({},'',u);
   goHome();
   $('nav').style.display='';
+  // Restore normal source buttons
+  const srcRow=$('.src-row');
+  if(srcRow) srcRow.innerHTML=`
+    <span class="src-lbl">Source:</span>
+    <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
+    <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
+    <button class="src-btn" onclick="setSource(2,this)">Server 3</button>
+    <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
+    <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
+    <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
+    <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>`;
+  animeSession=null; animeEpisodes=[]; animeCurrentEp=null; animeAudio='jpn'; animeQuality='1080p';
 }
 
 /* ══════════ TOAST ══════════ */
@@ -1737,115 +1945,4 @@ function renderMovies(read){
   $('notifBody').innerHTML=nData.movies.map(item=>notifCard(item,read)).join('');
 }
 function renderShows(read){
-  if(!nData.shows.length){ $('notifBody').innerHTML=emptyState('📺','No show updates'); return; }
-  $('notifBody').innerHTML=nData.shows.map(item=>notifCard(item,read)).join('');
-}
-function renderAnnounce(read){
-  const ann=buildAnnounceItems();
-  if(!ann.length){ $('notifBody').innerHTML=emptyState('📢','No admin announcements'); return; }
-  $('notifBody').innerHTML=ann.map(item=>notifCard(item,read)).join('');
-}
-
-function buildAnnounceItems(){
-  const msg=lsGet('broadcast','');
-  if(!msg) return [];
-  return [{id:'ann_'+msg.slice(0,10),type:'announce',tag:'ANNOUNCEMENT',title:'Admin Message',overview:msg,poster:null,date:null,category:'announce'}];
-}
-
-function notifCard(item, read){
-  const uid=String(item.id);
-  const isRead=read.includes(uid);
-  const thumb=item.poster?`<img class="notif-thumb" src="${IMG}w154${item.poster}" loading="lazy" alt="">`
-    :`<div class="notif-ic-box">${item.category==='announce'?'📢':item.type==='movie'?'🎬':'📺'}</div>`;
-  const rat=item.rating?`★${Number(item.rating).toFixed(1)} · `:'';
-  const dateStr=item.date?new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-  const onclick=item.category==='announce'?'':`onclick="closeNotif();openDetail(${item.id},'${item.type}')"`;
-  return `<div class="notif-item${isRead?'':' unread'}" ${onclick} data-uid="${uid}" ontouchstart="markRead('${uid}')">
-    ${thumb}
-    <div class="notif-info">
-      <div class="notif-tag">${item.tag}</div>
-      <div class="notif-title">${item.title||''}</div>
-      <div class="notif-sub">${item.overview||''}</div>
-      <div class="notif-time">${rat}${dateStr}</div>
-    </div>
-  </div>`;
-}
-
-function emptyState(ic,txt){
-  return `<div class="notif-empty"><div class="notif-empty-ic">${ic}</div><div class="notif-empty-txt">${txt}</div></div>`;
-}
-
-function markRead(uid){
-  const read=lsGet('notifRead',[]);
-  if(!read.includes(uid)){ read.push(uid); lsSet('notifRead',read); }
-  const el=document.querySelector(`.notif-item[data-uid="${uid}"]`);
-  if(el) el.classList.remove('unread');
-  updateNotifBadge();
-}
-
-function markAllRead(){
-  const all=[...nData.movies,...nData.shows,...buildAnnounceItems()].map(i=>String(i.id));
-  lsSet('notifRead',all);
-  updateNotifBadge();
-  showCaughtUp();
-  showToast('✅ All marked as read');
-}
-
-function showCaughtUp(){
-  $('notifBody').innerHTML=`<div class="notif-empty notif-caughtup"><div class="notif-empty-ic">✅</div><div class="notif-empty-txt">You're all caught up</div></div>`;
-}
-
-async function updateNotifBadge(){
-  const read=lsGet('notifRead',[]);
-  // Count unread: announcements + recently released (last 14 days) movies/shows
-  const ann=buildAnnounceItems();
-  const annUnread=ann.filter(a=>!read.includes(String(a.id))).length;
-  // Count unread from fetched data
-  const allItems=[...nData.movies,...nData.shows,...ann];
-  const unread=allItems.filter(i=>!read.includes(String(i.id))).length;
-  const cnt=$('notifCount');
-  if(unread>0){
-    cnt.textContent=unread>9?'9+':unread;
-    cnt.classList.add('show');
-  } else {
-    cnt.classList.remove('show');
-  }
-}
-
-/* ══════════ ANNOUNCEMENT BANNER ══════════ */
-function checkAnnouncement(){
-  const msg=lsGet('broadcast','');
-  if(!msg){ $('annBanner').classList.remove('show'); return; }
-  const dismissed=lsGet('annDismissed','');
-  if(dismissed===msg){ $('annBanner').classList.remove('show'); return; }
-  $('annTxt').textContent=msg;
-  $('annBanner').classList.add('show');
-}
-function dismissAnn(){
-  const msg=lsGet('broadcast','');
-  lsSet('annDismissed',msg);
-  $('annBanner').classList.remove('show');
-}
-
-/* ══════════ BOOT ══════════ */
-(async function boot(){
-  const p=new URLSearchParams(location.search);
-  const id=p.get('id'), type=p.get('type');
-  const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
-  checkVipStatus();
-  checkAnnouncement();
-  initHome();
-  // Pre-fetch notif data in background + update badge
-  Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
-  if(id&&type) setTimeout(()=>openPlayer(id,type,s,e),200);
-})();
-
-window.addEventListener('popstate',()=>{
-  const p=new URLSearchParams(location.search);
-  const id=p.get('id'), type=p.get('type');
-  if(id&&type) openPlayer(id,type,parseInt(p.get('s'))||1,parseInt(p.get('e'))||1);
-  else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
-});
-</script>
-</body>
-</html>
+  if(!nData.shows.length){ $('notifBody').innerHTML=emptyState('📺','No sh
