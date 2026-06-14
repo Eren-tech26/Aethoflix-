@@ -243,17 +243,190 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .reco-body{padding:6px 8px 8px}
 .reco-name{font-size:.7rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .reco-meta{font-size:.56rem;color:var(--sub);margin-top:2px}
+
+/* ─── ANNOUNCEMENT BANNER ─── */
+.ann-banner{display:none;position:sticky;top:var(--nav);z-index:2500;background:linear-gradient(135deg,#1a1a2e,#16213e);border-bottom:1px solid rgba(96,165,250,.25);padding:10px 16px;align-items:center;gap:10px}
+.ann-banner.show{display:flex}
+.ann-ic{font-size:1.1rem;flex-shrink:0}
+.ann-txt{flex:1;font-size:.76rem;font-weight:600;color:#c8d8f8;line-height:1.45}
+.ann-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ann-close:active{background:rgba(255,255,255,.16)}
+.vip-gate{position:fixed;inset:0;z-index:8000;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
+.vip-gate.on{opacity:1;pointer-events:auto}
+.vip-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:30px 24px;width:88%;max-width:340px;text-align:center;position:relative}
+.vip-crown{font-size:2.6rem;margin-bottom:10px}
+.vip-title{font-size:1.1rem;font-weight:900;margin-bottom:4px}
+.vip-sub{font-size:.74rem;color:var(--sub);margin-bottom:20px;line-height:1.5}
+.vip-inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-size:.88rem;font-family:var(--font);outline:none;text-align:center;letter-spacing:3px;transition:.2s;margin-bottom:10px}
+.vip-inp:focus{border-color:var(--gold)}
+.vip-inp::placeholder{letter-spacing:0;color:var(--muted)}
+.vip-btn{width:100%;padding:12px;background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;border:none;border-radius:8px;font-size:.88rem;font-weight:900;cursor:pointer;transition:.15s;font-family:var(--font)}
+.vip-btn:active{transform:scale(.97)}
+.vip-err{font-size:.7rem;color:var(--accent);margin-top:8px;min-height:18px}
+.vip-close{position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--sub);font-size:.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+
+/* ─── VIP BADGE in nav ─── */
+.vip-badge{display:none;align-items:center;gap:4px;background:linear-gradient(135deg,#f5a623,#e8920f);color:#000;font-size:.56rem;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.5px;cursor:pointer}
+.vip-badge.show{display:flex}
+
+/* ─── ADMIN OVERLAY ─── */
+.admin-overlay{position:fixed;inset:0;z-index:9999;background:rgba(2,2,8,.97);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .25s;overflow-y:auto}
+.admin-overlay.on{opacity:1;pointer-events:auto}
+.admin-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0;position:sticky;top:0;background:rgba(2,2,8,.98);z-index:10}
+.admin-logo{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:-.5px}
+.admin-logo span{color:var(--text);font-weight:300}
+.admin-badge{font-size:.54rem;font-weight:900;background:var(--accent);color:#fff;padding:2px 7px;border-radius:4px;letter-spacing:1px;margin-left:6px}
+.admin-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.admin-body{padding:16px 18px 40px;display:flex;flex-direction:column;gap:18px}
+
+/* admin PIN gate */
+.apin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:16px;padding:20px}
+.apin-ic{font-size:2.8rem}
+.apin-title{font-size:1rem;font-weight:800}
+.apin-sub{font-size:.74rem;color:var(--sub);text-align:center}
+.apin-dots{display:flex;gap:12px;margin:8px 0}
+.apin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:.2s}
+.apin-dot.filled{background:var(--accent)}
+.apin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:220px}
+.apin-key{height:52px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;font-size:1.1rem;font-weight:700;color:var(--text);cursor:pointer;transition:.15s;font-family:var(--font)}
+.apin-key:active{background:var(--card);transform:scale(.94)}
+.apin-key.del{font-size:.9rem;color:var(--sub)}
+.apin-err{font-size:.7rem;color:var(--accent);min-height:18px;text-align:center}
+
+/* admin sections */
+.adm-sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.adm-sec-hdr{padding:13px 15px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.adm-sec-ic{font-size:1.1rem}
+.adm-sec-ttl{font-size:.82rem;font-weight:800}
+.adm-sec-sub{font-size:.64rem;color:var(--sub);margin-left:auto}
+.adm-sec-body{padding:14px 15px}
+
+/* stats row */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat-val{font-size:1.5rem;font-weight:900;margin-bottom:2px}
+.stat-lbl{font-size:.6rem;color:var(--sub);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.stat-val.gold{color:var(--gold)}
+.stat-val.red{color:var(--accent)}
+.stat-val.green{color:var(--green)}
+.stat-val.blue{color:var(--blue)}
+
+/* VIP code generator */
+.gen-row{display:flex;gap:8px;margin-bottom:12px}
+.gen-sel{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.76rem;font-family:var(--font);outline:none;-webkit-appearance:none}
+.gen-btn{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.76rem;font-weight:800;cursor:pointer;font-family:var(--font);white-space:nowrap}
+.gen-btn:active{transform:scale(.96)}
+.code-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.code-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+.code-val{font-family:monospace;font-size:.82rem;font-weight:700;flex:1;letter-spacing:1px;color:var(--gold)}
+.code-meta{font-size:.58rem;color:var(--sub)}
+.code-copy{font-size:.7rem;padding:3px 8px;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:5px;color:var(--sub);cursor:pointer;font-family:var(--font)}
+.code-copy:active{background:rgba(255,255,255,.14)}
+.code-revoke{font-size:.7rem;padding:3px 8px;background:rgba(229,9,20,.1);border:1px solid rgba(229,9,20,.2);border-radius:5px;color:var(--accent);cursor:pointer;font-family:var(--font)}
+.code-revoke:active{opacity:.7}
+.code-used{opacity:.45}
+.code-badge{font-size:.5rem;font-weight:900;padding:2px 5px;border-radius:3px;letter-spacing:.5px}
+.code-badge.active{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.code-badge.used{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.code-badge.revoked{background:rgba(229,9,20,.1);color:var(--accent);border:1px solid rgba(229,9,20,.2)}
+.no-codes{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
+
+/* admin tools */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 12px;cursor:pointer;text-align:left;transition:.15s;font-family:var(--font)}
+.tool-btn:active{background:var(--surface)}
+.tool-ic{font-size:1.3rem;margin-bottom:6px}
+.tool-name{font-size:.72rem;font-weight:700;margin-bottom:2px;color:var(--text)}
+.tool-desc{font-size:.58rem;color:var(--sub);line-height:1.4}
+.tool-btn.danger .tool-name{color:var(--accent)}
+.tool-btn.danger{border-color:rgba(229,9,20,.2)}
+
+/* broadcast box */
+.bc-inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:.78rem;font-family:var(--font);outline:none;min-height:70px;resize:none;transition:.2s}
+.bc-inp:focus{border-color:var(--accent)}
+.bc-btn{width:100%;margin-top:8px;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:var(--font)}
+
+/* ─── NOTIFICATION BELL ─── */
+.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:.2s;flex-shrink:0}
+.notif-btn:active{background:rgba(255,255,255,.14)}
+.notif-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;background:var(--accent);border-radius:50%;border:1.5px solid var(--bg);display:none}
+.notif-dot.show{display:block}
+.notif-count{position:absolute;top:1px;right:1px;min-width:14px;height:14px;background:var(--accent);border-radius:7px;font-size:.46rem;font-weight:900;color:#fff;display:none;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg)}
+.notif-count.show{display:flex}
+
+/* ─── NOTIFICATION DRAWER ─── */
+.notif-drawer{position:fixed;top:0;right:0;bottom:0;width:min(88vw,340px);background:var(--surface);border-left:1px solid var(--border);z-index:8500;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;overflow:hidden}
+.notif-drawer.open{transform:translateX(0)}
+.notif-drw-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.notif-drw-title{font-size:.9rem;font-weight:900}
+.notif-drw-actions{display:flex;gap:8px;align-items:center}
+.notif-mark-all{font-size:.64rem;color:var(--accent);font-weight:700;cursor:pointer;background:none;border:none;font-family:var(--font)}
+.notif-drw-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}
+.notif-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.ntab{flex:1;padding:10px 8px;font-size:.66rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font)}
+.ntab.on{color:var(--text);border-bottom-color:var(--accent)}
+.notif-body{flex:1;overflow-y:auto;padding:0}
+.notif-body::-webkit-scrollbar{width:2px}
+.notif-item{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;position:relative;transition:.15s}
+.notif-item:active{background:rgba(255,255,255,.03)}
+.notif-item.unread{background:rgba(229,9,20,.04)}
+.notif-item.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
+.notif-thumb{width:52px;aspect-ratio:2/3;object-fit:cover;border-radius:5px;flex-shrink:0;background:var(--card)}
+.notif-thumb.wide{aspect-ratio:16/9;width:72px}
+.notif-ic-box{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:var(--card)}
+.notif-info{flex:1;min-width:0}
+.notif-tag{font-size:.52rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:2px}
+.notif-title{font-size:.76rem;font-weight:700;line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.notif-sub{font-size:.62rem;color:var(--sub);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.notif-time{font-size:.54rem;color:var(--muted);margin-top:4px}
+.notif-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;gap:8px;color:var(--muted);text-align:center}
+.notif-empty-ic{font-size:2rem}
+.notif-empty-txt{font-size:.76rem}
+.notif-load{display:flex;flex-direction:column;gap:10px;padding:12px 14px}
+.notif-sk-row{display:flex;gap:10px;align-items:flex-start}
+.notif-sk-img{width:52px;height:72px;border-radius:5px;flex-shrink:0}
+.notif-sk-lines{flex:1;display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.notif-sk-line{height:10px;border-radius:4px}
+.notif-sk-line.short{width:55%}
+.notif-backdrop{position:fixed;inset:0;z-index:8400;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s}
+.notif-backdrop.show{opacity:1;pointer-events:auto}
 </style>
 </head>
 <body>
 
 <!-- TOP NAV -->
 <nav class="nav" id="nav">
-  <div class="logo" onclick="goHome()">Aetho<span>flix</span></div>
+  <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
   <div class="nav-r">
+    <div class="vip-badge" id="vipBadge" onclick="openVipGate()">👑 VIP</div>
+    <div class="notif-btn" onclick="openNotif()">
+      🔔
+      <div class="notif-count" id="notifCount"></div>
+    </div>
     <div class="nav-icon" onclick="navSearch()">🔍</div>
   </div>
 </nav>
+
+<!-- NOTIFICATION BACKDROP -->
+<div class="notif-backdrop" id="notifBackdrop" onclick="closeNotif()"></div>
+
+<!-- NOTIFICATION DRAWER -->
+<div class="notif-drawer" id="notifDrawer">
+  <div class="notif-drw-hdr">
+    <div class="notif-drw-title">Notifications</div>
+    <div class="notif-drw-actions">
+      <button class="notif-mark-all" onclick="markAllRead()">Mark all read</button>
+      <button class="notif-drw-close" onclick="closeNotif()">✕</button>
+    </div>
+  </div>
+  <div class="notif-tabs">
+    <button class="ntab on" id="ntab-all" onclick="switchNTab('all',this)">All</button>
+    <button class="ntab" id="ntab-announce" onclick="switchNTab('announce',this)">📢 Admin</button>
+    <button class="ntab" id="ntab-movies" onclick="switchNTab('movies',this)">🎬 Movies</button>
+    <button class="ntab" id="ntab-shows" onclick="switchNTab('shows',this)">📺 Shows</button>
+  </div>
+  <div class="notif-body" id="notifBody"></div>
+</div>
 
 <!-- BOTTOM NAV -->
 <div class="bnav">
@@ -262,6 +435,13 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <button class="bn" id="bn-tv" onclick="browseType('tv','Series')"><span class="bn-ic">📺</span>Series</button>
   <button class="bn" id="bn-anime" onclick="browseType('anime','Anime')"><span class="bn-ic">🏮</span>Anime</button>
   <button class="bn" id="bn-search" onclick="navSearch()"><span class="bn-ic">🔍</span>Search</button>
+</div>
+
+<!-- ANNOUNCEMENT BANNER -->
+<div class="ann-banner" id="annBanner">
+  <span class="ann-ic">📢</span>
+  <span class="ann-txt" id="annTxt"></span>
+  <button class="ann-close" onclick="dismissAnn()">✕</button>
 </div>
 
 <!-- ══════════ HOME PAGE ══════════ -->
@@ -403,6 +583,148 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ VIP GATE ══════════ -->
+<div class="vip-gate" id="vipGate">
+  <div class="vip-box">
+    <button class="vip-close" onclick="closeVipGate()">✕</button>
+    <div class="vip-crown">👑</div>
+    <div class="vip-title">VIP Access</div>
+    <div class="vip-sub">Enter your VIP code to unlock the built-in player. Codes are provided by the admin.</div>
+    <input class="vip-inp" id="vipInp" placeholder="Enter VIP code" maxlength="12" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()">
+    <button class="vip-btn" onclick="redeemVip()">🔓 Unlock VIP</button>
+    <div class="vip-err" id="vipErr"></div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN PANEL ══════════ -->
+<div class="admin-overlay" id="adminOverlay">
+  <!-- PIN gate (shown first) -->
+  <div id="adminPin">
+    <div class="apin-wrap">
+      <div class="apin-ic">🔐</div>
+      <div class="apin-title">Admin Access</div>
+      <div class="apin-sub">Enter your 4-digit PIN to continue</div>
+      <div class="apin-dots" id="apinDots">
+        <div class="apin-dot" id="ad0"></div>
+        <div class="apin-dot" id="ad1"></div>
+        <div class="apin-dot" id="ad2"></div>
+        <div class="apin-dot" id="ad3"></div>
+      </div>
+      <div class="apin-err" id="apinErr"></div>
+      <div class="apin-grid">
+        <button class="apin-key" onclick="pinKey('1')">1</button>
+        <button class="apin-key" onclick="pinKey('2')">2</button>
+        <button class="apin-key" onclick="pinKey('3')">3</button>
+        <button class="apin-key" onclick="pinKey('4')">4</button>
+        <button class="apin-key" onclick="pinKey('5')">5</button>
+        <button class="apin-key" onclick="pinKey('6')">6</button>
+        <button class="apin-key" onclick="pinKey('7')">7</button>
+        <button class="apin-key" onclick="pinKey('8')">8</button>
+        <button class="apin-key" onclick="pinKey('9')">9</button>
+        <button class="apin-key del" onclick="pinDel()">⌫</button>
+        <button class="apin-key" onclick="pinKey('0')">0</button>
+        <button class="apin-key del" onclick="closeAdmin()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin dashboard (shown after PIN) -->
+  <div id="adminDash" style="display:none">
+    <div class="admin-header">
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="admin-logo">Aetho<span>flix</span></div>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="admin-body">
+
+      <!-- Stats -->
+      <div class="adm-sec">
+        <div class="adm-sec-hdr"><span class="adm-sec-ic">📊</span><span class="adm-sec-ttl">Overview</span></div>
+        <div class="adm-sec-body">
+          <div class="stat-row">
+            <div class="stat-card"><div class="stat-val gold" id="statTotal">0</div><div class="stat-lbl">Total Codes</div></div>
+            <div class="stat-card"><div class="stat-val green" id="statActive">0</div><div class="stat-lbl">Active</div></div>
+            <div class="stat-card"><div class="stat-val blue" id="statUsed">0</div><div class="stat-lbl">Redeemed</div></div>
+            <div class="stat-card"><div class="stat-val red" id="statRevoked">0</div><div class="stat-lbl">Revoked</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIP Code Generator -->
+      <div class="adm-sec">
+        <div class="adm-sec-hdr"><span class="adm-sec-ic">🎟️</span><span class="adm-sec-ttl">VIP Code Generator</span></div>
+        <div class="adm-sec-body">
+          <div class="gen-row">
+            <select class="gen-sel" id="codeType">
+              <option value="permanent">Permanent</option>
+              <option value="7d">7 Days</option>
+              <option value="30d">30 Days</option>
+              <option value="1use">1-Time Use</option>
+            </select>
+            <button class="gen-btn" onclick="generateCode()">+ Generate</button>
+          </div>
+          <div class="code-list" id="codeList"><div class="no-codes">No codes yet. Generate one above.</div></div>
+        </div>
+      </div>
+
+      <!-- Admin Tools -->
+      <div class="adm-sec">
+        <div class="adm-sec-hdr"><span class="adm-sec-ic">🛠️</span><span class="adm-sec-ttl">Admin Tools</span></div>
+        <div class="adm-sec-body">
+          <div class="tool-grid">
+            <button class="tool-btn" onclick="toolExportCodes()">
+              <div class="tool-ic">📋</div>
+              <div class="tool-name">Export Codes</div>
+              <div class="tool-desc">Copy all VIP codes to clipboard</div>
+            </button>
+            <button class="tool-btn" onclick="toolClearCache()">
+              <div class="tool-ic">🧹</div>
+              <div class="tool-name">Clear Cache</div>
+              <div class="tool-desc">Reset TMDB image cache</div>
+            </button>
+            <button class="tool-btn" onclick="toolVipStats()">
+              <div class="tool-ic">👁️</div>
+              <div class="tool-name">VIP Members</div>
+              <div class="tool-desc">View who redeemed codes</div>
+            </button>
+            <button class="tool-btn" onclick="toolChangePin()">
+              <div class="tool-ic">🔑</div>
+              <div class="tool-name">Change PIN</div>
+              <div class="tool-desc">Update admin PIN code</div>
+            </button>
+            <button class="tool-btn danger" onclick="toolRevokeAll()">
+              <div class="tool-ic">🚫</div>
+              <div class="tool-name">Revoke All</div>
+              <div class="tool-desc">Revoke all active codes</div>
+            </button>
+            <button class="tool-btn danger" onclick="toolWipeVip()">
+              <div class="tool-ic">💣</div>
+              <div class="tool-name">Wipe VIP Data</div>
+              <div class="tool-desc">Delete all codes & VIP access</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Broadcast / Announcement -->
+      <div class="adm-sec">
+        <div class="adm-sec-hdr"><span class="adm-sec-ic">📢</span><span class="adm-sec-ttl">Site Announcement</span></div>
+        <div class="adm-sec-body">
+          <textarea class="bc-inp" id="bcInp" placeholder="Type announcement shown to all users on next visit…" rows="3"></textarea>
+          <button class="bc-btn" onclick="saveBroadcast()">📢 Save Announcement</button>
+          <button class="bc-btn" style="background:var(--surface);color:var(--sub);border:1px solid var(--border);margin-top:6px" onclick="clearBroadcast()">Clear Announcement</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
 /* ══════════ CONFIG ══════════ */
 const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
@@ -517,9 +839,13 @@ async function buildRows(){
   await addPoster(rows,'⭐ Top Rated Series','tv/top_rated','tv');
   await addPoster(rows,'🇰🇷 K-Drama','discover/tv?with_origin_country=KR','tv');
   divider(rows,'🏮 ANIME');
-  await addWide(rows,'🏮 Popular Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc','anime');
-  await addPoster(rows,'⭐ Top Rated Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200','anime');
-  await addPoster(rows,'🆕 New Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=first_air_date.desc','anime');
+  await addWide(rows,'🏮 Popular Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
+  await addPoster(rows,'🆕 New Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=first_air_date.desc&include_adult=false','anime');
+  await addPoster(rows,'⭐ Top Rated Anime','discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&include_adult=false','anime');
+  await addPoster(rows,'📡 Anime Airing Now','discover/tv?with_genres=16&with_original_language=ja&air_date.lte='+new Date().toISOString().slice(0,10)+'&sort_by=popularity.desc&include_adult=false','anime');
+  await addPoster(rows,'🗡️ Action Anime','discover/tv?with_genres=16,10759&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
+  await addPoster(rows,'💕 Romance Anime','discover/tv?with_genres=16,10749&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
+  await addPoster(rows,'😄 Comedy Anime','discover/tv?with_genres=16,35&with_original_language=ja&sort_by=popularity.desc&include_adult=false','anime');
 }
 function divider(p,lbl){
   const el=document.createElement('div'); el.className='sdiv';
@@ -542,7 +868,7 @@ async function addTop10(p){
 async function addWide(p,title,endpoint,ft){
   const uid='wr'+Math.random().toString(36).slice(2,7);
   const w=document.createElement('div'); w.className='row';
-  w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browseType('${ft}','${title}')">See all</span></div><div class="slider" id="${uid}">${sk('sk-w',5)}</div>`;
+  w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browsePage('${endpoint.replace(/'/g,"\\'")}','${title.replace(/'/g,"\\'")}','${ft}')">See all</span></div><div class="slider" id="${uid}">${sk('sk-w',5)}</div>`;
   p.appendChild(w);
   const data=await api(endpoint); if(!data?.results)return;
   let h='';
@@ -557,7 +883,7 @@ async function addWide(p,title,endpoint,ft){
 async function addPoster(p,title,endpoint,ft){
   const uid='pr'+Math.random().toString(36).slice(2,7);
   const w=document.createElement('div'); w.className='row';
-  w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browseType('${ft}','${title}')">See all</span></div><div class="slider" id="${uid}">${sk('sk-p',8)}</div>`;
+  w.innerHTML=`<div class="row-hdr"><div class="row-ttl">${title}</div><span class="row-more" onclick="browsePage('${endpoint.replace(/'/g,"\\'")}','${title.replace(/'/g,"\\'")}','${ft}')">See all</span></div><div class="slider" id="${uid}">${sk('sk-p',8)}</div>`;
   p.appendChild(w);
   const data=await api(endpoint); if(!data?.results)return;
   let h='';
@@ -580,7 +906,7 @@ async function filterGenre(cat,el){
   const cfgs={
     movie: [['trending/movie/week','🔥 Trending','movie',1],['movie/popular','🎬 Popular','movie'],['movie/top_rated','⭐ Top Rated','movie']],
     tv:    [['trending/tv/week','📺 Trending','tv',1],['tv/popular','⚡ Popular','tv'],['tv/top_rated','⭐ Top Rated','tv']],
-    anime: [['discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc','🏮 Popular','anime',1],['discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200','⭐ Top Rated','anime']],
+    anime: [['discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc&include_adult=false','🏮 Popular','anime',1],['discover/tv?with_genres=16&with_original_language=ja&sort_by=first_air_date.desc&include_adult=false','🆕 New','anime'],['discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&include_adult=false','⭐ Top Rated','anime']],
     action:[['discover/movie?with_genres=28','💥 Action Movies','movie',1],['discover/tv?with_genres=10759','⚡ Action Series','tv']],
     comedy:[['discover/movie?with_genres=35','😄 Comedy Movies','movie',1],['discover/tv?with_genres=35','😂 Comedy Series','tv']],
     horror:[['discover/movie?with_genres=27','👻 Horror','movie',1]],
@@ -611,10 +937,26 @@ async function browseType(type,label){
   const pathMap={
     movie:'movie/popular',
     tv:'tv/popular',
-    anime:'discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc'
+    anime:'discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc&include_adult=false'
   };
   const data=await api(pathMap[type]||'trending/all/week');
   renderGrid(grid,data,type);
+}
+
+/* See all for a specific home row — uses that row's exact endpoint/filter */
+async function browsePage(endpoint,label,ft){
+  showPg('pg-search');
+  $('nav').style.display='none';
+  setNav('');
+  $('srchInp').value='';
+  $('srchX').classList.remove('show');
+  $('ftabs').style.display='none';
+  $('srchTtl').textContent=label||'';
+  lastQ='';
+  const grid=$('srchGrid');
+  grid.innerHTML=sk('sk-p',16).replace(/sk-p/g,'sk-p" style="width:100%;aspect-ratio:2/3');
+  const data=await api(endpoint);
+  renderGrid(grid,data,ft==='undefined'?null:ft);
 }
 
 /* ══════════ SEARCH ══════════ */
@@ -888,12 +1230,414 @@ function closePlayer(){
   $('nav').style.display='';
 }
 
+/* ══════════ TOAST ══════════ */
+let toastTmr=null;
+function showToast(msg,dur=2200){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTmr); toastTmr=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ══════════ STORAGE HELPERS ══════════ */
+// All data stored in localStorage under 'afx_' namespace
+function lsGet(k,def=null){ try{const v=localStorage.getItem('afx_'+k);return v===null?def:JSON.parse(v);}catch{return def;} }
+function lsSet(k,v){ try{localStorage.setItem('afx_'+k,JSON.stringify(v));}catch{} }
+
+/* ══════════ LOGO TAP → ADMIN ══════════ */
+let logoTaps=0, logoTmr=null;
+function logoTap(){
+  goHome();
+  logoTaps++;
+  clearTimeout(logoTmr);
+  if(logoTaps>=5){ logoTaps=0; openAdmin(); return; }
+  logoTmr=setTimeout(()=>logoTaps=0,2000);
+}
+
+/* ══════════ ADMIN PANEL ══════════ */
+const ADMIN_PIN='2611';
+let pinBuf='';
+
+function openAdmin(){
+  $('adminOverlay').classList.add('on');
+  $('adminPin').style.display='';
+  $('adminDash').style.display='none';
+  pinBuf=''; updatePinDots(); $('apinErr').textContent='';
+  document.body.style.overflow='hidden';
+}
+function closeAdmin(){
+  $('adminOverlay').classList.remove('on');
+  document.body.style.overflow='';
+  pinBuf='';
+}
+function pinKey(d){
+  if(pinBuf.length>=4)return;
+  pinBuf+=d; updatePinDots();
+  if(pinBuf.length===4) setTimeout(checkPin,120);
+}
+function pinDel(){ pinBuf=pinBuf.slice(0,-1); updatePinDots(); }
+function updatePinDots(){
+  for(let i=0;i<4;i++) $('ad'+i).classList.toggle('filled',i<pinBuf.length);
+}
+function checkPin(){
+  const saved=lsGet('adminPin',ADMIN_PIN);
+  if(pinBuf===saved){
+    $('adminPin').style.display='none';
+    $('adminDash').style.display='';
+    loadAdminDash();
+  } else {
+    $('apinErr').textContent='Wrong PIN. Try again.';
+    pinBuf=''; updatePinDots();
+    setTimeout(()=>$('apinErr').textContent='',1500);
+  }
+}
+
+/* ══════════ ADMIN DASHBOARD ══════════ */
+function loadAdminDash(){
+  const codes=lsGet('vipCodes',[]);
+  $('statTotal').textContent=codes.length;
+  $('statActive').textContent=codes.filter(c=>c.status==='active').length;
+  $('statUsed').textContent=codes.filter(c=>c.status==='used').length;
+  $('statRevoked').textContent=codes.filter(c=>c.status==='revoked').length;
+  renderCodeList(codes);
+  // Load broadcast
+  const bc=lsGet('broadcast','');
+  $('bcInp').value=bc||'';
+}
+
+function renderCodeList(codes){
+  const list=$('codeList');
+  if(!codes.length){ list.innerHTML='<div class="no-codes">No codes yet.</div>'; return; }
+  list.innerHTML=[...codes].reverse().map((c,ri)=>{
+    const i=codes.length-1-ri;
+    const statusLabel=c.status==='active'?'ACTIVE':c.status==='used'?'USED':'REVOKED';
+    const exp=c.expires?`Exp: ${new Date(c.expires).toLocaleDateString()}`:(c.type==='1use'?'1-time use':'Permanent');
+    return `<div class="code-row${c.status!=='active'?' code-used':''}">
+      <div>
+        <div class="code-val">${c.code}</div>
+        <div class="code-meta">${exp} · ${c.type}</div>
+      </div>
+      <span class="code-badge ${c.status}">${statusLabel}</span>
+      <button class="code-copy" onclick="copyCode('${c.code}')">Copy</button>
+      ${c.status==='active'?`<button class="code-revoke" onclick="revokeCode(${i})">Revoke</button>`:''}
+    </div>`;
+  }).join('');
+}
+
+function generateCode(){
+  const type=$('codeType').value;
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='VIP-';
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  let expires=null;
+  if(type==='7d') expires=Date.now()+7*86400000;
+  if(type==='30d') expires=Date.now()+30*86400000;
+  const codes=lsGet('vipCodes',[]);
+  codes.push({code,type,status:'active',expires,created:Date.now()});
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('✅ Code generated: '+code);
+}
+
+function revokeCode(idx){
+  const codes=lsGet('vipCodes',[]);
+  if(codes[idx]) codes[idx].status='revoked';
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('🚫 Code revoked');
+}
+
+function copyCode(code){
+  navigator.clipboard?.writeText(code).then(()=>showToast('📋 Copied: '+code));
+}
+
+/* ══════════ ADMIN TOOLS ══════════ */
+function toolExportCodes(){
+  const codes=lsGet('vipCodes',[]);
+  if(!codes.length){showToast('No codes to export');return;}
+  const txt=codes.map(c=>`${c.code} | ${c.type} | ${c.status} | ${c.expires?new Date(c.expires).toLocaleDateString():'No expiry'}`).join('\n');
+  navigator.clipboard?.writeText(txt).then(()=>showToast('📋 All codes copied to clipboard'));
+}
+
+function toolClearCache(){
+  // Clear any cached session data
+  sessionStorage.clear();
+  showToast('🧹 Cache cleared');
+}
+
+function toolVipStats(){
+  const redemptions=lsGet('vipRedemptions',[]);
+  if(!redemptions.length){showToast('No redemptions recorded yet');return;}
+  const msg=redemptions.map(r=>`${r.code} redeemed at ${new Date(r.at).toLocaleString()}`).join('\n');
+  alert('VIP Redemptions:\n\n'+msg);
+}
+
+function toolChangePin(){
+  const np=prompt('Enter new 4-digit PIN:');
+  if(!np||!/^\d{4}$/.test(np)){showToast('❌ Must be exactly 4 digits');return;}
+  lsSet('adminPin',np);
+  showToast('🔑 PIN updated successfully');
+}
+
+function toolRevokeAll(){
+  if(!confirm('Revoke ALL active codes? This cannot be undone.'))return;
+  const codes=lsGet('vipCodes',[]);
+  codes.forEach(c=>{if(c.status==='active')c.status='revoked';});
+  lsSet('vipCodes',codes);
+  loadAdminDash();
+  showToast('🚫 All active codes revoked');
+}
+
+function toolWipeVip(){
+  if(!confirm('⚠️ This will delete ALL codes and revoke ALL VIP access. Are you sure?'))return;
+  localStorage.removeItem('afx_vipCodes');
+  localStorage.removeItem('afx_vipRedemptions');
+  localStorage.removeItem('afx_vipStatus');
+  loadAdminDash();
+  checkVipStatus();
+  showToast('💣 All VIP data wiped');
+}
+
+function saveBroadcast(){
+  const msg=$('bcInp').value.trim();
+  lsSet('broadcast',msg);
+  lsSet('annDismissed',''); // reset dismiss so banner shows again
+  nData.shows=[]; nData.movies=[]; // reset cache so announce shows fresh
+  checkAnnouncement();
+  updateNotifBadge();
+  showToast('📢 Announcement saved & live');
+}
+function clearBroadcast(){
+  lsSet('broadcast','');
+  $('bcInp').value='';
+  checkAnnouncement();
+  updateNotifBadge();
+  showToast('🗑️ Announcement cleared');
+}
+
+/* ══════════ VIP SYSTEM ══════════ */
+function checkVipStatus(){
+  const status=lsGet('vipStatus',null);
+  if(status && status.active){
+    // Check expiry
+    if(status.expires && Date.now()>status.expires){
+      lsSet('vipStatus',{active:false});
+      $('vipBadge').classList.remove('show');
+      return false;
+    }
+    $('vipBadge').classList.add('show');
+    return true;
+  }
+  $('vipBadge').classList.remove('show');
+  return false;
+}
+
+function openVipGate(){
+  $('vipGate').classList.add('on');
+  $('vipInp').value=''; $('vipErr').textContent='';
+  document.body.style.overflow='hidden';
+  setTimeout(()=>$('vipInp').focus(),300);
+}
+function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
+
+function redeemVip(){
+  const entered=$('vipInp').value.trim().toUpperCase();
+  if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
+  const codes=lsGet('vipCodes',[]);
+  const idx=codes.findIndex(c=>c.code===entered);
+  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
+  const code=codes[idx];
+  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
+  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
+  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
+  // Mark used if 1-time
+  if(code.type==='1use') codes[idx].status='used';
+  lsSet('vipCodes',codes);
+  // Save VIP status
+  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
+  // Log redemption
+  const rr=lsGet('vipRedemptions',[]);
+  rr.push({code:entered,at:Date.now()});
+  lsSet('vipRedemptions',rr);
+  closeVipGate();
+  checkVipStatus();
+  showToast('👑 VIP unlocked! Welcome.',3000);
+}
+
+/* ══════════ NOTIFICATIONS ══════════ */
+let nTab='all', nData={ movies:[], shows:[], announce:[] };
+
+function openNotif(){
+  $('notifDrawer').classList.add('open');
+  $('notifBackdrop').classList.add('show');
+  document.body.style.overflow='hidden';
+  loadNotifTab(nTab);
+}
+function closeNotif(){
+  $('notifDrawer').classList.remove('open');
+  $('notifBackdrop').classList.remove('show');
+  document.body.style.overflow='';
+}
+function switchNTab(tab, el){
+  nTab=tab;
+  $$('.ntab').forEach(t=>t.classList.remove('on')); el.classList.add('on');
+  loadNotifTab(tab);
+}
+
+async function loadNotifTab(tab){
+  const body=$('notifBody');
+  body.innerHTML=`<div class="notif-load">${Array(5).fill(`<div class="notif-sk-row"><div class="sk notif-sk-img"></div><div class="notif-sk-lines"><div class="sk notif-sk-line"></div><div class="sk notif-sk-line"></div><div class="sk notif-sk-line short"></div></div></div>`).join('')}</div>`;
+
+  const read=lsGet('notifRead',[]);
+
+  if(tab==='announce'){ await fetchMovieNotifs(); await fetchShowNotifs(); if(allRead('announce',read)){showCaughtUp();return;} renderAnnounce(read); return; }
+  if(tab==='movies'){ await fetchMovieNotifs(); if(allRead('movies',read)){showCaughtUp();return;} renderMovies(read); return; }
+  if(tab==='shows'){ await fetchShowNotifs(); if(allRead('shows',read)){showCaughtUp();return;} renderShows(read); return; }
+  // All tab
+  await Promise.all([fetchMovieNotifs(), fetchShowNotifs()]);
+  if(allRead('all',read)){showCaughtUp();return;}
+  renderAll(read);
+}
+
+function allRead(tab,read){
+  let items=[];
+  if(tab==='announce') items=buildAnnounceItems();
+  else if(tab==='movies') items=nData.movies;
+  else if(tab==='shows') items=nData.shows;
+  else items=[...buildAnnounceItems(),...nData.movies,...nData.shows];
+  if(!items.length) return false; // let empty-state messages show normally
+  return items.every(i=>read.includes(String(i.id)));
+}
+
+async function fetchMovieNotifs(){
+  if(nData.movies.length) return;
+  const np = await api('movie/now_playing?page=1');
+  const items=[];
+  (np?.results||[]).slice(0,6).forEach(m=>{
+    items.push({id:m.id,type:'movie',tag:'TRENDING',title:m.title,overview:m.overview,poster:m.poster_path,backdrop:m.backdrop_path,date:m.release_date,rating:m.vote_average,category:'movies'});
+  });
+  nData.movies=items;
+}
+
+async function fetchShowNotifs(){
+  if(nData.shows.length) return;
+  const onair = await api('tv/on_the_air?page=1');
+  const items=[];
+  (onair?.results||[]).slice(0,6).forEach(s=>{
+    items.push({id:s.id,type:'tv',tag:'TRENDING',title:s.name,overview:s.overview,poster:s.poster_path,backdrop:s.backdrop_path,date:s.first_air_date,rating:s.vote_average,category:'shows'});
+  });
+  nData.shows=items;
+}
+
+function renderAll(read){
+  const ann=buildAnnounceItems();
+  const all=[...ann,...nData.movies,...nData.shows];
+  if(!all.length){ $('notifBody').innerHTML=emptyState('🔔','No notifications yet'); return; }
+  $('notifBody').innerHTML=all.map(item=>notifCard(item,read)).join('');
+}
+function renderMovies(read){
+  if(!nData.movies.length){ $('notifBody').innerHTML=emptyState('🎬','No movie updates'); return; }
+  $('notifBody').innerHTML=nData.movies.map(item=>notifCard(item,read)).join('');
+}
+function renderShows(read){
+  if(!nData.shows.length){ $('notifBody').innerHTML=emptyState('📺','No show updates'); return; }
+  $('notifBody').innerHTML=nData.shows.map(item=>notifCard(item,read)).join('');
+}
+function renderAnnounce(read){
+  const ann=buildAnnounceItems();
+  if(!ann.length){ $('notifBody').innerHTML=emptyState('📢','No admin announcements'); return; }
+  $('notifBody').innerHTML=ann.map(item=>notifCard(item,read)).join('');
+}
+
+function buildAnnounceItems(){
+  const msg=lsGet('broadcast','');
+  if(!msg) return [];
+  return [{id:'ann_'+msg.slice(0,10),type:'announce',tag:'ANNOUNCEMENT',title:'Admin Message',overview:msg,poster:null,date:null,category:'announce'}];
+}
+
+function notifCard(item, read){
+  const uid=String(item.id);
+  const isRead=read.includes(uid);
+  const thumb=item.poster?`<img class="notif-thumb" src="${IMG}w154${item.poster}" loading="lazy" alt="">`
+    :`<div class="notif-ic-box">${item.category==='announce'?'📢':item.type==='movie'?'🎬':'📺'}</div>`;
+  const rat=item.rating?`★${Number(item.rating).toFixed(1)} · `:'';
+  const dateStr=item.date?new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+  const onclick=item.category==='announce'?'':`onclick="closeNotif();openDetail(${item.id},'${item.type}')"`;
+  return `<div class="notif-item${isRead?'':' unread'}" ${onclick} data-uid="${uid}" ontouchstart="markRead('${uid}')">
+    ${thumb}
+    <div class="notif-info">
+      <div class="notif-tag">${item.tag}</div>
+      <div class="notif-title">${item.title||''}</div>
+      <div class="notif-sub">${item.overview||''}</div>
+      <div class="notif-time">${rat}${dateStr}</div>
+    </div>
+  </div>`;
+}
+
+function emptyState(ic,txt){
+  return `<div class="notif-empty"><div class="notif-empty-ic">${ic}</div><div class="notif-empty-txt">${txt}</div></div>`;
+}
+
+function markRead(uid){
+  const read=lsGet('notifRead',[]);
+  if(!read.includes(uid)){ read.push(uid); lsSet('notifRead',read); }
+  const el=document.querySelector(`.notif-item[data-uid="${uid}"]`);
+  if(el) el.classList.remove('unread');
+  updateNotifBadge();
+}
+
+function markAllRead(){
+  const all=[...nData.movies,...nData.shows,...buildAnnounceItems()].map(i=>String(i.id));
+  lsSet('notifRead',all);
+  updateNotifBadge();
+  showCaughtUp();
+  showToast('✅ All marked as read');
+}
+
+function showCaughtUp(){
+  $('notifBody').innerHTML=`<div class="notif-empty notif-caughtup"><div class="notif-empty-ic">✅</div><div class="notif-empty-txt">You're all caught up</div></div>`;
+}
+
+async function updateNotifBadge(){
+  const read=lsGet('notifRead',[]);
+  // Count unread: announcements + recently released (last 14 days) movies/shows
+  const ann=buildAnnounceItems();
+  const annUnread=ann.filter(a=>!read.includes(String(a.id))).length;
+  // Count unread from fetched data
+  const allItems=[...nData.movies,...nData.shows,...ann];
+  const unread=allItems.filter(i=>!read.includes(String(i.id))).length;
+  const cnt=$('notifCount');
+  if(unread>0){
+    cnt.textContent=unread>9?'9+':unread;
+    cnt.classList.add('show');
+  } else {
+    cnt.classList.remove('show');
+  }
+}
+
+/* ══════════ ANNOUNCEMENT BANNER ══════════ */
+function checkAnnouncement(){
+  const msg=lsGet('broadcast','');
+  if(!msg){ $('annBanner').classList.remove('show'); return; }
+  const dismissed=lsGet('annDismissed','');
+  if(dismissed===msg){ $('annBanner').classList.remove('show'); return; }
+  $('annTxt').textContent=msg;
+  $('annBanner').classList.add('show');
+}
+function dismissAnn(){
+  const msg=lsGet('broadcast','');
+  lsSet('annDismissed',msg);
+  $('annBanner').classList.remove('show');
+}
+
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
+  checkVipStatus();
+  checkAnnouncement();
   initHome();
+  // Pre-fetch notif data in background + update badge
+  Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
   if(id&&type) setTimeout(()=>openPlayer(id,type,s,e),200);
 })();
 
