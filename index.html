@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>AethoFlix | Premium Streaming Architecture</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#050505">
+</head>
+<body>
+
+  <svg style="display: none;">
+    <symbol id="icon-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></symbol>
+    <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="icon-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="icon-back" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2.5"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+  </svg>
+
+  <nav class="nav-desktop" id="navbar">
+    <div class="nav-brand" onclick="RouteManager.navigate('home')">AETHO<span>FLIX</span></div>
+    <div class="nav-menu">
+      <div class="nav-link active router-link" data-view="home">Home</div>
+      <div class="nav-link router-link" data-view="search">Series</div>
+      <div class="nav-link router-link" data-view="search">Films</div>
+      <div class="nav-link router-link" data-view="watchlist">My List</div>
+    </div>
+    <div class="nav-actions">
+      <div class="search-container">
+        <svg width="18" height="18"><use href="#icon-search"></use></svg>
+        <input type="text" id="global-search" placeholder="Titles, genres..." oninput="App.handleSearch(event)">
+      </div>
+      <div class="profile-dropdown-trigger router-link" data-view="profile">G</div>
+    </div>
+  </nav>
+
+  <main class="app-container">
+    
+    <section id="view-home" class="view-section active">
+      <div class="hero-wrapper" id="hero-banner">
+        <img class="hero-image" id="hero-img" src="" alt="Hero Background">
+        <div class="hero-vignette"></div>
+        <div class="hero-content">
+          <div class="hero-badge" id="hero-type">FEATURED</div>
+          <h1 class="hero-title" id="hero-title">Loading...</h1>
+          <div class="hero-meta">
+            <span class="match">98% Match</span>
+            <span id="hero-year">2026</span>
+            <span class="hd">4K Ultra HD</span>
+          </div>
+          <p class="hero-synopsis" id="hero-desc">Please wait while we connect to the TMDB servers...</p>
+          <div class="hero-controls">
+            <button class="btn-primary" id="hero-play">
+              <svg width="24" height="24"><use href="#icon-play"></use></svg> Play
+            </button>
+            <button class="btn-secondary" id="hero-info">
+              <svg width="24" height="24"><use href="#icon-info"></use></svg> More Info
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="content-matrix" id="home-rows">
+        </div>
+    </section>
+
+    <section id="view-search" class="view-section">
+      <div class="grid-container">
+        <h2 class="search-header" id="search-header-title">Explore Content</h2>
+        <div class="media-grid" id="search-grid">
+          </div>
+      </div>
+    </section>
+
+    <section id="view-watchlist" class="view-section">
+      <div class="grid-container">
+        <h2 class="search-header">My List</h2>
+        <div class="media-grid" id="watchlist-grid">
+          </div>
+      </div>
+    </section>
+
+    <section id="view-profile" class="view-section">
+      <div class="profile-header">
+        <div class="avatar-large">G</div>
+        <div class="profile-details">
+          <h1>Guest Account</h1>
+          <div class="profile-badge">Free Tier</div>
+        </div>
+      </div>
+      
+      <div class="grid-container" style="margin-bottom: 50px;">
+        <h3 style="font-size: 24px; margin-bottom: 20px;">Watch History</h3>
+        <div class="row-track" id="history-track" style="padding-bottom: 10px;">
+          </div>
+      </div>
+
+      <div class="settings-panel">
+        <div class="settings-group">
+          <h3>Playback Settings</h3>
+          <div class="setting-item">
+            <span>Autoplay next episode</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="setting-item">
+            <span>Autoplay previews on Home</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="setting-item">
+            <span>Default Streaming Quality</span>
+            <select style="background:#2f2f2f; color:#fff; padding:5px; border-radius:4px;">
+              <option>Auto</option>
+              <option>1080p</option>
+              <option>4K Ultra HD</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h3>Account Data</h3>
+          <div class="setting-item">
+            <span>Clear Watch History</span>
+            <button style="color:var(--color-primary-main); font-weight:600;" onclick="App.clearHistory()">Clear Data</button>
+          </div>
+          <div class="setting-item">
+            <span>Clear Watchlist</span>
+            <button style="color:var(--color-primary-main); font-weight:600;" onclick="App.clearWatchlist()">Clear List</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this) App.closeModal()">
+    <div class="modal-container">
+      <button class="btn-close-modal" onclick="App.closeModal()">
+        <svg width="24" height="24"><use href="#icon-close"></use></svg>
+      </button>
+      
+      <div class="modal-hero">
+        <img id="modal-img" src="" alt="Backdrop">
+        <div class="modal-fade"></div>
+      </div>
+      
+      <div class="modal-body">
+        <h2 class="modal-title" id="modal-title">Title</h2>
+        <div class="modal-info-bar">
+          <span class="match" id="modal-match">98% Match</span>
+          <span id="modal-year">2026</span>
+          <span style="border:1px solid #808080; padding:1px 6px; font-size:12px; border-radius:3px;">HD</span>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn-primary" id="modal-play">
+            <svg width="24" height="24"><use href="#icon-play"></use></svg> Play
+          </button>
+          <button class="btn-icon-circle" id="modal-add">
+            <svg width="24" height="24"><use href="#icon-add"></use></svg>
+          </button>
+        </div>
+        
+        <div class="modal-grid">
+          <div class="modal-overview" id="modal-desc">Overview...</div>
+          <div class="modal-metadata">
+            <div style="margin-bottom:10px;" id="modal-cast"><b>Cast:</b> <span>Loading...</span></div>
+            <div id="modal-genres"><b>Genres:</b> <span>Loading...</span></div>
+          </div>
+        </div>
+        
+        <div class="episode-section" id="modal-tv-ui" style="display:none;">
+          <h3 style="font-size:24px; margin-bottom:20px;">Episodes</h3>
+          <select class="season-dropdown" id="modal-season" onchange="App.loadEpisodes(this.value)"></select>
+          <div class="episode-list" id="modal-eplist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-container" id="video-player">
+    <iframe class="player-iframe" id="player-frame" allowfullscreen></iframe>
+    <div class="player-overlay" id="player-ui">
+      <div class="player-header">
+        <button class="btn-back-player" onclick="App.closePlayer()">
+          <svg width="32" height="32"><use href="#icon-back"></use></svg>
+          <span id="player-header-title">Playing...</span>
+        </button>
+        <div class="server-cluster" id="server-cluster">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav-mobile">
+    <div class="mobile-nav-items">
+      <div class="m-nav-btn active router-link" data-view="home">
+        <svg width="24" height="24"><use href="#icon-home"></use></svg>
+        <span>Home</span>
+      </div>
+      <div class="m-nav-btn router-link" data-view="search">
+        <svg width="24" height="24"><use href="#icon-search"></use></svg>
+        <span>Search</span>
+      </div>
+      <div class="m-nav-btn router-link" data-view="watchlist">
+        <svg width="24" height="24"><use href="#icon-add"></use></svg>
+        <span>My List</span>
+      </div>
+      <div class="m-nav-btn router-link" data-view="profile">
+        <svg width="24" height="24"><use href="#icon-profile"></use></svg>
+        <span>Profile</span>
+      </div>
+    </div>
+  </nav>
+
+<script>
+/**
+ * ═════════════════════════════════════════════════════════════════════════
+ * AETHOFLIX CORE JAVASCRIPT ENGINE
+ * Handles SPA Routing, TMDB API Integration, LocalStorage, and Player State
+ * ═════════════════════════════════════════════════════════════════════════
+ */
+
+const CONFIG = {
+  API_KEY: 'fca1c3fa675f74cf4aa8d24b72dd4807',
+  BASE_URL: 'https://api.tmdb.org/3',
+  IMG_URL: 'https://image.tmdb.org/t/p/original',
+  IMG_W500: 'https://image.tmdb.org/t/p/w500',
+  SERVERS: {
+    tv: [
+      (id, s, e) => `https://vidout.pages.dev/tv/${id}/${s}/${e}`,
+      (id, s, e) => `https://player.videasy.net/tv/${id}/${s}/${e}`,
+      (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?autoplay=true`
+    ],
+    movie: [
+      (id) => `https://vidout.pages.dev/movie/${id}`,
+      (id) => `https://player.videasy.net/movie/${id}`,
+      (id) => `https://vidlink.pro/movie/${id}?autoplay=true`
+    ],
+    names: ['Vidout HD', 'Videasy', 'VidLink (Backup)']
+  }
+};
+
+// --- DATA LAYER (LocalStorage) ---
+const Storage = {
+  get: (key) => {
+    try { return JSON.parse(localStorage.getItem(key)) || []; } 
+    catch { return []; }
+  },
+  set: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
+  saveHistory: (item, season = 1, episode = 1) => {
+    let hist = Storage.get('af_history').filter(i => i.id !== item.id);
+    hist.unshift({ ...item, season, episode, ts: Date.now() });
+    Storage.set('af_history', hist.slice(0, 30)); // Keep last 30
+  },
+  toggleWatchlist: (item) => {
+    let wl = Storage.get('af_watchlist');
+    const exists = wl.some(i => i.id === item.id);
+    if(exists) wl = wl.filter(i => i.id !== item.id);
+    else wl.unshift(item);
+    Storage.set('af_watchlist', wl);
+    return !exists; // Returns true if added, false if removed
+  }
+};
+
+// --- ROUTER ---
+const RouteManager = {
+  navigate: (viewName) => {
+    // Update DOM Views
+    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+    document.getElementById(`view-${viewName}`).classList.add('active');
+    
+    // Update Nav States (Desktop & Mobile)
+    document.querySelectorAll('.router-link').forEach(l => {
+      l.classList.toggle('active', l.dataset.view === viewName);
+    });
+
+    window.scrollTo(0,0);
+    document.getElementById('global-search').value = ''; // Reset search on route change
+
+    // Trigger View-Specific Logic
+    if(viewName === 'watchlist') App.renderWatchlist();
+    if(viewName === 'profile') App.renderHistory();
+    if(viewName === 'search') App.fetchDefaultSearch();
+  },
+  init: () => {
+    document.querySelectorAll('.router-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        RouteManager.navigate(link.dataset.view);
+      });
+    });
+  }
+};
+
+// --- CORE APP LOGIC ---
+const App = {
+  state: {
+    curItem: null,
+    curPlay: null,
+    playerTimeout: null,
+    searchTimeout: null
+  },
+
+  init: async () => {
+    RouteManager.init();
+    
+    // Scroll Listener for Navbar
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Player Inactivity Listener
+    const playerContainer = document.getElementById('video-player');
+    playerContainer.addEventListener('mousemove', () => {
+      playerContainer.classList.remove('idle');
+      clearTimeout(App.state.playerTimeout);
+      App.state.playerTimeout = setTimeout(() => {
+        playerContainer.classList.add('idle');
+      }, 3000);
+    });
+
+    await App.buildHome();
+  },
+
+  // API Wrapper
+  fetchTMDB: async (endpoint) => {
+    try {
+      const join = endpoint.includes('?') ? '&' : '?';
+      const res = await fetch(`${CONFIG.BASE_URL}${endpoint}${join}api_key=${CONFIG.API_KEY}`);
+      return await res.json();
+    } catch (err) { console.error('TMDB Error:', err); return null; }
+  },
+
+  // UI Builder
+  buildCard: (item, isPortrait = false, progress = 0) => {
+    const type = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+    const imgPath = isPortrait ? item.poster_path : (item.backdrop_path || item.poster_path);
+    if(!imgPath) return ''; // Skip missing images
+    
+    return `
+      <div class="media-card ${isPortrait ? 'portrait' : ''}" onclick="App.openModal(${item.id}, '${type}')">
+        <img src="${CONFIG.IMG_W500 + imgPath}" loading="lazy" alt="${item.title || item.name}">
+        <div class="card-overlay">
+          <div class="card-title">${item.title || item.name}</div>
+          ${progress > 0 ? `
+            <div class="watch-progress-track">
+              <div class="watch-progress-fill" style="width: ${progress}%;"></div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  buildHome: async () => {
+    const trend = await App.fetchTMDB('/trending/all/week');
+    if(!trend || !trend.results) return;
+
+    // 1. Setup Hero
+    const hero = trend.results[0];
+    const heroType = hero.media_type || 'movie';
+    document.getElementById('hero-img').src = CONFIG.IMG_URL + hero.backdrop_path;
+    document.getElementById('hero-type').innerText = heroType === 'tv' ? 'SERIES' : 'FILM';
+    document.getElementById('hero-title').innerText = hero.title || hero.name;
+    document.getElementById('hero-desc').innerText = hero.overview;
+    document.getElementById('hero-play').onclick = () => App.openPlayer(hero.id, heroType, hero.title||hero.name);
+    document.getElementById('hero-info').onclick = () => App.openModal(hero.id, heroType);
+
+    // 2. Setup Rows
+    const rowConfig = [
+      { title: 'Trending Now', end: '/trending/movie/week', portrait: false },
+      { title: 'Popular Series', end: '/tv/popular', portrait: true },
+      { title: 'Cinematic Thrillers', end: '/discover/movie?with_genres=53', portrait: false },
+      { title: 'Top Rated Anime', end: '/discover/tv?with_genres=16&with_original_language=ja', portrait: true },
+      { title: 'Action Packed', end: '/discover/movie?with_genres=28', portrait: false }
+    ];
+
+    let rowsHTML = '';
+    
+    // Inject History row if exists
+    const hist = Storage.get('af_history');
+    if(hist.length > 0) {
+      rowsHTML += `
+        <div class="slider-row">
+          <div class="row-header">Continue Watching</div>
+          <div class="row-track">
+            ${hist.map(i => App.buildCard(i, false, Math.floor(Math.random() * 60) + 10)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Fetch and build external rows
+    for(const r of rowConfig) {
+      const data = await App.fetchTMDB(r.end);
+      if(data && data.results) {
+        rowsHTML += `
+          <div class="slider-row">
+            <div class="row-header">${r.title}</div>
+            <div class="row-track">
+              ${data.results.map(i => App.buildCard(i, r.portrait)).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    document.getElementById('home-rows').innerHTML = rowsHTML;
+  },
+
+  // Search Logic
+  handleSearch: (e) => {
+    const query = e.target.value.trim();
+    clearTimeout(App.state.searchTimeout);
+    
+    // Auto-route to search view if typing from nav
+    if(!document.getElementById('view-search').classList.contains('active') && query) {
+      RouteManager.navigate('search');
+      document.getElementById('global-search').value = query; // keep input
+    }
+
+    if(!query) return App.fetchDefaultSearch();
+
+    App.state.searchTimeout = setTimeout(async () => {
+      document.getElementById('search-header-title').innerText = `Results for "${query}"`;
+      const data = await App.fetchTMDB(`/search/multi?query=${encodeURIComponent(query)}`);
+      const filtered = data.results.filter(i => (i.media_type==='movie'||i.media_type==='tv') && i.poster_path);
+      document.getElementById('search-grid').innerHTML = filtered.map(i => App.buildCard(i, true)).join('') || '<p style="color:gray;">No results found.</p>';
+    }, 500);
+  },
+
+  fetchDefaultSearch: async () => {
+    document.getElementById('search-header-title').innerText = 'Trending Today';
+    const data = await App.fetchTMDB('/trending/all/day');
+    document.getElementById('search-grid').innerHTML = data.results.map(i => App.buildCard(i, true)).join('');
+  },
+
+  // Data Views
+  renderWatchlist: () => {
+    const wl = Storage.get('af_watchlist');
+    document.getElementById('watchlist-grid').innerHTML = wl.length 
+      ? wl.map(i => App.buildCard(i, true)).join('')
+      : '<p style="color:var(--color-text-secondary);">Your list is empty. Explore and add content.</p>';
+  },
+  
+  renderHistory: () => {
+    const hist = Storage.get('af_history');
+    document.getElementById('history-track').innerHTML = hist.length
+      ? hist.map(i => App.buildCard(i, false, 90)).join('')
+      : '<p style="color:var(--color-text-secondary);">No watch history found.</p>';
+  },
+
+  clearHistory: () => { if(confirm("Clear watch history?")) { Storage.set('af_history', []); App.renderHistory(); App.buildHome(); } },
+  clearWatchlist: () => { if(confirm("Clear watchlist?")) { Storage.set('af_watchlist', []); App.renderWatchlist(); } },
+
+  // Detail Modal Logic
+  openModal: async (id, type) => {
+    document.body.style.overflow = 'hidden'; // Lock background scroll
+    const modal = document.getElementById('detail-modal');
+    modal.classList.add('active');
+    
+    // Fetch deep data
+    const data = await App.fetchTMDB(`/${type}/${id}?append_to_response=credits`);
+    App.state.curItem = { id, type, title: data.title||data.name, poster_path: data.poster_path, backdrop_path: data.backdrop_path };
+    
+    // Populate Data
+    document.getElementById('modal-img').src = CONFIG.IMG_URL + data.backdrop_path;
+    document.getElementById('modal-title').innerText = App.state.curItem.title;
+    document.getElementById('modal-match').innerText = Math.round(data.vote_average * 10) + '% Match';
+    document.getElementById('modal-year').innerText = (data.release_date || data.first_air_date || '').slice(0,4);
+    document.getElementById('modal-desc').innerText = data.overview || 'No overview available.';
+    
+    // Meta Data
+    const cast = (data.credits?.cast||[]).slice(0,5).map(c=>c.name).join(', ');
+    const genres = (data.genres||[]).map(g=>g.name).join(', ');
+    document.getElementById('modal-cast').innerHTML = `<b>Cast:</b> <span>${cast}</span>`;
+    document.getElementById('modal-genres').innerHTML = `<b>Genres:</b> <span>${genres}</span>`;
+
+    // Watchlist State Check
+    const inWl = Storage.get('af_watchlist').some(i => i.id === id);
+    const addBtn = document.getElementById('modal-add');
+    addBtn.classList.toggle('active', inWl);
+    addBtn.innerHTML = inWl ? '<svg width="24" height="24"><use href="#icon-check"></use></svg>' : '<svg width="24" height="24"><use href="#icon-add"></use></svg>';
+    
+    // Add Event Listeners
+    addBtn.onclick = () => {
+      const added = Storage.toggleWatchlist(App.state.curItem);
+      addBtn.classList.toggle('active', added);
+      addBtn.innerHTML = added ? '<svg width="24" height="24"><use href="#icon-check"></use></svg>' : '<svg width="24" height="24"><use href="#icon-add"></use></svg>';
+      if(document.getElementById('view-watchlist').classList.contains('active')) App.renderWatchlist();
+    };
+
+    // TV vs Movie Logic
+    if(type === 'tv') {
+      document.getElementById('modal-tv-ui').style.display = 'block';
+      const seasons = data.seasons.filter(s => s.season_number > 0);
+      document.getElementById('modal-season').innerHTML = seasons.map(s => `<option value="${s.season_number}">Season ${s.season_number}</option>`).join('');
+      App.loadEpisodes(seasons[0]?.season_number || 1);
+      document.getElementById('modal-play').onclick = () => { App.closeModal(); App.openPlayer(id, 'tv', App.state.curItem.title, 1, 1); };
+    } else {
+      document.getElementById('modal-tv-ui').style.display = 'none';
+      document.getElementById('modal-play').onclick = () => { App.closeModal(); App.openPlayer(id, 'movie', App.state.curItem.title); };
+    }
+  },
+
+  loadEpisodes: async (sNum) => {
+    document.getElementById('modal-eplist').innerHTML = '<p style="color:gray;">Loading...</p>';
+    const data = await App.fetchTMDB(`/tv/${App.state.curItem.id}/season/${sNum}`);
+    
+    document.getElementById('modal-eplist').innerHTML = data.episodes.map(ep => `
+      <div class="episode-item" onclick="App.closeModal(); App.openPlayer(${App.state.curItem.id}, 'tv', '${App.state.curItem.title.replace(/'/g,"\\'")}', ${sNum}, ${ep.episode_number})">
+        <div class="episode-number">${ep.episode_number}</div>
+        <div class="episode-thumbnail">
+          <img src="${CONFIG.IMG_W500 + ep.still_path}" loading="lazy">
+          <div class="episode-play-icon"><svg width="20" height="20"><use href="#icon-play"></use></svg></div>
+        </div>
+        <div class="episode-details">
+          <h4>${ep.name}</h4>
+          <p>${ep.overview}</p>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  closeModal: () => {
+    document.getElementById('detail-modal').classList.remove('active');
+    if(!document.getElementById('video-player').classList.contains('active')) {
+      document.body.style.overflow = 'auto';
+    }
+  },
+
+  // Player Logic
+  openPlayer: (id, type, title, s=1, e=1) => {
+    document.body.style.overflow = 'hidden';
+    App.state.curPlay = { id, type, title, s, e };
+    
+    // Save to history automatically
+    if(App.state.curItem) Storage.saveHistory(App.state.curItem, s, e);
+
+    const player = document.getElementById('video-player');
+    player.classList.add('active');
+    document.getElementById('player-header-title').innerText = type === 'tv' ? `${title} (S${s} E${e})` : title;
+
+    // Build Server Buttons
+    document.getElementById('server-cluster').innerHTML = CONFIG.SERVERS.names.map((name, idx) => `
+      <button class="btn-server ${idx===0?'active':''}" onclick="App.switchServer(${idx}, this)">${name}</button>
+    `).join('');
+
+    App.switchServer(0);
+  },
+
+  switchServer: (idx, btnNode) => {
+    if(btnNode) {
+      document.querySelectorAll('.btn-server').forEach(b => b.classList.remove('active'));
+      btnNode.classList.add('active');
+    }
+    const { id, type, s, e } = App.state.curPlay;
+    const urlFunc = CONFIG.SERVERS[type][idx];
+    document.getElementById('player-frame').src = urlFunc(id, s, e);
+  },
+
+  closePlayer: () => {
+    document.getElementById('video-player').classList.remove('active');
+    document.getElementById('player-frame').src = '';
+    document.body.style.overflow = 'auto';
+    App.state.curPlay = null;
+    
+    // Refresh history if profile is open
+    if(document.getElementById('view-profile').classList.contains('active')) App.renderHistory();
+    // Refresh home rows to update "Continue Watching"
+    if(document.getElementById('view-home').classList.contains('active')) App.buildHome();
+  }
+};
+
+// Bootstrap Application
+document.addEventListener('DOMContentLoaded', App.init);
+
+</script>
+</body>
+</html>
+
