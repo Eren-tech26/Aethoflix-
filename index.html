@@ -1354,25 +1354,22 @@ function switchAnimeSrc(idx,el){
     $('vidFrame').src=`https://vidnest.fun/animepahe/${pl.anilistId}/${pl.ep}/${lang}`;
   } else if(pl.malId){
     $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${pl.ep}/${lang}`;
-  
+  }
+}
 function goFS(){
-  const f=$('#vidFrame');
-  
+  const f=$('vidFrame');
+  if(screen.orientation&&screen.orientation.lock){
+    screen.orientation.lock('landscape').catch(()=>{});
+  }
   if(f.requestFullscreen) f.requestFullscreen();
   else if(f.webkitRequestFullscreen) f.webkitRequestFullscreen();
   else if(f.mozRequestFullScreen) f.mozRequestFullScreen();
-
   document.addEventListener('fullscreenchange',()=>{
-    if(document.fullscreenElement){
-      // ✅ Lock AFTER entering fullscreen
-      if(screen.orientation&&screen.orientation.lock){
-        screen.orientation.lock('landscape').catch(()=>{});
-      }
-    } else {
+    if(!document.fullscreenElement){
       screen.orientation.unlock();
     }
   },{once:true});
-}  // ← THIS closing brace was missing in your original code
+                                                    }
 function shareUrl(){
   const url=location.href;
   if(navigator.share) navigator.share({title:document.title,url});
