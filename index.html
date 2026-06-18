@@ -1372,7 +1372,7 @@ function goFS(){
       screen.orientation.unlock();
     }
   },{once:true});
-}
+}  // ← THIS closing brace was missing in your original code
 function shareUrl(){
   const url=location.href;
   if(navigator.share) navigator.share({title:document.title,url});
