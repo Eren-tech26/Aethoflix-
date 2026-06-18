@@ -1097,14 +1097,14 @@ function srcUrl(id,type,season,ep,src){
 
   // ── MOVIES & TV SERIES: unchanged ──
   const urls=isTV?[
-  'https://zxcstream.xyz/api/embed/?type=tv&id=${id}&season=${season}&episode=${ep}',  // ← REPLACE THIS ONE
+`https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,  // ← REPLACE THIS ONE
   'https://vidout.pages.dev/tv/${id}/${season}/${ep}',  // ← KEEP
   'https://vidnest.fun/tv/${id}/${season}/${ep}',       // ← KEEP
   'https://player.videasy.net/tv/${id}/${season}/${ep}', // ← KEEP
   'https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true', // ← KEEP
   'https://vidlux.xyz/embed/tv/${id}/${season}/${ep}',  // ← KEEP
 ]:[
-  'https://zxcstream.xyz/api/embed/?type=movie&id=${id}',  // ← REPLACE THIS ONE
+    `https://zxcstream.xyz/player/movie/${id}`,  // ← REPLACE THIS ONE
   'https://vidout.pages.dev/movie/${id}',      // ← KEEP
   'https://vidnest.fun/movie/${id}',           // ← KEEP
   'https://player.videasy.net/movie/${id}',    // ← KEEP
