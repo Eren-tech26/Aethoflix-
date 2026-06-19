@@ -1426,9 +1426,15 @@ function renderEps(eps,currentEp){
 }
 function playEp(season,ep){
   pl.season=season; pl.ep=ep;
-  if(pl.type==='anime'&&pl.malId){
+  if(pl.type==='anime'){
     const lang=pl.source===1?'dub':'sub';
-    $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${ep}/${lang}`;
+    if(pl.anilistId){
+      $('vidFrame').src=`https://vidnest.fun/animepahe/${pl.anilistId}/${ep}/${lang}`;
+    } else if(pl.malId){
+      $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${ep}/${lang}`;
+    } else {
+      $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
+    }
   } else {
     $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
   }
