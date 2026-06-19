@@ -1095,22 +1095,22 @@ function srcUrl(id,type,season,ep,src){
     if(urls.length) return urls[src]||urls[0];
   }
 
-  // ── MOVIES & TV SERIES: unchanged ──
+  /// ── MOVIES & TV SERIES ──
   const urls=isTV?[
-`https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,  // ← REPLACE THIS ONE
-  'https://vidout.pages.dev/tv/${id}/${season}/${ep}',  // ← KEEP
-  'https://vidnest.fun/tv/${id}/${season}/${ep}',       // ← KEEP
-  'https://player.videasy.net/tv/${id}/${season}/${ep}', // ← KEEP
-  'https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true', // ← KEEP
-  'https://vidlux.xyz/embed/tv/${id}/${season}/${ep}',  // ← KEEP
-]:[
-    `https://zxcstream.xyz/player/movie/${id}`,  // ← REPLACE THIS ONE
-  'https://vidout.pages.dev/movie/${id}',      // ← KEEP
-  'https://vidnest.fun/movie/${id}',           // ← KEEP
-  'https://player.videasy.net/movie/${id}',    // ← KEEP
-  'https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true', // ← KEEP
-  'https://vidlux.xyz/embed/movie/${id}',      // ← KEEP
-];
+    `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
+    `https://vidout.pages.dev/tv/${id}/${season}/${ep}`,
+    `https://vidnest.fun/tv/${id}/${season}/${ep}`,
+    `https://player.videasy.net/tv/${id}/${season}/${ep}`,
+    `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true`,
+    `https://vidlux.xyz/embed/tv/${id}/${season}/${ep}`,
+  ]:[
+    `https://zxcstream.xyz/player/movie/${id}`,
+    `https://vidout.pages.dev/movie/${id}`,
+    `https://vidnest.fun/movie/${id}`,
+    `https://player.videasy.net/movie/${id}`,
+    `https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true`,
+    `https://vidlux.xyz/embed/movie/${id}`,
+  ];
   return urls[src]||urls[0];
 }
 
