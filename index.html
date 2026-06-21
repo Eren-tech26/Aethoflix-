@@ -1146,7 +1146,9 @@ function srcUrl(id,type,season,ep,src){
   `https://player.videasy.net/movie/${id}`,
   `https://vidlink.pro/movie/${id}?autoplay=true`,
   `https://zxcstream.xyz/player/movie/${id}`,
-];
+  ];
+  return urls[src]||urls[0];
+}
 /* ══════════ ANIME API (AnimeKai via Render) ══════════ */
 let animeState = { slug:null, aniId:null, episodes:[], hls:null };
 
