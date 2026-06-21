@@ -1133,23 +1133,21 @@ function srcUrl(id,type,season,ep,src){
 
   /// ── MOVIES & TV SERIES ──
   const urls=isTV?[
-  `https://vidsrc.sbs/embed/tv/${id}/${season}/${ep}`,
+`https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
   `https://vidout.pages.dev/tv/${id}/${season}/${ep}`,
   `https://vidnest.fun/tv/${id}/${season}/${ep}`,
   `https://player.videasy.net/tv/${id}/${season}/${ep}`,
   `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true`,
-  `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
+    `https://vidsrc.sbs/embed/tv/${id}/${season}/${ep}`,
 ]:[
-  `https://vidsrc.sbs/embed/movie/${id}`,
+  `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
   `https://vidout.pages.dev/movie/${id}`,
   `https://vidnest.fun/movie/${id}`,
   `https://player.videasy.net/movie/${id}`,
   `https://vidlink.pro/movie/${id}?autoplay=true`,
-  `https://zxcstream.xyz/player/movie/${id}`,
+    `https://vidsrc.sbs/embed/tv/${id}/${season}/${ep}`,
   ];
-  const url = urls[src]||urls[0];
-return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-return `/api/proxy?target=${encodeURIComponent(url)}`;
+  return urls[src]||urls[0];
 }
 /* ══════════ ANIME API (AnimeKai via Render) ══════════ */
 let animeState = { slug:null, aniId:null, episodes:[], hls:null };
@@ -2145,4 +2143,4 @@ _origOpen(url, '_blank');
   
 </script>
 </body>
-</html>
+  </html>
