@@ -1334,36 +1334,44 @@ async function openPlayer(id,type,season,ep){
   saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
   // TV / Anime: load episodes
-  if(type==='anime'){
-    $('epSec').style.display='block';
-    pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
-    buildSeasonRow();
-    // Fetch MAL ID from TMDB external IDs then load megaplay embed
-    // Fetch external IDs — get both MAL and AniList
-    const extIds = await api(`tv/${id}/external_ids`);
-    pl.malId = extIds?.mal_id || null;
-    pl.anilistId = null; // vidnest uses AniList — check known field names
-    if(extIds){
-      pl.anilistId = extIds.anilist_id || extIds.tvdb_id ? null : null;
-      // TMDB doesn't provide AniList directly, use TMDB id as fallback for vidnest
-      pl.anilistId = extIds.anilist_id || null;
-    }
-    // Server 1 = vidnest (uses AniList or TMDB id), Server 2+ = megaplay (uses MAL)
-    if(pl.anilistId){
-      $('vidFrame').src=`https://vidnest.fun/animepahe/${pl.anilistId}/${ep}/sub`;
-    } else if(pl.malId){
-      $('vidFrame').src=srcUrl(id,type,season,ep,0);
-    } else {
-      showToast('⚠️ No ID found, trying fallback...');
-      $('vidFrame').src=`https://vidnest.fun/tv/${id}/${season}/${ep}`;
-    }
-    await loadEpisodes(season,ep);
-  } else if(type!=='movie'){
-    $('epSec').style.display='block';
-    pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
-    buildSeasonRow();
-    await loadEpisodes(season,ep);
+// Load frame
+hideAnimePlayer();
+$('vidFrame').style.display='block';
+
+if(type==='anime'){
+  $$('.src-btn').forEach((b,i)=>{
+    if(i<2){ b.style.display=''; b.textContent=i===0?'SUB':'DUB'; b.classList.toggle('on',i===0); b.onclick=()=>switchAnimeSrc(i,b); }
+    else { b.style.display='none'; }
+  });
+} else {
+  $('vidFrame').src=srcUrl(id,type,season,ep,0);
+  $$('.src-btn').forEach((b,i)=>{ b.style.display=''; b.textContent='Server '+(i+1); b.classList.toggle('on',i===0); b.onclick=()=>setSource(i,b); });
+}
+
+// TV / Anime: load episodes
+if(type==='anime'){
+  $('epSec').style.display='block';
+  pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
+  buildSeasonRow();
+  
+  const extIds = await api(`tv/${id}/external_ids`);
+  pl.malId = extIds?.mal_id || null;
+  pl.anilistId = extIds?.anilist_id || null;
+  
+  if(pl.anilistId){
+    $('vidFrame').src=`https://vidnest.fun/animepahe/${pl.anilistId}/${ep}/sub`;
+  } else if(pl.malId){
+    $('vidFrame').src=`https://megaplay.buzz/stream/mal/${pl.malId}/${ep}/sub`;
+  } else {
+    $('vidFrame').src=srcUrl(id,type,season,ep,0);
   }
+  await loadEpisodes(season,ep);
+} else if(type!=='movie'){
+  $('epSec').style.display='block';
+  pl.seasons=(meta.seasons||[]).filter(s=>s.season_number>0);
+  buildSeasonRow();
+  await loadEpisodes(season,ep);
+}
 
   // Recommendations
   loadReco(id,tmdbType);
