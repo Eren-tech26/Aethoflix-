@@ -1,4 +1,8 @@
 {
-  "cleanUrls": true,
-  "rewrites":[{"source":"/(.*)","destination":"/index.html"}]
+  "functions": {
+    "api/proxy.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }
