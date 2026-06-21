@@ -1374,13 +1374,9 @@ function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
   const frame=$('vidFrame');
-  if(idx===0){
-    frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock');
-  } else {
-    frame.removeAttribute('sandbox');
-  }
+  frame.removeAttribute('sandbox');
   frame.src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
-}
+  }
 // Anime SUB/DUB switcher (0=sub, 1=dub)
 function switchAnimeSrc(idx,el){
   pl.source=idx;
