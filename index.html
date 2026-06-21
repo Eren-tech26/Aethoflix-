@@ -556,18 +556,29 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <div class="ctrl-title" id="ctrlTitle"></div>
       <button class="ctrl-share" onclick="shareUrl()" title="Share">🔗</button>
     </div>
-    <!-- Row 2: source switcher + fullscreen -->
-    <div class="src-row">
-      <span class="src-lbl">Source:</span>
-      <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
-      <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
-      <button class="src-btn" onclick="setSource(2,this)">Server 3</button>
-      <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
-      <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
-      <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
-      <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
+<!-- Row 2: source switcher + fullscreen + downloads -->
+<div class="src-row">
+  <span class="src-lbl">Source:</span>
+  <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
+  <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
+  <button class="src-btn" onclick="setSource(2,this)">Server 3</button>
+  <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
+  <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
+  <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
+  
+  <!-- DOWNLOAD DROPDOWN -->
+  <div style="position:relative;margin-left:auto">
+    <button class="src-btn" onclick="toggleDownloadMenu()" style="background:var(--accent);border-color:var(--accent);color:#fff">📥 Download</button>
+    <div id="downloadMenu" style="display:none;position:absolute;top:100%;right:0;background:var(--card);border:1px solid var(--border);border-radius:8px;min-width:140px;z-index:1000;margin-top:4px">
+      <a href="#" onclick="openDownload('480p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 480p</a>
+      <a href="#" onclick="openDownload('720p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 720p</a>
+      <a href="#" onclick="openDownload('1080p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 1080p</a>
+      <a href="#" onclick="openDownload('4K',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;font-size:.76rem;font-weight:600">📥 4K</a>
     </div>
   </div>
+  
+  <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
+</div>
 
   <!-- Info -->
   <div class="pl-info">
@@ -2066,6 +2077,33 @@ window.addEventListener('popstate',()=>{
   if(id&&type) openPlayer(id,type,parseInt(p.get('s'))||1,parseInt(p.get('e'))||1);
   else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
 });
+
+/* ══════════ DOWNLOADS ══════════ */
+function toggleDownloadMenu(){
+  const menu=$('downloadMenu');
+  menu.style.display=menu.style.display==='none'?'block':'none';
+  // Close when clicking outside
+  document.addEventListener('click',(e)=>{
+    if(!e.target.closest('#downloadMenu')&&!e.target.textContent.includes('Download')){
+      menu.style.display='none';
+    }
+  },{once:true});
+}
+
+function openDownload(quality,event){
+  event.preventDefault();
+  const type=pl.type==='anime'?'tv':pl.type;
+  let url=`https://zxcstream.xyz/download/${type}/${pl.id}?quality=${quality}`;
+  
+  // For TV shows, add season and episode
+  if(type==='tv'){
+    url+=`&season=${pl.season}&episode=${pl.ep}`;
+  }
+  
+  window.open(url,'_blank');
+  $('downloadMenu').style.display='none';
+  showToast('📥 Opening download...',1500);
+}
 </script>
 </body>
 </html>
