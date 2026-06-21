@@ -1148,6 +1148,7 @@ function srcUrl(id,type,season,ep,src){
   `https://zxcstream.xyz/player/movie/${id}`,
   ];
   const url = urls[src]||urls[0];
+return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 return `/api/proxy?target=${encodeURIComponent(url)}`;
 }
 /* ══════════ ANIME API (AnimeKai via Render) ══════════ */
