@@ -1425,7 +1425,9 @@ function renderEps(eps,currentEp){
   }).join('');
 }
 function playEp(season,ep){
-  pl.season=season; pl.ep=ep;
+  pl.season=season; 
+  pl.ep=ep;
+  
   if(pl.type==='anime'){
     const lang=pl.source===1?'dub':'sub';
     if(pl.anilistId){
@@ -1438,9 +1440,15 @@ function playEp(season,ep){
   } else {
     $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
   }
+  
   window.scrollTo(0,0);
-  renderEps(pl.episodes,ep);
-  updateNext();
+  
+  // ✅ FIX: Reload episodes for this season to get fresh data
+  loadEpisodes(season, ep).then(() => {
+    renderEps(pl.episodes, ep);
+    updateNext();
+  });
+  
   const u=new URL(location.href.split('?')[0]);
   u.searchParams.set('id',pl.id);u.searchParams.set('type',pl.type);
   u.searchParams.set('s',season);u.searchParams.set('e',ep);
