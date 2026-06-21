@@ -565,17 +565,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
   <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
   <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
-  <div style="position:relative;margin-left:auto">
-    <button class="src-btn" onclick="toggleDownloadMenu()" style="background:var(--accent);border-color:var(--accent);color:#fff">📥 Download</button>
-    <div id="downloadMenu" style="display:none;position:absolute;top:100%;right:0;background:var(--card);border:1px solid var(--border);border-radius:8px;min-width:140px;z-index:1000;margin-top:4px">
-      <a href="#" onclick="openDownload('480p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 480p</a>
-      <a href="#" onclick="openDownload('720p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 720p</a>
-      <a href="#" onclick="openDownload('1080p',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600">📥 1080p</a>
-      <a href="#" onclick="openDownload('4K',event)" style="display:block;padding:10px 14px;color:var(--text);text-decoration:none;font-size:.76rem;font-weight:600">📥 4K</a>
-    </div>
-  </div>
-  <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
-</div>
+  <button class="ctrl-fs" onclick="goFS()" style="margin-left:auto">⛶ Fullscreen</button>
 
   <!-- Info -->
   <div class="pl-info">
