@@ -595,7 +595,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
   <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
   <div style="position:relative;margin-left:auto">
-  <button class="src-btn" id="dlBtn" onclick="toggleDlMenu()" style="background:var(--accent);border-color:var(--accent);color:#fff">📥 Download</button>
+  <button class="dl-btn" id="dlBtn" onclick="toggleDlMenu()" style="padding:5px 12px;background:var(--accent);border:1.5px solid var(--accent);border-radius:14px;font-size:.64rem;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;font-family:var(--font)">📥 Download</button>
   <div class="dl-menu" id="dlMenu" style="display:none;position:absolute;top:100%;right:0;background:var(--card);border:1px solid var(--border);border-radius:8px;min-width:140px;z-index:1000;margin-top:4px">
     <button class="dl-option" onclick="downloadQuality('480p')">📥 480p</button>
     <button class="dl-option" onclick="downloadQuality('720p')">📥 720p</button>
