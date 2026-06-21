@@ -2128,7 +2128,8 @@ function downloadQuality(quality){
     url += `&season=${pl.season || 1}&episode=${pl.ep || 1}`;
   }
   
-  window.open(url, '_blank');
+  document._allowPopup = true;
+_origOpen(url, '_blank');
   $('dlMenu').style.display = 'none';
   dlMenuOpen = false;
   
