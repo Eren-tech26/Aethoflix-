@@ -1133,23 +1133,20 @@ function srcUrl(id,type,season,ep,src){
 
   /// ── MOVIES & TV SERIES ──
   const urls=isTV?[
-    `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
-    `https://vidout.pages.dev/tv/${id}/${season}/${ep}`,
-    `https://vidnest.fun/tv/${id}/${season}/${ep}`,
-    `https://player.videasy.net/tv/${id}/${season}/${ep}`,
-    `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true`,
-    `https://vidlux.xyz/embed/tv/${id}/${season}/${ep}`,
-  ]:[
-    `https://zxcstream.xyz/player/movie/${id}`,
-    `https://vidout.pages.dev/movie/${id}`,
-    `https://vidnest.fun/movie/${id}`,
-    `https://player.videasy.net/movie/${id}`,
-    `https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true`,
-    `https://vidlux.xyz/embed/movie/${id}`,
-  ];
-  return urls[src]||urls[0];
-}
-
+  `https://vidsrc.sbs/embed/tv/${id}/${season}/${ep}`,
+  `https://vidout.pages.dev/tv/${id}/${season}/${ep}`,
+  `https://vidnest.fun/tv/${id}/${season}/${ep}`,
+  `https://player.videasy.net/tv/${id}/${season}/${ep}`,
+  `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true`,
+  `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
+]:[
+  `https://vidsrc.sbs/embed/movie/${id}`,
+  `https://vidout.pages.dev/movie/${id}`,
+  `https://vidnest.fun/movie/${id}`,
+  `https://player.videasy.net/movie/${id}`,
+  `https://vidlink.pro/movie/${id}?autoplay=true`,
+  `https://zxcstream.xyz/player/movie/${id}`,
+];
 /* ══════════ ANIME API (AnimeKai via Render) ══════════ */
 let animeState = { slug:null, aniId:null, episodes:[], hls:null };
 
