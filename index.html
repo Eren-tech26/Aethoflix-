@@ -576,6 +576,15 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="pl-cast" id="plCast"></div>
   </div>
 
+<!-- Server 1 episode notice -->
+  <div style="background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.2);border-radius:8px;padding:12px 14px;margin:10px 4% 0;display:none" id="s1Notice">
+    <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:4px">⚠️ SERVER 1 NOTE</div>
+    <div style="font-size:.68rem;color:var(--sub);line-height:1.5">On Server 1 (ZxcStream), you must watch the <b>full episode</b> before "Up Next" appears. Switch to Server 2-6 for instant episode changes.</div>
+  </div>
+
+  <!-- Next episode banner -->
+  <div class="next-banner" id="nextBanner">
+    
   <!-- Next episode banner -->
   <div class="next-banner" id="nextBanner">
     <img class="nb-img" id="nbImg" src="" alt="">
@@ -1180,7 +1189,12 @@ function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
   $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
-}
+  
+  // Show/hide Server 1 notice
+  const notice=$('s1Notice');
+  if(notice){
+    notice.style.display=idx===0?'block':'none';
+  }
 function goFS(){
   const f=$('vidFrame');
   if(f.requestFullscreen) f.requestFullscreen();
