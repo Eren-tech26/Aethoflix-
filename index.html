@@ -576,12 +576,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="pl-cast" id="plCast"></div>
   </div>
 
-<!-- Server 1 episode notice -->
-  <div style="background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.2);border-radius:8px;padding:12px 14px;margin:10px 4% 0;display:none" id="s1Notice">
-    <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:4px">⚠️ SERVER 1 NOTE</div>
-    <div style="font-size:.68rem;color:var(--sub);line-height:1.5">On Server 1 (ZxcStream), you must watch the <b>full episode</b> before "Up Next" appears. Switch to Server 2-6 for instant episode changes.</div>
-  </div>
-
   <!-- Next episode banner -->
   <div class="next-banner" id="nextBanner">
     <img class="nb-img" id="nbImg" src="" alt="">
@@ -592,7 +586,13 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     </div>
     <div class="nb-play" onclick="playNextEp()">▶</div>
   </div>
-    
+
+<!-- Server 1 episode notice -->
+  <div style="background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.2);border-radius:8px;padding:12px 14px;margin:10px 4% 0;display:none" id="s1Notice">
+    <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:4px">⚠️ SERVER 1 NOTE</div>
+    <div style="font-size:.68rem;color:var(--sub);line-height:1.5">On Server 1 (ZxcStream), you must watch the <b>full episode</b> before "Up Next" appears. Switch to Server 2-6 for instant episode changes.</div>
+  </div>
+
   <!-- Episode / Season -->
   <div class="ep-sec" id="epSec" style="display:none">
     <div class="ep-hdr"><div class="ep-ttl">Episodes</div></div>
