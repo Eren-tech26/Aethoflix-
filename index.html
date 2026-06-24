@@ -577,14 +577,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 
   <!-- Next episode banner -->
-  <div class="next-banner" id="nextBanner" onclick="playNextEp()">
+  <div class="next-banner" id="nextBanner">
     <img class="nb-img" id="nbImg" src="" alt="">
     <div class="nb-info">
       <div class="nb-lbl">Up Next</div>
       <div class="nb-title" id="nbTitle"></div>
       <div class="nb-sub" id="nbSub"></div>
     </div>
-    <div class="nb-play">▶</div>
+    <div class="nb-play" onclick="playNextEp()">▶</div>
   </div>
 
   <!-- Episode / Season -->
