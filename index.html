@@ -1247,21 +1247,28 @@ function playEp(season,ep){
   const newSrc=srcUrl(pl.id,pl.type,season,ep,pl.source);
   const frame=$('vidFrame');
   
-  // ZxcStream needs harder reset
-  if(pl.source===0){ // Server 1 = ZxcStream
-    frame.style.display='none';
+  // ZxcStream (Server 1) - Full reload
+  if(pl.source===0){
+    // Complete reset for ZxcStream
+    frame.src='about:blank';
     setTimeout(()=>{
-      frame.src='';
-      setTimeout(()=>{
-        frame.src=newSrc;
-        frame.style.display='block';
-      }, 150);
-    }, 50);
+      frame.src=newSrc;
+    }, 200);
   } else {
-    frame.src='';
-    setTimeout(()=>{ frame.src=newSrc; }, 100);
+    frame.src=newSrc;
   }
   
+  setTimeout(()=>{
+    window.scrollTo(0,0);
+    renderEps(pl.episodes,ep);
+    updateNext();
+  }, 300);
+  
+  const u=new URL(location.href.split('?')[0]);
+  u.searchParams.set('id',pl.id);u.searchParams.set('type',pl.type);
+  u.searchParams.set('s',season);u.searchParams.set('e',ep);
+  history.replaceState({},'',u);
+}
   window.scrollTo(0,0);
   renderEps(pl.episodes,ep);
   updateNext();
