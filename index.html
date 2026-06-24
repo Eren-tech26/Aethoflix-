@@ -1186,12 +1186,11 @@ function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
   $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
-  
-  // Show/hide Server 1 notice
   const notice=$('s1Notice');
   if(notice){
     notice.style.display=idx===0?'block':'none';
   }
+}
 function goFS(){
   const f=$('vidFrame');
   if(f.requestFullscreen) f.requestFullscreen();
