@@ -1057,12 +1057,14 @@ async function openDetail(id,type){
   const genres=(meta.genres||[]).slice(0,3).map(g=>g.name).join(' · ');
   const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
   const cast=(meta.credits?.cast||[]).slice(0,5).map(c=>c.name).join(', ');
+  const vid=await api(`${tmdbType}/${id}/videos`);
+  trailerData=vid?.results||[];
   const isAnime=type==='anime';
   const bot=isAnime?BOT_A:BOT_M;
   const tgUrl=`https://t.me/${bot}?start=play_${type}_${id}`;
   const imgSrc=meta.backdrop_path?`${IMG}w780${meta.backdrop_path}`:(meta.poster_path?`${IMG}w500${meta.poster_path}`:'');
-
   $('detImg').src=imgSrc;
+  $('trailerBtn').style.opacity=trailerData.length?'1':'0.4';
   $('detPill').textContent=type==='movie'?'🎬 Film':type==='anime'?'🏮 Anime':'📺 Series';
   $('detTitle').textContent=title;
   $('detMeta').innerHTML=`<span class="sm-rat">★ ${rat}</span><span class="sm-yr">${yr}</span>${runtime?`<span class="sm-tag">${runtime}</span>`:''}${genres?`<span class="sm-tag">${genres}</span>`:''}`;
