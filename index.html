@@ -1209,10 +1209,24 @@ function buildSeasonRow(){
   $('seasonRow').innerHTML=s.map(sv=>`<button class="s-pill${pl.season===sv.season_number?' on':''}" onclick="switchSeason(${sv.season_number},this)">Season ${sv.season_number}</button>`).join('');
 }
 async function switchSeason(n,el){
-  $$('.s-pill').forEach(p=>p.classList.remove('on')); el.classList.add('on');
-  pl.season=n; pl.ep=1;
+  $$('.s-pill').forEach(p=>p.classList.remove('on')); 
+  el.classList.add('on');
+  pl.season=n; 
+  pl.ep=1;
   $('epList').innerHTML=`<div class="ep-load">Loading…</div>`;
-  $('vidFrame').src=srcUrl(pl.id,pl.type,n,1,pl.source);
+  
+  const newSrc=srcUrl(pl.id,pl.type,n,1,pl.source);
+  const frame=$('vidFrame');
+  
+  if(pl.source===0){
+    frame.src='about:blank';
+    setTimeout(()=>{
+      frame.src=newSrc;
+    }, 200);
+  } else {
+    frame.src=newSrc;
+  }
+  
   window.scrollTo(0,0);
   await loadEpisodes(n,1);
 }
