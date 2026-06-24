@@ -1243,7 +1243,25 @@ function renderEps(eps,currentEp){
 }
 function playEp(season,ep){
   pl.season=season; pl.ep=ep;
-  $('vidFrame').src=srcUrl(pl.id,pl.type,season,ep,pl.source);
+  
+  const newSrc=srcUrl(pl.id,pl.type,season,ep,pl.source);
+  const frame=$('vidFrame');
+  
+  // ZxcStream needs harder reset
+  if(pl.source===0){ // Server 1 = ZxcStream
+    frame.style.display='none';
+    setTimeout(()=>{
+      frame.src='';
+      setTimeout(()=>{
+        frame.src=newSrc;
+        frame.style.display='block';
+      }, 150);
+    }, 50);
+  } else {
+    frame.src='';
+    setTimeout(()=>{ frame.src=newSrc; }, 100);
+  }
+  
   window.scrollTo(0,0);
   renderEps(pl.episodes,ep);
   updateNext();
@@ -1251,7 +1269,7 @@ function playEp(season,ep){
   u.searchParams.set('id',pl.id);u.searchParams.set('type',pl.type);
   u.searchParams.set('s',season);u.searchParams.set('e',ep);
   history.replaceState({},'',u);
-}
+  }
 function updateNext(){
   const idx=pl.episodes.findIndex(e=>e.episode_number===pl.ep&&e.season_number===pl.season)+1;
   const next=pl.episodes[idx];
