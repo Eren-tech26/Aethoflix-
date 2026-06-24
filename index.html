@@ -1331,11 +1331,7 @@ async function loadReco(id,tmdbType){
 /* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
 // Non-VIP users are sent to the bot via the detail sheet instead of directly to player
 function safePlay(id, type, season, ep){
-  if(checkVipStatus()){
-    openPlayer(id, type, season||1, ep||1);
-  } else {
-    openDetail(id, type);
-  }
+  openDetail(id, type);
 }
 
 /* Close player */
