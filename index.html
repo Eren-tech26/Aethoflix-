@@ -532,8 +532,25 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         ▶ Watch on Telegram
         <span class="bot-lbl" id="watchBotLbl">@aetho_flixbot</span>
       </button>
-      <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()">+ My List</button>
-      <div class="sheet-cast" id="detCast"></div></div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()" style="flex:1">+ My List</button>
+        <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1">🎬 Trailer</button>
+      </div>
+      <div class="sheet-cast" id="detCast"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TRAILER MODAL ══════════ -->
+<div class="overlay" id="trailerOverlay" onclick="if(event.target===this)closeTrailer()">
+  <div class="sheet" style="max-height:95vh">
+    <button class="sheet-close" onclick="closeTrailer()">✕</button>
+    <div style="width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center">
+      <iframe class="trailer-frame" id="trailerFrame" src="" style="width:100%;height:100%;border:none" allowfullscreen allow="autoplay"></iframe>
+      <div id="trailerNotFound" style="display:none;text-align:center;color:var(--sub);padding:20px">
+        <div style="font-size:3rem;margin-bottom:10px">🎬</div>
+        <div>No trailer available</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1885,6 +1902,31 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
+/* ══════════ TRAILER SYSTEM ══════════ */
+let trailerData = null;
+
+async function playTrailer(){
+  if(!trailerData) { showToast('Trailer not found'); return; }
+  const trailer = trailerData.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+  if(!trailer) {
+    $('trailerFrame').style.display = 'none';
+    $('trailerNotFound').style.display = 'block';
+  } else {
+    $('trailerNotFound').style.display = 'none';
+    $('trailerFrame').style.display = 'block';
+    $('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+  }
+  $('trailerOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTrailer(){
+  $('trailerOverlay').classList.remove('on');
+  $('trailerFrame').src = '';
+  document.body.style.overflow = '';
+  trailerData = null;
+}
+  
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
