@@ -1283,14 +1283,6 @@ function playEp(season,ep){
   u.searchParams.set('s',season);u.searchParams.set('e',ep);
   history.replaceState({},'',u);
 }
-  window.scrollTo(0,0);
-  renderEps(pl.episodes,ep);
-  updateNext();
-  const u=new URL(location.href.split('?')[0]);
-  u.searchParams.set('id',pl.id);u.searchParams.set('type',pl.type);
-  u.searchParams.set('s',season);u.searchParams.set('e',ep);
-  history.replaceState({},'',u);
-  }
 function updateNext(){
   const idx=pl.episodes.findIndex(e=>e.episode_number===pl.ep&&e.season_number===pl.season)+1;
   const next=pl.episodes[idx];
