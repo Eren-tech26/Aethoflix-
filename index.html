@@ -1262,8 +1262,12 @@ function updateNext(){
   $('nbImg').src=next.still_path?`${IMG}w300${next.still_path}`:'';
   $('nextBanner').classList.add('show');
 }
-function playNextEp(){ if(pl.nextEp) playEp(pl.nextEp.season_number,pl.nextEp.episode_number); }
-
+function playNextEp(){ 
+  if(pl.nextEp) {
+    playEp(pl.nextEp.season_number,pl.nextEp.episode_number);
+    setTimeout(()=>window.scrollTo(0,0), 50);
+  }
+}
 /* Recommendations */
 async function loadReco(id,tmdbType){
   const data=await api(`${tmdbType}/${id}/recommendations`);
