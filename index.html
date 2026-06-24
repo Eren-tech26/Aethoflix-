@@ -1068,14 +1068,38 @@ function closeDetail(){ $('detOverlay').classList.remove('on'); document.body.st
 function srcUrl(id,type,season,ep,src){
   src=src??pl.source;
   const isTV=(type!=='movie');
+
+  // ── ANIME: vidnest (AniList) as Server 1, megaplay (MAL) as Server 2 ──
+  if(type==='anime'){
+    const aid=pl.anilistId||'';
+    const mid=pl.malId||'';
+    const urls=[];
+    if(aid){
+      urls.push(`https://vidnest.fun/animepahe/${aid}/${ep}/sub`);
+      urls.push(`https://vidnest.fun/animepahe/${aid}/${ep}/dub`);
+    }
+    if(mid){
+      urls.push(`https://megaplay.buzz/stream/mal/${mid}/${ep}/sub`);
+      urls.push(`https://megaplay.buzz/stream/mal/${mid}/${ep}/dub`);
+    }
+    if(urls.length) return urls[src]||urls[0];
+  }
+
+  /// ── MOVIES & TV SERIES ──
   const urls=isTV?[
-    `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true&title=true&poster=true`,
-    `https://vidsrc.xyz/embed/tv/${id}/${season}/${ep}`,
-    `https://embed.su/embed/tv/${id}/${season}/${ep}`,
-  ]:[
-    `https://vidlink.pro/movie/${id}?autoplay=true&title=true&poster=true`,
-    `https://vidsrc.xyz/embed/movie/${id}`,
-    `https://embed.su/embed/movie/${id}`,
+  `https://zxcstream.xyz/player/tv/${id}?season=${season}&episode=${ep}`,
+  `https://vidout.pages.dev/tv/${id}/${season}/${ep}`,
+  `https://vidnest.fun/tv/${id}/${season}/${ep}`,
+  `https://player.videasy.net/tv/${id}/${season}/${ep}`,
+  `https://vidlink.pro/tv/${id}/${season}/${ep}?autoplay=true`,
+  `https://vidsrc.sbs/embed/tv/${id}/${season}/${ep}`,
+]:[
+  `https://zxcstream.xyz/player/movie/${id}`,
+  `https://vidout.pages.dev/movie/${id}`,
+  `https://vidnest.fun/movie/${id}`,
+  `https://player.videasy.net/movie/${id}`,
+  `https://vidlink.pro/movie/${id}?autoplay=true`,
+  `https://vidsrc.sbs/embed/movie/${id}`,,
   ];
   return urls[src]||urls[0];
 }
