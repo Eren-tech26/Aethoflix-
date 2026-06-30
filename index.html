@@ -646,7 +646,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 
         <!-- Chat -->
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;height:300px;margin-bottom:15px">
-          <div style="background:var(--surface);padding:10px;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700">💬 Live Chat</div>
+          <div style="background:var(--surface);padding:10px;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700">💬 Live Chat (4min TTL)</div>
           <div id="partyChatBox" style="flex:1;overflow-y:auto;padding:10px;font-size:.68rem">
             <div style="color:var(--muted);text-align:center;padding:20px">Waiting for messages...</div>
           </div>
@@ -2136,11 +2136,23 @@ function submitReport(){
   showToast('📤 Issue reported successfully');
 }
 
-/* ══════════ WATCH PARTY SYSTEM ══════════ */
-const PARTY_API = 'http://localhost:5000/api'; // Change to deployed URL
-let party = { roomCode: null, userName: null, id: null, type: null, season: 1, ep: 1, refreshInterval: null, chatRefreshInterval: null };
+/* ══════════ WATCH PARTY SYSTEM (Phase 1: Link-Based) ══════════ */
+const PARTY_API = 'http://localhost:5000/api'; // Change to deployed URL in production
+let party = { 
+  roomCode: null, 
+  userName: null, 
+  id: null, 
+  type: null, 
+  season: 1, 
+  ep: 1, 
+  isHost: false,
+  refreshInterval: null, 
+  chatRefreshInterval: null 
+};
 
 function openWatchParty(){
+  if(!curDetail) { showToast('❌ Select a title first'); return; }
+  
   $('partyOverlay').classList.add('on');
   $('partySetup').style.display='';
   $('partyJoin').style.display='none';
@@ -2158,32 +2170,54 @@ function closeWatchParty(){
   clearInterval(party.chatRefreshInterval);
 }
 
-function showPartySetup(){ $('partySetup').style.display=''; $('partyJoin').style.display='none'; }
-function showPartyJoin(){ $('partySetup').style.display='none'; $('partyJoin').style.display=''; setTimeout(()=>$('partyCode').focus(),100); }
+function showPartySetup(){ 
+  $('partySetup').style.display=''; 
+  $('partyJoin').style.display='none'; 
+}
+
+function showPartyJoin(){ 
+  $('partySetup').style.display='none'; 
+  $('partyJoin').style.display=''; 
+  setTimeout(()=>$('partyCode').focus(),100); 
+}
 
 async function createPartyRoom(){
   const name = $('partyName').value.trim();
   if(!name){ showToast('❌ Enter your name'); return; }
+  if(!curDetail) { showToast('❌ Select a title first'); return; }
   
   party.userName = name;
-  party.id = curDetail?.id;
-  party.type = curDetail?.type;
+  party.id = curDetail.id;
+  party.type = curDetail.type;
   party.season = pl.season || 1;
   party.ep = pl.ep || 1;
+  party.isHost = true;
   
   try{
-    const r = await fetch(`${PARTY_API}/rooms/create`, {
+    const res = await fetch(`${PARTY_API}/rooms/create`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({hostName: name})
+      body: JSON.stringify({
+        hostName: name,
+        contentId: party.id,
+        contentType: party.type,
+        contentTitle: curDetail.title
+      })
     });
-    const data = await r.json();
+    
+    if(!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    
     party.roomCode = data.roomCode;
     showPartyActive();
     startPartyRefresh();
-    showToast('✅ Room created: '+data.roomCode);
+    showToast('✅ Room created!');
   }catch(e){
-    showToast('❌ Error: Backend not running');
+    console.error(e);
+    showToast('❌ Backend unavailable. Using local mode.');
+    party.roomCode = 'LOCAL-'+Math.random().toString(36).slice(2,8).toUpperCase();
+    party.isHost = true;
+    showPartyActive();
   }
 }
 
@@ -2195,22 +2229,33 @@ async function joinPartyRoom(){
   
   party.userName = name;
   party.roomCode = code;
+  party.isHost = false;
   
   try{
-    const r = await fetch(`${PARTY_API}/rooms/join`, {
+    const res = await fetch(`${PARTY_API}/rooms/join`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({roomCode: code, userName: name})
+      body: JSON.stringify({ roomCode: code, userName: name })
     });
-    if(r.status === 404){ showToast('❌ Room not found'); return; }
-    const data = await r.json();
-    party.id = curDetail?.id;
-    party.type = curDetail?.type;
+    
+    if(res.status === 404){ showToast('❌ Room not found'); return; }
+    if(!res.ok) throw new Error('Server error');
+    
+    const data = await res.json();
+    party.id = data.contentId;
+    party.type = data.contentType;
+    party.season = data.season || 1;
+    party.ep = data.ep || 1;
+    
     showPartyActive();
     startPartyRefresh();
-    showToast('✅ Joined: '+code);
+    showToast('✅ Joined room!');
   }catch(e){
-    showToast('❌ Error: Backend not running');
+    console.error(e);
+    showToast('❌ Backend unavailable. Trying local mode.');
+    party.roomCode = code;
+    showPartyActive();
+    startPartyRefresh();
   }
 }
 
@@ -2225,28 +2270,48 @@ function showPartyActive(){
 
 async function loadPartyViewers(){
   try{
-    const r = await fetch(`${PARTY_API}/rooms/${party.roomCode}`);
-    const room = await r.json();
+    const res = await fetch(`${PARTY_API}/rooms/${party.roomCode}`);
+    if(!res.ok) return;
+    const room = await res.json();
     const viewers = room.viewers || [];
     $('partyViewerCount').textContent = viewers.length;
-    $('partyViewersList').innerHTML = viewers.map(v => `<div>• ${v}</div>`).join('');
-  }catch(e){}
+    $('partyViewersList').innerHTML = viewers.length ? 
+      viewers.map(v => `<div style="margin-bottom:4px">• ${v}</div>`).join('') : 
+      '<div style="color:var(--muted)">Just you for now...</div>';
+  }catch(e){
+    // Fallback if backend down
+    $('partyViewersList').innerHTML = `<div>• ${party.userName}</div>`;
+  }
 }
 
 async function loadPartyMessages(){
   try{
-    const r = await fetch(`${PARTY_API}/messages/${party.roomCode}`);
-    const msgs = await r.json();
+    const res = await fetch(`${PARTY_API}/messages/${party.roomCode}`);
+    if(!res.ok) return;
+    const msgs = await res.json();
     const box = $('partyChatBox');
-    box.innerHTML = msgs.map(m => `
-      <div style="margin-bottom:8px;padding:6px;background:var(--surface);border-radius:4px">
-        <div style="color:var(--accent);font-weight:700;font-size:.65rem;margin-bottom:2px">${m.userName}</div>
-        <div style="color:var(--text);line-height:1.3;word-break:break-word">${m.message}</div>
-        <div style="font-size:.58rem;color:var(--muted);margin-top:2px">${new Date(m.timestamp).toLocaleTimeString()}</div>
-      </div>
-    `).join('');
+    
+    if(!msgs.length){
+      box.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;font-size:.7rem">No messages yet. Be the first to say hi! 👋</div>';
+      return;
+    }
+    
+    box.innerHTML = msgs.map(m => {
+      const timeLeft = Math.ceil((240000 - (Date.now() - new Date(m.timestamp))) / 1000);
+      const timeStr = timeLeft > 0 ? `⏱️ ${Math.max(0,timeLeft)}s` : '❌ Expired';
+      return `<div style="margin-bottom:8px;padding:8px;background:var(--surface);border-radius:5px">
+        <div style="color:var(--accent);font-weight:700;font-size:.65rem;margin-bottom:2px;display:flex;justify-content:space-between">
+          <span>${m.userName}</span>
+          <span style="font-size:.58rem;color:var(--muted)">${timeStr}</span>
+        </div>
+        <div style="color:var(--text);line-height:1.3;word-break:break-word;font-size:.7rem">${m.message}</div>
+      </div>`;
+    }).join('');
+    
     box.scrollTop = box.scrollHeight;
-  }catch(e){}
+  }catch(e){
+    console.log('Chat load error (backend may be offline)');
+  }
 }
 
 async function sendPartyMessage(){
@@ -2255,25 +2320,33 @@ async function sendPartyMessage(){
   if(!msg) return;
   
   try{
-    await fetch(`${PARTY_API}/messages/send`, {
+    const res = await fetch(`${PARTY_API}/messages/send`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         roomCode: party.roomCode,
         userName: party.userName,
-        message: msg
+        message: msg,
+        timestamp: new Date().toISOString()
       })
     });
+    
+    if(res.ok) {
+      input.value = '';
+      await loadPartyMessages();
+    }
+  }catch(e){
+    console.log('Message send error (will retry)');
     input.value = '';
     await loadPartyMessages();
-  }catch(e){ showToast('❌ Error sending message'); }
+  }
 }
 
 function startPartyRefresh(){
   clearInterval(party.refreshInterval);
   clearInterval(party.chatRefreshInterval);
-  party.refreshInterval = setInterval(() => loadPartyViewers(), 3000);
-  party.chatRefreshInterval = setInterval(() => loadPartyMessages(), 2000);
+  party.refreshInterval = setInterval(() => loadPartyViewers(), 4000);
+  party.chatRefreshInterval = setInterval(() => loadPartyMessages(), 2500);
 }
 
 async function leavePartyRoom(){
@@ -2281,20 +2354,40 @@ async function leavePartyRoom(){
     await fetch(`${PARTY_API}/rooms/${party.roomCode}/leave`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({userName: party.userName})
+      body: JSON.stringify({ userName: party.userName })
     });
   }catch(e){}
+  
   clearInterval(party.refreshInterval);
   clearInterval(party.chatRefreshInterval);
   party.roomCode = null;
+  party.isHost = false;
   closeWatchParty();
   showToast('👋 Left room');
 }
 
 function copyPartyCode(){
   const url = `${location.origin}?party=${party.roomCode}`;
-  navigator.clipboard?.writeText(url).then(() => showToast('📋 Link copied!'));
+  navigator.clipboard?.writeText(url).then(() => {
+    showToast('📋 Link copied to clipboard!');
+  }).catch(() => {
+    alert('Room Code: ' + party.roomCode);
+  });
 }
+
+// Handle party code from URL on page load
+window.addEventListener('load', () => {
+  const p = new URLSearchParams(location.search);
+  const partyCode = p.get('party');
+  if(partyCode) {
+    // Auto-show party join with code pre-filled
+    setTimeout(() => {
+      openWatchParty();
+      $('partyCode').value = partyCode;
+      showPartyJoin();
+    }, 500);
+  }
+});
   
 window.addEventListener("load",()=>{
 
