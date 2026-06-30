@@ -2181,44 +2181,23 @@ function showPartyJoin(){
   setTimeout(()=>$('partyCode').focus(),100); 
 }
 
-async function createPartyRoom(){
+async function joinPartyRoom(){
   const name = $('partyName').value.trim();
+  const code = $('partyCode').value.trim().toUpperCase();
   if(!name){ showToast('❌ Enter your name'); return; }
-  if(!curDetail) { showToast('❌ Select a title first'); return; }
+  if(!code){ showToast('❌ Enter room code'); return; }
   
   party.userName = name;
-  party.id = curDetail.id;
-  party.type = curDetail.type;
-  party.season = pl.season || 1;
-  party.ep = pl.ep || 1;
-  party.isHost = true;
+  party.roomCode = code;
+  party.isHost = false;
   
-  try{
-    const res = await fetch(`${PARTY_API}/rooms/create`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        hostName: name,
-        contentId: party.id,
-        contentType: party.type,
-        contentTitle: curDetail.title
-      })
-    });
-    
-    if(!res.ok) throw new Error('Server error');
-    const data = await res.json();
-    
-    party.roomCode = data.roomCode;
-    showPartyActive();
-    startPartyRefresh();
-    showToast('✅ Room created!');
-  }catch(e){
-    console.error(e);
-    showToast('❌ Backend unavailable. Using local mode.');
-    party.roomCode = 'LOCAL-'+Math.random().toString(36).slice(2,8).toUpperCase();
-    party.isHost = true;
-    showPartyActive();
-  }
+  // For now, just join (no backend validation)
+  party.id = curDetail?.id;
+  party.type = curDetail?.type;
+  
+  showPartyActive();
+  startPartyRefresh();
+  showToast('✅ Joined: ' + code);
 }
 
 async function joinPartyRoom(){
@@ -2231,32 +2210,13 @@ async function joinPartyRoom(){
   party.roomCode = code;
   party.isHost = false;
   
-  try{
-    const res = await fetch(`${PARTY_API}/rooms/join`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ roomCode: code, userName: name })
-    });
-    
-    if(res.status === 404){ showToast('❌ Room not found'); return; }
-    if(!res.ok) throw new Error('Server error');
-    
-    const data = await res.json();
-    party.id = data.contentId;
-    party.type = data.contentType;
-    party.season = data.season || 1;
-    party.ep = data.ep || 1;
-    
-    showPartyActive();
-    startPartyRefresh();
-    showToast('✅ Joined room!');
-  }catch(e){
-    console.error(e);
-    showToast('❌ Backend unavailable. Trying local mode.');
-    party.roomCode = code;
-    showPartyActive();
-    startPartyRefresh();
-  }
+  // For now, just join (no backend validation)
+  party.id = curDetail?.id;
+  party.type = curDetail?.type;
+  
+  showPartyActive();
+  startPartyRefresh();
+  showToast('✅ Joined: ' + code);
 }
 
 function showPartyActive(){
@@ -2405,6 +2365,39 @@ intro.remove();
 
 });
 
+// Play same video in watch party
+function playInParty(season, ep) {
+  if(!party.roomCode) {
+    showToast('❌ Not in a party');
+    return;
+  }
+  
+  // Play the video on same servers
+  const newSrc = srcUrl(party.id, party.type, season || pl.season, ep || pl.ep, pl.source);
+  $('vidFrame').src = newSrc;
+  
+  // Broadcast to party (when backend is ready)
+  broadcastPlaybackToParty(season || pl.season, ep || pl.ep);
+  
+  showToast('▶ Playing in party');
+}
+
+function broadcastPlaybackToParty(season, ep) {
+  // This will send playback sync when backend is ready
+  try {
+    fetch(`${PARTY_API}/rooms/${party.roomCode}/sync`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        userName: party.userName,
+        season: season,
+        ep: ep,
+        timestamp: Date.now()
+      })
+    }).catch(() => {});
+  } catch(e) {}
+}
+  
 </script>
 </body>
 </html>
