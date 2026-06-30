@@ -906,6 +906,12 @@ const IMG    = 'https://image.tmdb.org/t/p/';
 const BOT_M  = 'aetho_flixbot';   // movies + series
 const BOT_A  = 'aethokaibot';     // anime
 
+// Connect to backend server
+const API_URL = 'http://localhost:5000'; // Change to your deployed backend URL
+
+// For production, use:
+// const API_URL = 'https://your-server-name.herokuapp.com';
+  
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
 let srchFilter='all', lastQ='', srchTmr=null;
@@ -1846,28 +1852,33 @@ function openVipGate(){
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
-function redeemVip(){
+async function redeemVip(){
   const entered=$('vipInp').value.trim().toUpperCase();
   if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  const codes=lsGet('vipCodes',[]);
-  const idx=codes.findIndex(c=>c.code===entered);
-  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
-  const code=codes[idx];
-  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
-  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
-  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
-  // Mark used if 1-time
-  if(code.type==='1use') codes[idx].status='used';
-  lsSet('vipCodes',codes);
-  // Save VIP status
-  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
-  // Log redemption
-  const rr=lsGet('vipRedemptions',[]);
-  rr.push({code:entered,at:Date.now()});
-  lsSet('vipRedemptions',rr);
-  closeVipGate();
-  checkVipStatus();
-  showToast('👑 VIP unlocked! Welcome.',3000);
+  
+  try {
+    // Send to backend to verify code
+    const res = await fetch(`${API_URL}/api/vip/redeem`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code: entered})
+    });
+    
+    const data = await res.json();
+    
+    if(!data.valid){
+      $('vipErr').textContent='❌ Invalid code.';
+      return;
+    }
+    
+    // Save to localStorage
+    lsSet('vipStatus', {active:true, code:entered, expires:data.expires, since:Date.now()});
+    closeVipGate();
+    checkVipStatus();
+    showToast('👑 VIP unlocked!', 3000);
+  } catch(e) {
+    $('vipErr').textContent='❌ Connection error';
+  }
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
