@@ -571,6 +571,36 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
+<!-- ══════════ REPORT ISSUE MODAL ══════════ -->
+<div class="overlay" id="reportOverlay" onclick="if(event.target===this)closeReport()">
+  <div class="sheet" style="max-height:85vh">
+    <button class="sheet-close" onclick="closeReport()">✕</button>
+    <div style="padding:20px 18px">
+      <div style="font-size:1.2rem;font-weight:900;margin-bottom:16px">⚠️ Report Issue</div>
+      
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px">
+        <div style="font-size:.7rem;color:var(--sub);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Issue Type</div>
+        <select id="issueType" style="width:100%;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);margin-bottom:12px;font-size:.75rem;outline:none">
+          <option value="">-- Select Issue --</option>
+          <option value="video">🎬 Video not loading</option>
+          <option value="audio">🔊 Audio/Sound issue</option>
+          <option value="subtitles">📝 Subtitles problem</option>
+          <option value="buffering">⚡ Buffering/Lag</option>
+          <option value="crash">💥 App crash</option>
+          <option value="wrong">❌ Wrong content</option>
+          <option value="other">❓ Other issue</option>
+        </select>
+
+        <div style="font-size:.7rem;color:var(--sub);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Description</div>
+        <textarea id="issueDesc" placeholder="Describe the issue..." style="width:100%;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:.75rem;resize:none;min-height:70px;outline:none;transition:.2s;margin-bottom:12px" onfocus="this.style.borderColor='var(--accent)'"></textarea>
+
+        <button class="watch-btn" onclick="submitReport()" style="margin-bottom:8px">📤 Submit Report</button>
+        <div id="reportStatus" style="font-size:.7rem;color:var(--sub);text-align:center;min-height:18px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <!-- ══════════ TRAILER MODAL ══════════ -->
 <div class="overlay" id="trailerOverlay" onclick="if(event.target===this)closeTrailer()">
   <div class="sheet" style="max-height:95vh">
@@ -611,9 +641,10 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
       <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
       <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
+      <button class="ctrl-fs" onclick="openReport()" title="Report Issue" style="background:rgba(229,9,20,.15);border-color:rgba(229,9,20,.3);color:var(--accent)">⚠️ Report</button>
       <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
     </div>
-
+    
   <!-- Info -->
   <div class="pl-info">
     <div class="pl-title" id="plTitle">Loading…</div>
