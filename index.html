@@ -646,7 +646,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 
         <!-- Chat -->
         <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;height:300px;margin-bottom:15px">
-          <div style="background:var(--surface);padding:10px;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700">💬 Live Chat (4min TTL)</div>
+          <div style="background:var(--surface);padding:10px;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700">💬 Live Chat</div>
           <div id="partyChatBox" style="flex:1;overflow-y:auto;padding:10px;font-size:.68rem">
             <div style="color:var(--muted);text-align:center;padding:20px">Waiting for messages...</div>
           </div>
@@ -906,13 +906,6 @@ const IMG    = 'https://image.tmdb.org/t/p/';
 const BOT_M  = 'aetho_flixbot';   // movies + series
 const BOT_A  = 'aethokaibot';     // anime
 
-// Connect to backend server
-const API_URL = 'https://aethoflix.vercel.app';
-const PARTY_API = 'https://aethoflix.vercel.app/api';
-
-// For production, use:
-// const API_URL = 'https://your-server-name.herokuapp.com';
-  
 /* ══════════ STATE ══════════ */
 let heroItems=[], heroIdx=0, heroTmr=null;
 let srchFilter='all', lastQ='', srchTmr=null;
@@ -1853,33 +1846,28 @@ function openVipGate(){
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
-async function redeemVip(){
+function redeemVip(){
   const entered=$('vipInp').value.trim().toUpperCase();
   if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  
-  try {
-    // Send to backend to verify code
-    const res = await fetch(`${API_URL}/api/vip/redeem`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({code: entered})
-    });
-    
-    const data = await res.json();
-    
-    if(!data.valid){
-      $('vipErr').textContent='❌ Invalid code.';
-      return;
-    }
-    
-    // Save to localStorage
-    lsSet('vipStatus', {active:true, code:entered, expires:data.expires, since:Date.now()});
-    closeVipGate();
-    checkVipStatus();
-    showToast('👑 VIP unlocked!', 3000);
-  } catch(e) {
-    $('vipErr').textContent='❌ Connection error';
-  }
+  const codes=lsGet('vipCodes',[]);
+  const idx=codes.findIndex(c=>c.code===entered);
+  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
+  const code=codes[idx];
+  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
+  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
+  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
+  // Mark used if 1-time
+  if(code.type==='1use') codes[idx].status='used';
+  lsSet('vipCodes',codes);
+  // Save VIP status
+  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
+  // Log redemption
+  const rr=lsGet('vipRedemptions',[]);
+  rr.push({code:entered,at:Date.now()});
+  lsSet('vipRedemptions',rr);
+  closeVipGate();
+  checkVipStatus();
+  showToast('👑 VIP unlocked! Welcome.',3000);
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
@@ -2137,23 +2125,11 @@ function submitReport(){
   showToast('📤 Issue reported successfully');
 }
 
-/* ══════════ WATCH PARTY SYSTEM (Phase 1: Link-Based) ══════════ */
-const PARTY_API = 'http://localhost:5000/api'; // Change to deployed URL in production
-let party = { 
-  roomCode: null, 
-  userName: null, 
-  id: null, 
-  type: null, 
-  season: 1, 
-  ep: 1, 
-  isHost: false,
-  refreshInterval: null, 
-  chatRefreshInterval: null 
-};
+/* ══════════ WATCH PARTY SYSTEM ══════════ */
+const PARTY_API = 'http://localhost:5000/api'; // Change to deployed URL
+let party = { roomCode: null, userName: null, id: null, type: null, season: 1, ep: 1, refreshInterval: null, chatRefreshInterval: null };
 
 function openWatchParty(){
-  if(!curDetail) { showToast('❌ Select a title first'); return; }
-  
   $('partyOverlay').classList.add('on');
   $('partySetup').style.display='';
   $('partyJoin').style.display='none';
@@ -2171,15 +2147,33 @@ function closeWatchParty(){
   clearInterval(party.chatRefreshInterval);
 }
 
-function showPartySetup(){ 
-  $('partySetup').style.display=''; 
-  $('partyJoin').style.display='none'; 
-}
+function showPartySetup(){ $('partySetup').style.display=''; $('partyJoin').style.display='none'; }
+function showPartyJoin(){ $('partySetup').style.display='none'; $('partyJoin').style.display=''; setTimeout(()=>$('partyCode').focus(),100); }
 
-function showPartyJoin(){ 
-  $('partySetup').style.display='none'; 
-  $('partyJoin').style.display=''; 
-  setTimeout(()=>$('partyCode').focus(),100); 
+async function createPartyRoom(){
+  const name = $('partyName').value.trim();
+  if(!name){ showToast('❌ Enter your name'); return; }
+  
+  party.userName = name;
+  party.id = curDetail?.id;
+  party.type = curDetail?.type;
+  party.season = pl.season || 1;
+  party.ep = pl.ep || 1;
+  
+  try{
+    const r = await fetch(`${PARTY_API}/rooms/create`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({hostName: name})
+    });
+    const data = await r.json();
+    party.roomCode = data.roomCode;
+    showPartyActive();
+    startPartyRefresh();
+    showToast('✅ Room created: '+data.roomCode);
+  }catch(e){
+    showToast('❌ Error: Backend not running');
+  }
 }
 
 async function joinPartyRoom(){
@@ -2190,34 +2184,23 @@ async function joinPartyRoom(){
   
   party.userName = name;
   party.roomCode = code;
-  party.isHost = false;
   
-  // For now, just join (no backend validation)
-  party.id = curDetail?.id;
-  party.type = curDetail?.type;
-  
-  showPartyActive();
-  startPartyRefresh();
-  showToast('✅ Joined: ' + code);
-}
-
-async function joinPartyRoom(){
-  const name = $('partyName').value.trim();
-  const code = $('partyCode').value.trim().toUpperCase();
-  if(!name){ showToast('❌ Enter your name'); return; }
-  if(!code){ showToast('❌ Enter room code'); return; }
-  
-  party.userName = name;
-  party.roomCode = code;
-  party.isHost = false;
-  
-  // For now, just join (no backend validation)
-  party.id = curDetail?.id;
-  party.type = curDetail?.type;
-  
-  showPartyActive();
-  startPartyRefresh();
-  showToast('✅ Joined: ' + code);
+  try{
+    const r = await fetch(`${PARTY_API}/rooms/join`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({roomCode: code, userName: name})
+    });
+    if(r.status === 404){ showToast('❌ Room not found'); return; }
+    const data = await r.json();
+    party.id = curDetail?.id;
+    party.type = curDetail?.type;
+    showPartyActive();
+    startPartyRefresh();
+    showToast('✅ Joined: '+code);
+  }catch(e){
+    showToast('❌ Error: Backend not running');
+  }
 }
 
 function showPartyActive(){
@@ -2231,48 +2214,28 @@ function showPartyActive(){
 
 async function loadPartyViewers(){
   try{
-    const res = await fetch(`${PARTY_API}/rooms/${party.roomCode}`);
-    if(!res.ok) return;
-    const room = await res.json();
+    const r = await fetch(`${PARTY_API}/rooms/${party.roomCode}`);
+    const room = await r.json();
     const viewers = room.viewers || [];
     $('partyViewerCount').textContent = viewers.length;
-    $('partyViewersList').innerHTML = viewers.length ? 
-      viewers.map(v => `<div style="margin-bottom:4px">• ${v}</div>`).join('') : 
-      '<div style="color:var(--muted)">Just you for now...</div>';
-  }catch(e){
-    // Fallback if backend down
-    $('partyViewersList').innerHTML = `<div>• ${party.userName}</div>`;
-  }
+    $('partyViewersList').innerHTML = viewers.map(v => `<div>• ${v}</div>`).join('');
+  }catch(e){}
 }
 
 async function loadPartyMessages(){
   try{
-    const res = await fetch(`${PARTY_API}/messages/${party.roomCode}`);
-    if(!res.ok) return;
-    const msgs = await res.json();
+    const r = await fetch(`${PARTY_API}/messages/${party.roomCode}`);
+    const msgs = await r.json();
     const box = $('partyChatBox');
-    
-    if(!msgs.length){
-      box.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;font-size:.7rem">No messages yet. Be the first to say hi! 👋</div>';
-      return;
-    }
-    
-    box.innerHTML = msgs.map(m => {
-      const timeLeft = Math.ceil((240000 - (Date.now() - new Date(m.timestamp))) / 1000);
-      const timeStr = timeLeft > 0 ? `⏱️ ${Math.max(0,timeLeft)}s` : '❌ Expired';
-      return `<div style="margin-bottom:8px;padding:8px;background:var(--surface);border-radius:5px">
-        <div style="color:var(--accent);font-weight:700;font-size:.65rem;margin-bottom:2px;display:flex;justify-content:space-between">
-          <span>${m.userName}</span>
-          <span style="font-size:.58rem;color:var(--muted)">${timeStr}</span>
-        </div>
-        <div style="color:var(--text);line-height:1.3;word-break:break-word;font-size:.7rem">${m.message}</div>
-      </div>`;
-    }).join('');
-    
+    box.innerHTML = msgs.map(m => `
+      <div style="margin-bottom:8px;padding:6px;background:var(--surface);border-radius:4px">
+        <div style="color:var(--accent);font-weight:700;font-size:.65rem;margin-bottom:2px">${m.userName}</div>
+        <div style="color:var(--text);line-height:1.3;word-break:break-word">${m.message}</div>
+        <div style="font-size:.58rem;color:var(--muted);margin-top:2px">${new Date(m.timestamp).toLocaleTimeString()}</div>
+      </div>
+    `).join('');
     box.scrollTop = box.scrollHeight;
-  }catch(e){
-    console.log('Chat load error (backend may be offline)');
-  }
+  }catch(e){}
 }
 
 async function sendPartyMessage(){
@@ -2281,33 +2244,25 @@ async function sendPartyMessage(){
   if(!msg) return;
   
   try{
-    const res = await fetch(`${PARTY_API}/messages/send`, {
+    await fetch(`${PARTY_API}/messages/send`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         roomCode: party.roomCode,
         userName: party.userName,
-        message: msg,
-        timestamp: new Date().toISOString()
+        message: msg
       })
     });
-    
-    if(res.ok) {
-      input.value = '';
-      await loadPartyMessages();
-    }
-  }catch(e){
-    console.log('Message send error (will retry)');
     input.value = '';
     await loadPartyMessages();
-  }
+  }catch(e){ showToast('❌ Error sending message'); }
 }
 
 function startPartyRefresh(){
   clearInterval(party.refreshInterval);
   clearInterval(party.chatRefreshInterval);
-  party.refreshInterval = setInterval(() => loadPartyViewers(), 4000);
-  party.chatRefreshInterval = setInterval(() => loadPartyMessages(), 2500);
+  party.refreshInterval = setInterval(() => loadPartyViewers(), 3000);
+  party.chatRefreshInterval = setInterval(() => loadPartyMessages(), 2000);
 }
 
 async function leavePartyRoom(){
@@ -2315,40 +2270,20 @@ async function leavePartyRoom(){
     await fetch(`${PARTY_API}/rooms/${party.roomCode}/leave`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ userName: party.userName })
+      body: JSON.stringify({userName: party.userName})
     });
   }catch(e){}
-  
   clearInterval(party.refreshInterval);
   clearInterval(party.chatRefreshInterval);
   party.roomCode = null;
-  party.isHost = false;
   closeWatchParty();
   showToast('👋 Left room');
 }
 
 function copyPartyCode(){
   const url = `${location.origin}?party=${party.roomCode}`;
-  navigator.clipboard?.writeText(url).then(() => {
-    showToast('📋 Link copied to clipboard!');
-  }).catch(() => {
-    alert('Room Code: ' + party.roomCode);
-  });
+  navigator.clipboard?.writeText(url).then(() => showToast('📋 Link copied!'));
 }
-
-// Handle party code from URL on page load
-window.addEventListener('load', () => {
-  const p = new URLSearchParams(location.search);
-  const partyCode = p.get('party');
-  if(partyCode) {
-    // Auto-show party join with code pre-filled
-    setTimeout(() => {
-      openWatchParty();
-      $('partyCode').value = partyCode;
-      showPartyJoin();
-    }, 500);
-  }
-});
   
 window.addEventListener("load",()=>{
 
@@ -2366,39 +2301,6 @@ intro.remove();
 
 });
 
-// Play same video in watch party
-function playInParty(season, ep) {
-  if(!party.roomCode) {
-    showToast('❌ Not in a party');
-    return;
-  }
-  
-  // Play the video on same servers
-  const newSrc = srcUrl(party.id, party.type, season || pl.season, ep || pl.ep, pl.source);
-  $('vidFrame').src = newSrc;
-  
-  // Broadcast to party (when backend is ready)
-  broadcastPlaybackToParty(season || pl.season, ep || pl.ep);
-  
-  showToast('▶ Playing in party');
-}
-
-function broadcastPlaybackToParty(season, ep) {
-  // This will send playback sync when backend is ready
-  try {
-    fetch(`${PARTY_API}/rooms/${party.roomCode}/sync`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        userName: party.userName,
-        season: season,
-        ep: ep,
-        timestamp: Date.now()
-      })
-    }).catch(() => {});
-  } catch(e) {}
-}
-  
 </script>
 </body>
 </html>
