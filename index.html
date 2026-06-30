@@ -430,11 +430,13 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <!-- TOP NAV -->
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
-  <div class="nav-r">
+ <div class="nav-r">
     <div class="vip-badge" id="vipBadge" onclick="openVipGate()">👑 VIP</div>
     <div class="nav-icon" onclick="openWishlist()" title="My List">🔖</div>
+    <!-- ADD THIS BUTTON -->
+    <div class="nav-icon" onclick="createParty()" title="Watch Party">🎬</div>
+    <!-- END ADD -->
     <div class="notif-btn" onclick="openNotif()">
-      🔔
       <div class="notif-count" id="notifCount"></div>
     </div>
     <div class="nav-icon" onclick="navSearch()">🔍</div>
@@ -2020,6 +2022,40 @@ window.addEventListener('popstate',()=>{
   else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
 });
 
+function createParty() {
+  const title = prompt('What are you watching?');
+  const videoId = prompt('Enter video ID (from URL or your database)');
+  const videoType = prompt('Type: movie or tv?');
+  
+  if (!title || !videoId || !videoType) {
+    showToast('Please fill all fields');
+    return;
+  }
+
+  // Send to backend to create room
+  fetch('https://your-backend.com/api/room/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      hostId: 'user_' + Math.random().toString(36).slice(2, 10),
+      hostName: 'Guest User',
+      avatar: '🧔',
+      title,
+      videoId,
+      videoType
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = `/party.html?room=${data.roomId}`;
+    } else {
+      showToast('Failed to create party');
+    }
+  })
+  .catch(err => showToast('Error: ' + err.message));
+}
+  
 window.addEventListener("load",()=>{
 
 setTimeout(()=>{
@@ -2035,7 +2071,6 @@ intro.remove();
 },3200);
 
 });
-
 </script>
 </body>
 </html>
