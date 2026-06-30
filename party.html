@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Party - AethoFlix</title>
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --card: #14141f;
+      --accent: #e50914;
+      --text: #f0f0f5;
+      --sub: #8888aa;
+      --muted: #3a3a55;
+    }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: 'Inter', sans-serif; 
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container { 
+      display: grid; 
+      grid-template-columns: 1fr 300px; 
+      height: 100vh; 
+      gap: 12px; 
+      padding: 12px; 
+    }
+    
+    .video-section { 
+      background: #000; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    
+    .video-player { 
+      width: 100%; 
+      flex: 1; 
+      border: none;
+    }
+    
+    .controls { 
+      background: var(--surface); 
+      padding: 12px; 
+      border-top: 1px solid var(--muted); 
+      display: flex; 
+      gap: 8px; 
+      align-items: center; 
+      flex-wrap: wrap;
+    }
+    
+    .ctrl-btn { 
+      padding: 8px 14px; 
+      background: var(--card); 
+      border: 1px solid var(--muted); 
+      color: var(--text); 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      transition: 0.2s; 
+      font-family: inherit;
+    }
+    
+    .ctrl-btn:hover { 
+      background: var(--accent); 
+      border-color: var(--accent); 
+    }
+    
+    .ctrl-btn.danger { 
+      background: rgba(229, 9, 20, 0.15); 
+      border-color: rgba(229, 9, 20, 0.3); 
+      color: var(--accent); 
+    }
+    
+    .info-panel { 
+      background: var(--surface); 
+      border-radius: 12px; 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+      border: 1px solid var(--muted); 
+    }
+    
+    .info-header { 
+      background: var(--card); 
+      padding: 14px; 
+      border-bottom: 1px solid var(--muted); 
+    }
+    
+    .info-title { 
+      font-size: 0.9rem; 
+      font-weight: 700; 
+      margin-bottom: 4px; 
+    }
+    
+    .info-sub { 
+      font-size: 0.7rem; 
+      color: var(--sub); 
+    }
+    
+    .members-list { 
+      padding: 12px; 
+      border-bottom: 1px solid var(--muted); 
+      max-height: 180px; 
+      overflow-y: auto; 
+    }
+    
+    .member { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      margin-bottom: 8px; 
+      font-size: 0.8rem; 
+    }
+    
+    .member-avatar { 
+      width: 28px; 
+      height: 28px; 
+      border-radius: 50%; 
+      background: var(--accent); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #fff; 
+      font-weight: 700; 
+      font-size: 0.7rem; 
+    }
+    
+    .member-name { 
+      flex: 1; 
+    }
+    
+    .member-badge { 
+      font-size: 0.6rem; 
+      background: var(--accent); 
+      color: #fff; 
+      padding: 2px 6px; 
+      border-radius: 3px; 
+      font-weight: 700; 
+    }
+    
+    .chat-box { 
+      flex: 1; 
+      overflow-y: auto; 
+      padding: 12px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+    }
+    
+    .chat-msg { 
+      background: var(--card); 
+      padding: 10px; 
+      border-radius: 8px; 
+      font-size: 0.8rem; 
+      line-height: 1.4; 
+    }
+    
+    .chat-user { 
+      font-weight: 700; 
+      color: var(--accent); 
+      margin-bottom: 2px; 
+    }
+    
+    .chat-input { 
+      padding: 12px; 
+      border-top: 1px solid var(--muted); 
+      display: flex; 
+      gap: 8px; 
+    }
+    
+    .chat-inp { 
+      flex: 1; 
+      background: var(--card); 
+      border: 1px solid var(--muted); 
+      color: var(--text); 
+      padding: 8px 12px; 
+      border-radius: 6px; 
+      font-family: inherit; 
+      outline: none; 
+    }
+    
+    .chat-send { 
+      background: var(--accent); 
+      border: none; 
+      color: #fff; 
+      padding: 8px 16px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      font-family: inherit;
+    }
+    
+    .overlay { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.8); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      z-index: 9000; 
+    }
+    
+    .modal { 
+      background: var(--surface); 
+      border-radius: 12px; 
+      padding: 24px; 
+      max-width: 400px; 
+      width: 90%; 
+      border: 1px solid var(--muted); 
+    }
+    
+    .modal-title { 
+      font-size: 1.2rem; 
+      font-weight: 900; 
+      margin-bottom: 12px; 
+    }
+    
+    .modal-input { 
+      width: 100%; 
+      padding: 12px; 
+      background: var(--card); 
+      border: 1px solid var(--muted); 
+      color: var(--text); 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+      font-family: inherit; 
+    }
+    
+    .modal-btn { 
+      width: 100%; 
+      padding: 12px; 
+      background: var(--accent); 
+      color: #fff; 
+      border: none; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      font-family: inherit;
+    }
+    
+    .link-box { 
+      background: var(--card); 
+      padding: 12px; 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+    }
+    
+    .link-text { 
+      font-size: 0.75rem; 
+      color: var(--sub); 
+      word-break: break-all; 
+    }
+    
+    .link-copy { 
+      background: var(--accent); 
+      color: #fff; 
+      padding: 6px 12px; 
+      border: none; 
+      border-radius: 4px; 
+      font-size: 0.75rem; 
+      cursor: pointer; 
+      margin-top: 6px;
+      font-family: inherit;
+    }
+    
+    .toast { 
+      position: fixed; 
+      bottom: 20px; 
+      right: 20px; 
+      background: var(--accent); 
+      color: #fff; 
+      padding: 12px 16px; 
+      border-radius: 8px; 
+      font-size: 0.85rem; 
+      z-index: 9999; 
+      animation: slideIn 0.3s ease; 
+    }
+    
+    @keyframes slideIn { 
+      from { opacity: 0; transform: translateY(20px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    
+    @media (max-width: 1024px) {
+      .container { grid-template-columns: 1fr; }
+      .info-panel { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- VIDEO SECTION -->
+  <div class="video-section">
+    <iframe id="player" class="video-player" src="" allowfullscreen allow="autoplay"></iframe>
+    
+    <div class="controls">
+      <button class="ctrl-btn" onclick="togglePlay()" id="playBtn">▶ Play</button>
+      <button class="ctrl-btn" onclick="syncVideo()">🔄 Sync</button>
+      <span style="flex: 1;"></span>
+      <span id="hostLabel" style="font-size: 0.75rem; color: var(--sub);"></span>
+      <button class="ctrl-btn danger" onclick="endRoom()" id="endBtn" style="display:none;">🚪 End</button>
+      <button class="ctrl-btn" onclick="goBack()">← Back</button>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div class="info-panel">
+    <div class="info-header">
+      <div class="info-title" id="roomTitle">Loading Party...</div>
+      <div class="info-sub" id="roomId"></div>
+    </div>
+    
+    <div class="members-list">
+      <div style="font-size: 0.7rem; color: var(--muted); font-weight: 700; margin-bottom: 8px;">👥 Members</div>
+      <div id="membersList"></div>
+    </div>
+    
+    <div class="chat-box" id="chatBox"></div>
+    
+    <div class="chat-input">
+      <input class="chat-inp" id="chatInp" placeholder="Say something..." autocomplete="off">
+      <button class="chat-send" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN MODAL -->
+<div class="overlay" id="joinModal">
+  <div class="modal">
+    <div class="modal-title">👥 Join Watch Party</div>
+    <input class="modal-input" id="nameInp" placeholder="Your name..." maxlength="20">
+    <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;"></div>
+    <button class="modal-btn" onclick="joinRoom()">🎬 Join Party</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const AVATARS = ['🧔', '👱', '👴', '👨', '👩', '👧', '👦', '🧒'];
+  let socket = null;
+  let user = { id: null, name: null, avatar: '🧔', roomId: null };
+  let isHost = false;
+  let selectedAvatar = 0;
+
+  const roomId = new URLSearchParams(location.search).get('room');
+  if (!roomId) {
+    alert('No room found');
+    location.href = '/';
+  }
+  user.roomId = roomId;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildAvatarPicker();
+    setTimeout(() => connectSocket(), 300);
+  });
+
+  function buildAvatarPicker() {
+    const container = document.getElementById('avatarPicker');
+    AVATARS.forEach((av, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = av;
+      btn.style.cssText = `
+        padding: 12px; background: var(--card); border: 2px solid ${i === 0 ? 'var(--accent)' : 'var(--muted)'}; 
+        color: var(--text); border-radius: 8px; font-size: 1.5rem; cursor: pointer; transition: 0.2s; font-family: inherit;
+      `;
+      btn.onclick = () => {
+        document.querySelectorAll('#avatarPicker button').forEach(b => b.style.borderColor = 'var(--muted)');
+        btn.style.borderColor = 'var(--accent)';
+        selectedAvatar = i;
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function connectSocket() {
+    const SERVER = 'https://your-backend.com'; // CHANGE THIS
+    socket = io(SERVER);
+
+    socket.on('connect', () => {
+      console.log('Connected');
+    });
+
+    socket.on('room-data', (data) => {
+      const room = data.room;
+      document.getElementById('roomTitle').textContent = room.title || 'Watch Party';
+      document.getElementById('roomId').textContent = `Room: ${room.roomId.slice(0, 8)}`;
+      isHost = data.isHost;
+      if (isHost) document.getElementById('endBtn').style.display = 'block';
+      renderMembers(room.members);
+      room.messages.forEach(msg => addChatMessage(msg));
+    });
+
+    socket.on('user-joined', (data) => {
+      renderMembers(data.members);
+      showToast(`${data.username} joined`);
+    });
+
+    socket.on('message', (msg) => {
+      addChatMessage(msg);
+    });
+
+    socket.on('room-ended', () => {
+      showToast('Party ended');
+      setTimeout(() => location.href = '/', 2000);
+    });
+  }
+
+  function joinRoom() {
+    const name = document.getElementById('nameInp').value.trim();
+    if (!name) {
+      showToast('Enter your name');
+      return;
+    }
+
+    user.name = name;
+    user.id = 'user_' + Math.random().toString(36).slice(2, 10);
+    user.avatar = AVATARS[selectedAvatar];
+
+    socket.emit('join-room', {
+      roomId: user.roomId,
+      userId: user.id,
+      username: user.name,
+      avatar: user.avatar
+    });
+
+    document.getElementById('joinModal').style.display = 'none';
+    document.getElementById('hostLabel').textContent = `👤 ${user.name}`;
+    showToast('Joined! 🎬');
+  }
+
+  function sendMessage() {
+    const text = document.getElementById('chatInp').value.trim();
+    if (!text) return;
+
+    socket.emit('send-message', {
+      roomId: user.roomId,
+      userId: user.id,
+      username: user.name,
+      avatar: user.avatar,
+      text
+    });
+
+    document.getElementById('chatInp').value = '';
+  }
+
+  function addChatMessage(msg) {
+    const box = document.getElementById('chatBox');
+    const el = document.createElement('div');
+    el.className = 'chat-msg';
+    el.innerHTML = `
+      <div class="chat-user">${msg.avatar} ${msg.username}</div>
+      <div>${escapeHtml(msg.text)}</div>
+    `;
+    box.appendChild(el);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function escapeHtml(text) {
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+
+  function renderMembers(members) {
+    const list = document.getElementById('membersList');
+    list.innerHTML = members.map(m => `
+      <div class="member">
+        <div class="member-avatar">${m.avatar}</div>
+        <div class="member-name">${m.username}</div>
+        ${m.userId === (isHost ? user.id : null) ? '<span class="member-badge">HOST</span>' : ''}
+      </div>
+    `).join('');
+  }
+
+  function togglePlay() {
+    if (!isHost) {
+      showToast('Only host can control');
+      return;
+    }
+    const btn = document.getElementById('playBtn');
+    if (btn.textContent.includes('Play')) {
+      socket.emit('play', { roomId: user.roomId });
+    } else {
+      socket.emit('pause', { roomId: user.roomId });
+    }
+  }
+
+  function syncVideo() {
+    showToast('🔄 Syncing...');
+  }
+
+  function endRoom() {
+    if (!isHost) return;
+    if (!confirm('End party for everyone?')) return;
+    socket.emit('end-room', { roomId: user.roomId });
+  }
+
+  function goBack() {
+    location.href = '/';
+  }
+
+  function showToast(msg) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.activeElement.id === 'chatInp') sendMessage();
+  });
+</script>
+
+</body>
+</html>
