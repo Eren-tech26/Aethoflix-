@@ -172,6 +172,45 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .sheet-cast b{color:var(--text)}
 .sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
 
+  /* ─── PARTY FEATURE STYLES ─── */
+.party-btns{display:flex;gap:6px;margin-top:8px}
+.party-btn{flex:1;padding:10px;background:rgba(229,9,20,.15);border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:4px}
+.party-btn:active{background:var(--accent);color:#fff}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--surface);border-radius:12px;padding:20px;width:90%;max-width:380px;border:1px solid var(--border);animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-title{font-size:.95rem;font-weight:800;margin-bottom:12px;color:var(--text)}
+.modal-input{width:100%;padding:11px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);border-radius:8px;font-family:var(--font);font-size:.8rem;margin-bottom:10px;outline:none}
+.modal-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:8px;margin-top:12px}
+.modal-btn{flex:1;padding:10px;border:none;border-radius:8px;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s;font-family:var(--font)}
+.modal-btn-primary{background:var(--accent);color:#fff}
+.modal-btn-primary:active{background:var(--accent2)}
+.modal-btn-secondary{background:var(--border);color:var(--sub)}
+.modal-btn-secondary:active{background:var(--muted)}
+.party-info{background:var(--bg);border-radius:8px;padding:12px;margin:10px 0;border-left:3px solid var(--accent);font-size:.75rem;line-height:1.5;color:var(--sub)}
+.party-members{display:flex;flex-direction:column;gap:6px;margin:10px 0;max-height:180px;overflow-y:auto}
+.member-item{display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg);border-radius:6px;font-size:.75rem}
+.member-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.65rem}
+.member-name{flex:1;color:var(--text)}
+.member-status{font-size:.65rem;color:var(--muted)}
+.copy-btn{background:var(--bg);border:1px solid var(--border);color:var(--accent);padding:6px 10px;border-radius:6px;font-size:.7rem;cursor:pointer;font-weight:700}
+.copy-btn:active{background:var(--border)}
+.party-chat{display:flex;flex-direction:column;gap:6px;margin:10px 0;max-height:150px;overflow-y:auto}
+.chat-msg{padding:8px;background:var(--bg);border-radius:6px;font-size:.7rem;line-height:1.4}
+.chat-user{color:var(--accent);font-weight:700}
+.chat-text{color:var(--text);margin-top:2px}
+.chat-input-wrap{display:flex;gap:6px;margin-top:10px}
+.chat-input{flex:1;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:.75rem;font-family:var(--font);outline:none}
+.chat-input:focus{border-color:var(--accent)}
+.send-btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:700;font-size:.75rem}
+.send-btn:active{background:var(--accent2)}
+.party-status{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--sub);margin:10px 0;padding:8px;background:var(--bg);border-radius:6px;border-left:2px solid var(--blue)}
+.party-status.playing{border-left-color:var(--green)}
+.sync-indicator{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  
 /* ─── PLAYER PAGE ─── */
 .player-pg{display:none;min-height:100vh;background:var(--bg);padding-bottom:80px}
 .player-pg.on{display:block;animation:fadeUp .2s ease}
@@ -562,6 +601,100 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         ▶ Watch on Telegram
         <span class="bot-lbl" id="watchBotLbl">@aetho_flixbot</span>
       </button>
+        </div>
+
+      <!-- PARTY FEATURE BUTTONS -->
+      <div class="party-btns">
+        <button class="party-btn" id="createPartyBtn">
+          👥 Create Party
+        </button>
+        <button class="party-btn" id="joinPartyBtn">
+          🔗 Join Party
+        </button>
+      </div>
+
+      <!-- PARTY MODAL -->
+      <div class="modal-overlay" id="partyModal">
+        <div class="modal-box">
+          <div class="modal-title" id="modalTitle">Create Watch Party</div>
+          
+          <!-- CREATE PARTY VIEW -->
+          <div id="createPartyView">
+            <div class="party-info">
+              🎬 Start a party with friends and watch together in sync!
+            </div>
+            <button class="modal-btn modal-btn-primary" onclick="startCreateParty()">
+              Create New Party
+            </button>
+            <button class="modal-btn modal-btn-secondary" onclick="closePartyModal()">
+              Cancel
+            </button>
+          </div>
+
+          <!-- PARTY CREATED VIEW (AFTER CREATING) -->
+          <div id="partyCreatedView" style="display:none">
+            <div class="party-info">
+              ✅ Party Created! Share this code with friends:
+            </div>
+            <div style="background:var(--bg);padding:12px;border-radius:8px;text-align:center;margin:10px 0">
+              <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">Party Code</div>
+              <div style="font-size:1.2rem;font-weight:900;color:var(--accent);font-family:monospace;letter-spacing:2px" id="partyCodeDisplay"></div>
+            </div>
+            <button class="copy-btn" onclick="copyPartyCode()" style="width:100%;margin:10px 0">
+              📋 Copy Code
+            </button>
+            <div style="font-size:.7rem;color:var(--sub);margin:10px 0">
+              Waiting for friends...
+            </div>
+            <div class="party-members" id="partyMembersList"></div>
+            <div class="party-chat" id="partyChatBox"></div>
+            <div class="chat-input-wrap">
+              <input type="text" class="chat-input" id="chatInput" placeholder="Say something...">
+              <button class="send-btn" onclick="sendChatMessage()">Send</button>
+            </div>
+            <button class="modal-btn modal-btn-secondary" onclick="closePartyModal()" style="margin-top:10px">
+              Close Party
+            </button>
+          </div>
+
+          <!-- JOIN PARTY VIEW -->
+          <div id="joinPartyView" style="display:none">
+            <div class="party-info">
+              🔗 Enter the party code your friend shared:
+            </div>
+            <input type="text" class="modal-input" id="partyCodeInput" placeholder="PARTY-ABC123" maxlength="20" style="text-transform:uppercase">
+            <input type="text" class="modal-input" id="userNameInput" placeholder="Your name (optional)">
+            <button class="modal-btn modal-btn-primary" onclick="submitJoinParty()">
+              Join Party
+            </button>
+            <button class="modal-btn modal-btn-secondary" onclick="closePartyModal()">
+              Cancel
+            </button>
+          </div>
+
+          <!-- JOINED PARTY VIEW -->
+          <div id="joinedPartyView" style="display:none">
+            <div class="party-info">
+              ✅ Connected to party!
+            </div>
+            <div style="font-size:.8rem;color:var(--sub);margin-bottom:10px" id="partyCodeLabel"></div>
+            <div class="party-members" id="joinedMembersList"></div>
+            <div class="party-chat" id="joinedChatBox"></div>
+            <div class="chat-input-wrap">
+              <input type="text" class="chat-input" id="joinedChatInput" placeholder="Say something...">
+              <button class="send-btn" onclick="sendJoinedChatMessage()">Send</button>
+            </div>
+            <div class="party-status" id="syncStatus">
+              <span class="sync-indicator"></span>
+              <span>Syncing with party...</span>
+            </div>
+            <button class="modal-btn modal-btn-secondary" onclick="leaveParty()" style="margin-top:10px">
+              Leave Party
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <div style="display:flex;gap:8px;margin-bottom:10px">
         <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()" style="flex:1">+ My List</button>
         <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1">🎬 Trailer</button>
@@ -2036,6 +2169,310 @@ intro.remove();
 
 });
 
+  // ═══════════════════════════════════════════════════════════════
+// PARTY FEATURE - JAVASCRIPT
+// ═══════════════════════════════════════════════════════════════
+
+let currentParty = null;
+let currentUser = null;
+let pollInterval = null;
+
+// ─── MODAL FUNCTIONS ─── 
+function openPartyModal(action) {
+  const modal = document.getElementById('partyModal');
+  const createView = document.getElementById('createPartyView');
+  const joinView = document.getElementById('joinPartyView');
+  const createdView = document.getElementById('partyCreatedView');
+  const joinedView = document.getElementById('joinedPartyView');
+  
+  createView.style.display = 'none';
+  joinView.style.display = 'none';
+  createdView.style.display = 'none';
+  joinedView.style.display = 'none';
+  
+  if(action === 'create') {
+    createView.style.display = 'block';
+    document.getElementById('modalTitle').textContent = '👥 Create Watch Party';
+  } else if(action === 'join') {
+    joinView.style.display = 'block';
+    document.getElementById('modalTitle').textContent = '🔗 Join Watch Party';
+  }
+  
+  modal.classList.add('show');
+}
+
+function closePartyModal() {
+  document.getElementById('partyModal').classList.remove('show');
+}
+
+// ─── CREATE PARTY ───
+function startCreateParty() {
+  const partyCode = 'PARTY-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  const movieId = currentMovieId || 'unknown';
+  const movieTitle = document.querySelector('.sheet-title')?.textContent || 'Unknown Movie';
+  
+  currentParty = {
+    code: partyCode,
+    movieId: movieId,
+    movieTitle: movieTitle,
+    creator: 'You',
+    members: ['You'],
+    status: 'playing',
+    playbackTime: 0,
+    isPlaying: false,
+    messages: [],
+    createdAt: new Date().toISOString()
+  };
+  
+  currentUser = { name: 'You', role: 'creator' };
+  
+  // Save to localStorage
+  localStorage.setItem('partyData_' + partyCode, JSON.stringify({
+    party: currentParty,
+    members: [{ name: 'You', joinedAt: new Date().toISOString() }]
+  }));
+  
+  // Show created view
+  document.getElementById('createPartyView').style.display = 'none';
+  document.getElementById('partyCreatedView').style.display = 'block';
+  document.getElementById('partyCodeDisplay').textContent = partyCode;
+  document.getElementById('modalTitle').textContent = '👥 Watch Party Created!';
+  
+  updatePartyMembersList();
+  startPolling();
+}
+
+// ─── JOIN PARTY ───
+function submitJoinParty() {
+  const code = document.getElementById('partyCodeInput').value.toUpperCase();
+  const name = document.getElementById('userNameInput').value || 'Guest' + Math.floor(Math.random()*1000);
+  
+  if(!code) {
+    alert('Please enter party code');
+    return;
+  }
+  
+  const partyData = localStorage.getItem('partyData_' + code);
+  if(!partyData) {
+    alert('Party not found! Check the code.');
+    return;
+  }
+  
+  const data = JSON.parse(partyData);
+  currentParty = data.party;
+  currentUser = { name: name, role: 'member' };
+  
+  // Add to members list
+  data.members.push({ name: name, joinedAt: new Date().toISOString() });
+  currentParty.members.push(name);
+  
+  localStorage.setItem('partyData_' + code, JSON.stringify(data));
+  
+  // Show joined view
+  document.getElementById('joinPartyView').style.display = 'none';
+  document.getElementById('joinedPartyView').style.display = 'block';
+  document.getElementById('partyCodeLabel').textContent = `Party Code: ${code}`;
+  document.getElementById('modalTitle').textContent = '✅ Joined Party!';
+  
+  updateJoinedMembersList();
+  startPolling();
+}
+
+// ─── UPDATE MEMBERS LIST ───
+function updatePartyMembersList() {
+  if(!currentParty) return;
+  
+  const list = document.getElementById('partyMembersList');
+  list.innerHTML = '';
+  
+  currentParty.members.forEach((member, idx) => {
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    const initials = member.substring(0, 1).toUpperCase();
+    div.innerHTML = `
+      <div class="member-avatar">${initials}</div>
+      <div class="member-name">${member}</div>
+      <div class="member-status">${idx === 0 ? '👑 Host' : '📺 Watching'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function updateJoinedMembersList() {
+  if(!currentParty) return;
+  
+  const list = document.getElementById('joinedMembersList');
+  list.innerHTML = '';
+  
+  currentParty.members.forEach((member, idx) => {
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    const initials = member.substring(0, 1).toUpperCase();
+    div.innerHTML = `
+      <div class="member-avatar">${initials}</div>
+      <div class="member-name">${member}</div>
+      <div class="member-status">${idx === 0 ? '👑 Host' : '📺 Watching'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ─── CHAT ───
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  
+  if(!msg) return;
+  
+  if(currentParty) {
+    currentParty.messages.push({
+      user: 'You',
+      text: msg,
+      time: new Date().toISOString()
+    });
+    
+    updateChatBox();
+    input.value = '';
+  }
+}
+
+function sendJoinedChatMessage() {
+  const input = document.getElementById('joinedChatInput');
+  const msg = input.value.trim();
+  
+  if(!msg) return;
+  
+  if(currentParty) {
+    currentParty.messages.push({
+      user: currentUser.name,
+      text: msg,
+      time: new Date().toISOString()
+    });
+    
+    updateJoinedChatBox();
+    input.value = '';
+  }
+}
+
+function updateChatBox() {
+  const box = document.getElementById('partyChatBox');
+  box.innerHTML = '';
+  
+  currentParty.messages.slice(-10).forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `
+      <div class="chat-user">${msg.user}</div>
+      <div class="chat-text">${msg.text}</div>
+    `;
+    box.appendChild(div);
+  });
+  
+  box.scrollTop = box.scrollHeight;
+}
+
+function updateJoinedChatBox() {
+  const box = document.getElementById('joinedChatBox');
+  box.innerHTML = '';
+  
+  currentParty.messages.slice(-10).forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.innerHTML = `
+      <div class="chat-user">${msg.user}</div>
+      <div class="chat-text">${msg.text}</div>
+    `;
+    box.appendChild(div);
+  });
+  
+  box.scrollTop = box.scrollHeight;
+}
+
+// ─── COPY PARTY CODE ───
+function copyPartyCode() {
+  const code = document.getElementById('partyCodeDisplay').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    alert('✅ Party code copied!');
+  });
+}
+
+// ─── POLLING - CHECK FOR UPDATES ───
+function startPolling() {
+  if(pollInterval) clearInterval(pollInterval);
+  
+  pollInterval = setInterval(() => {
+    if(currentParty) {
+      const stored = localStorage.getItem('partyData_' + currentParty.code);
+      if(stored) {
+        const data = JSON.parse(stored);
+        currentParty = data.party;
+        
+        // Update UI
+        if(document.getElementById('partyCreatedView').style.display !== 'none') {
+          updatePartyMembersList();
+          updateChatBox();
+        } else if(document.getElementById('joinedPartyView').style.display !== 'none') {
+          updateJoinedMembersList();
+          updateJoinedChatBox();
+        }
+      }
+    }
+  }, 2000); // Check every 2 seconds
+}
+
+// ─── SYNC PLAYBACK ───
+function syncPlayback(time, isPlaying) {
+  if(currentParty) {
+    currentParty.playbackTime = time;
+    currentParty.isPlaying = isPlaying;
+    
+    localStorage.setItem('partyData_' + currentParty.code, JSON.stringify({
+      party: currentParty,
+      members: currentParty.members.map(m => ({ name: m }))
+    }));
+  }
+}
+
+// ─── LEAVE PARTY ───
+function leaveParty() {
+  if(currentParty && confirm('Leave party?')) {
+    const stored = localStorage.getItem('partyData_' + currentParty.code);
+    if(stored) {
+      const data = JSON.parse(stored);
+      data.party.members = data.party.members.filter(m => m !== currentUser.name);
+      localStorage.setItem('partyData_' + currentParty.code, JSON.stringify(data));
+    }
+    
+    currentParty = null;
+    currentUser = null;
+    if(pollInterval) clearInterval(pollInterval);
+    closePartyModal();
+  }
+}
+
+// ─── BUTTON EVENT LISTENERS ───
+document.addEventListener('DOMContentLoaded', function() {
+  const createBtn = document.getElementById('createPartyBtn');
+  const joinBtn = document.getElementById('joinPartyBtn');
+  const modalOverlay = document.getElementById('partyModal');
+  
+  if(createBtn) createBtn.onclick = () => openPartyModal('create');
+  if(joinBtn) joinBtn.onclick = () => openPartyModal('join');
+  
+  if(modalOverlay) {
+    modalOverlay.onclick = (e) => {
+      if(e.target === modalOverlay) closePartyModal();
+    };
+  }
+});
+
+// ─── STORE CURRENT MOVIE ───
+let currentMovieId = null;
+const originalOpenPlayer = window.openPlayer;
+window.openPlayer = function(id, type, ...args) {
+  currentMovieId = id;
+  return originalOpenPlayer.call(this, id, type, ...args);
+};
 </script>
 </body>
 </html>
