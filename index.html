@@ -1174,11 +1174,11 @@ function srcUrl(id,type,season,ep,src){
     const urls=[];
     if(aid){
       urls.push(`https://vidnest.fun/animepahe/${aid}/${ep}/sub`);
-      urls.push(`https://vidnest.fun/animepahe/${aid}/${ep}/dub`);
+      urls.push(`https://vidlink.pro/tv/${id}/${season}/${ep}`);
     }
     if(mid){
       urls.push(`https://megaplay.buzz/stream/mal/${mid}/${ep}/sub`);
-      urls.push(`https://megaplay.buzz/stream/mal/${mid}/${ep}/dub`);
+      urls.push(`https://vidlink.pro/tv/${id}/${season}/${ep}`);
     }
     if(urls.length) return urls[src]||urls[0];
   }
