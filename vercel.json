@@ -1,4 +1,7 @@
-{
+{{
+  "cleanUrls": true,
+  "rewrites":[{"source":"/(.*)","destination":"/index.html"}]
+}
   "buildCommand": "npm install",
   "env": {
     "NODE_ENV": "production"
