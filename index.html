@@ -2188,13 +2188,12 @@ const firebaseConfig = {
 
 let currentUser = null;
 
-// Load Firebase from CDN
 async function initFirebase(){
-  if(window.firebase) return; // Already loaded
-  
+  if(window.firebase && window.firebase.apps.length) return;
+
   return Promise.all([
-    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js'),
-    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js')
+    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js'),
+    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js')
   ]).then(() => {
     firebase.initializeApp(firebaseConfig);
     firebase.auth().onAuthStateChanged(user => {
@@ -2246,7 +2245,6 @@ function onUserLogin(user){
     btn.textContent = '👤 ' + user.displayName;
     btn.onclick = googleSignOut;
   }
-  // Auto-fill comment name
   const nameInput = $('commentNamePlayer');
   if(nameInput) nameInput.value = user.displayName;
 }
@@ -2257,8 +2255,8 @@ function onUserLogout(){
   if(btn){
     btn.textContent = '🔑';
     btn.onclick = googleSignIn;
-  }
 }
+
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
