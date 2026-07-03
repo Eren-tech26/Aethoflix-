@@ -2212,6 +2212,7 @@ async function initFirebase(){
   }
 
   firebase.initializeApp(firebaseConfig);
+  await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
   firebase.auth().onAuthStateChanged(user => {
     if(user) onUserLogin(user);
@@ -2233,7 +2234,7 @@ async function googleSignIn(){
   }catch(err){
     console.error('SIGN-IN ERROR:', err);
     showToast('❌ ' + (err.code || err.message || 'Sign-in failed'));
-    if(btn) btn.textContent = '🔑';
+    onUserLogout();
   }
 }
 
@@ -2270,7 +2271,13 @@ function onUserLogin(user){
   currentUser = user;
   const btn = $('authBtn');
   if(btn){
-    btn.textContent = '👤 ' + user.displayName;
+    if(user.photoURL){
+      btn.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover" alt="">`;
+    } else {
+      const initial = (user.displayName || user.email || '?').charAt(0).toUpperCase();
+      btn.textContent = initial;
+    }
+    btn.title = user.displayName || user.email;
     btn.onclick = googleSignOut;
   }
   const nameInput = $('commentNamePlayer');
@@ -2282,10 +2289,11 @@ function onUserLogout(){
   currentUser = null;
   const btn = $('authBtn');
   if(btn){
-    btn.textContent = '🔑';
+    btn.innerHTML = '🔑';
+    btn.title = 'Sign in';
     btn.onclick = googleSignIn;
   }
-}
+  }
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
