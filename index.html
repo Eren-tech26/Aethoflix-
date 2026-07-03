@@ -861,6 +861,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 </div>
 
 <script>
+
+ window.onerror = (msg, url, line) => alert('JS ERROR: ' + msg + ' (line ' + line + ')');
   
 setTimeout(() => {
   const splash = document.getElementById('splash');
