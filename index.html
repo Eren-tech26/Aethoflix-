@@ -2189,17 +2189,17 @@ const firebaseConfig = {
 let currentUser = null;
 
 async function initFirebase(){
-  if(window.firebase && window.firebase.apps.length) return;
+  if(window.firebase && window.firebase.apps && window.firebase.apps.length) return;
 
-  return Promise.all([
+  await Promise.all([
     loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js'),
     loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js')
-  ]).then(() => {
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().onAuthStateChanged(user => {
-      if(user) onUserLogin(user);
-      else onUserLogout();
-    });
+  ]);
+
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().onAuthStateChanged(user => {
+    if(user) onUserLogin(user);
+    else onUserLogout();
   });
 }
 
@@ -2208,7 +2208,7 @@ function loadScript(src){
     const script = document.createElement('script');
     script.src = src;
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = () => reject(new Error('Failed to load ' + src));
     document.head.appendChild(script);
   });
 }
@@ -2219,11 +2219,10 @@ async function googleSignIn(){
     const provider = new firebase.auth.GoogleAuthProvider();
     const result = await firebase.auth().signInWithPopup(provider);
     currentUser = result.user;
-    console.log('Logged in:', currentUser.displayName);
     showToast('✅ Logged in as ' + currentUser.displayName);
   }catch(err){
-    console.error('Sign-in error:', err);
-    showToast('❌ Sign-in failed: ' + err.message);
+    console.error('Sign-in error:', err.code, err.message);
+    showToast('❌ ' + (err.code || err.message));
   }
 }
 
@@ -2238,6 +2237,22 @@ async function googleSignOut(){
   }
 }
 
+async function syncUserToMongo(user){
+  try{
+    await fetch(`${API_BASE}/api/user/${user.uid}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+      })
+    });
+  }catch(err){
+    console.error('Mongo user sync failed:', err);
+  }
+}
+
 function onUserLogin(user){
   currentUser = user;
   const btn = $('authBtn');
@@ -2247,6 +2262,7 @@ function onUserLogin(user){
   }
   const nameInput = $('commentNamePlayer');
   if(nameInput) nameInput.value = user.displayName;
+  syncUserToMongo(user);
 }
 
 function onUserLogout(){
@@ -2255,10 +2271,8 @@ function onUserLogout(){
   if(btn){
     btn.textContent = '🔑';
     btn.onclick = googleSignIn;
+  }
 }
-  
-}
-  
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
