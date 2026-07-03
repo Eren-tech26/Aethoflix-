@@ -2032,11 +2032,11 @@ function closeTrailer(){
   trailerData = null;
 }
 
-/* ══════════ COMMENTS ══════════ */
+
+    /* ══════════ COMMENTS ══════════ */
 const API_BASE = 'https://aethoflix.vercel.app';
 
 async function loadComments(movieId){
-  // If no movieId passed, get from URL or pl object
   if(!movieId){
     const urlParams = new URLSearchParams(location.search);
     movieId = urlParams.get('id') || pl.id;
@@ -2053,11 +2053,14 @@ async function loadComments(movieId){
   try{
     console.log('Loading comments from:', `${API_BASE}/api/comments/${movieId}`);
     const res = await fetch(`${API_BASE}/api/comments/${movieId}`);
-    console.log('Response status:', res.status);
+    console.log('Load response status:', res.status);
     
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rawText = await res.text();
+    console.log('Load raw response:', rawText);
     
-    const comments = await res.json();
+    if(!res.ok) throw new Error(`HTTP ${res.status}: ${rawText}`);
+    
+    const comments = JSON.parse(rawText);
     console.log('Comments loaded:', comments);
     renderComments(comments);
   }catch(err){
@@ -2085,9 +2088,13 @@ function renderComments(comments){
 }
 
 async function submitComment(){
-  // Get movie ID from URL first, then pl object
   const urlParams = new URLSearchParams(location.search);
   const movieId = urlParams.get('id') || pl.id;
+  
+  console.log('=== SUBMIT COMMENT DEBUG ===');
+  console.log('movieId:', movieId);
+  console.log('API_BASE:', API_BASE);
+  console.log('Full URL will be:', `${API_BASE}/api/comments/${movieId}`);
   
   if(!movieId){
     showToast('❌ Movie ID not found');
@@ -2098,18 +2105,19 @@ async function submitComment(){
   const name = $('commentNamePlayer').value.trim() || 'Anonymous';
   const text = $('commentTextPlayer').value.trim();
   
+  console.log('name:', name);
+  console.log('text:', text);
+  
   if(!name){ showToast('Enter a name'); return; }
   if(!text){ showToast('Write something first'); return; }
   if(text.length > 300){ showToast('Comment too long (max 300 chars)'); return; }
 
-  // Disable button while posting
   const btn = document.querySelector('.comment-submit');
   btn.disabled = true;
   btn.textContent = 'Posting...';
 
   try{
-    console.log('Submitting comment to:', `${API_BASE}/api/comments/${movieId}`);
-    console.log('Data:', { username: name, text });
+    console.log('Sending fetch request...');
     
     const res = await fetch(`${API_BASE}/api/comments/${movieId}`, {
       method: 'POST',
@@ -2117,24 +2125,30 @@ async function submitComment(){
       body: JSON.stringify({ username: name, text })
     });
     
-    console.log('Post response status:', res.status);
+    console.log('Response received. Status:', res.status);
+    console.log('Response ok?', res.ok);
+    
+    const rawText = await res.text();
+    console.log('Raw response body:', rawText);
     
     if(!res.ok){
-      const errData = await res.text();
-      console.error('Post error:', errData);
-      throw new Error(`HTTP ${res.status}: ${errData}`);
+      throw new Error(`HTTP ${res.status}: ${rawText}`);
     }
     
-    const result = await res.json();
-    console.log('Post success:', result);
+    let result;
+    try{
+      result = JSON.parse(rawText);
+      console.log('Parsed result:', result);
+    }catch(parseErr){
+      console.error('Failed to parse response as JSON:', parseErr);
+      throw new Error('Server returned invalid JSON: ' + rawText.substring(0, 100));
+    }
     
-    // Clear input
     $('commentNamePlayer').value = '';
     $('commentTextPlayer').value = '';
     
     showToast('✅ Comment posted!');
     
-    // Reload comments
     setTimeout(() => loadComments(movieId), 500);
     
   }catch(err){
