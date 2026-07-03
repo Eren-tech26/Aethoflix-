@@ -457,6 +457,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <div class="notif-count" id="notifCount"></div>
     </div>
     <div class="nav-icon" onclick="navSearch()">🔍</div>
+    <button class="nav-icon" id="authBtn" onclick="googleSignIn()" title="Sign in">🔑</button>
   </div>
 </nav>
 
@@ -2175,7 +2176,135 @@ function timeAgo(dateStr){
   if(hrs < 24) return `${hrs}h ago`;
   return `${Math.floor(hrs/24)}d ago`;
 }
-                                    
+
+/* ══════════ FIREBASE AUTH ══════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAh9NuZ_ZpwedlSBWuJY9BmCh_gAZEvZgM",
+  authDomain: "aethoflix-427df.firebaseapp.com",
+  projectId: "aethoflix-427df",
+  storageBucket: "aethoflix-427df.firebasestorage.app",
+  messagingSenderId: "405036201332",
+  appId: "1:405036201332:web:2fb9065549e711107ee821"
+};
+
+// Load Firebase SDK
+const script = document.createElement('script');
+script.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+document.head.appendChild(script);
+
+const script2 = document.createElement('script');
+script2.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+script2.onload = () => {
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().onAuthStateChanged(user => {
+    if(user){
+      onUserLogin(user);
+    } else {
+      onUserLogout();
+    }
+  });
+};
+document.head.appendChild(script2);
+
+let currentUser = null;
+
+async function googleSignIn(){
+  try{
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await firebase.auth().signInWithPopup(provider);
+    currentUser = result.user;
+    await syncUserToMongo(currentUser);
+    showToast('✅ Logged in as ' + currentUser.displayName);
+  }catch(err){
+    console.error('Sign-in error:', err);
+    showToast('❌ Sign-in failed');
+  }
+}
+
+async function googleSignOut(){
+  try{
+    await firebase.auth().signOut();
+    currentUser = null;
+    showToast('👋 Signed out');
+  }catch(err){
+    console.error('Sign-out error:', err);
+  }
+}
+
+async function syncUserToMongo(user){
+  try{
+    const res = await fetch('https://aethoflix.vercel.app/api/user/' + user.uid, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+      })
+    });
+    if(res.ok) console.log('User synced to MongoDB');
+  }catch(err){
+    console.error('Sync error:', err);
+  }
+}
+
+async function loadUserWatchlist(){
+  if(!currentUser) return;
+  try{
+    const res = await fetch('https://aethoflix.vercel.app/api/user/' + currentUser.uid);
+    if(res.ok){
+      const data = await res.json();
+      if(data.watchlist) lsSet('watchlist', data.watchlist);
+    }
+  }catch(err){
+    console.error('Load watchlist error:', err);
+  }
+}
+
+async function saveWatchlistToMongo(){
+  if(!currentUser) return;
+  try{
+    const watchlist = lsGet('watchlist', []);
+    await fetch('https://aethoflix.vercel.app/api/user/' + currentUser.uid, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ watchlist })
+    });
+  }catch(err){
+    console.error('Save watchlist error:', err);
+  }
+}
+
+function onUserLogin(user){
+  currentUser = user;
+  const btn = document.querySelector('[onclick*="googleSignIn"]') || document.getElementById('authBtn');
+  if(btn){
+    btn.textContent = '👤 ' + user.displayName;
+    btn.onclick = googleSignOut;
+  }
+  loadUserWatchlist();
+  // Auto-fill comment name with Google name
+  const nameInput = $('commentNamePlayer');
+  if(nameInput) nameInput.value = user.displayName;
+}
+
+function onUserLogout(){
+  currentUser = null;
+  const btn = document.querySelector('[onclick*="googleSignIn"]') || document.getElementById('authBtn');
+  if(btn){
+    btn.textContent = '🔑 Sign in';
+    btn.onclick = googleSignIn;
+  }
+}
+
+// Override toggleWatchlist to also sync to MongoDB
+const originalToggleWatchlist = toggleWatchlist;
+toggleWatchlist = function(type, id, title, poster){
+  originalToggleWatchlist(type, id, title, poster);
+  if(currentUser) saveWatchlistToMongo();
+};  
+  
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
