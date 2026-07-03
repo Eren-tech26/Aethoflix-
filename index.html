@@ -343,6 +343,25 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .code-badge.revoked{background:rgba(229,9,20,.1);color:var(--accent);border:1px solid rgba(229,9,20,.2)}
 .no-codes{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
 
+/* ─── COMMENTS ─── */
+.comments-section{padding:16px 4% 30px}
+.comments-title{font-size:.9rem;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.comment-form{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.comment-input-row{display:flex;gap:8px}
+.comment-name{width:100px;flex-shrink:0;background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:9px 10px;border-radius:8px;font-size:.75rem;font-family:var(--font);outline:none}
+.comment-text{flex:1;background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.75rem;font-family:var(--font);outline:none;resize:none}
+.comment-name:focus,.comment-text:focus{border-color:var(--accent)}
+.comment-submit{align-self:flex-end;background:var(--accent);color:#fff;padding:8px 18px;border-radius:8px;font-size:.74rem;font-weight:800}
+.comment-submit:active{transform:scale(.97)}
+.comment-list{display:flex;flex-direction:column;gap:12px}
+.comment-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.comment-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.comment-user{font-size:.74rem;font-weight:700;color:var(--accent)}
+.comment-time{font-size:.6rem;color:var(--muted)}
+.comment-body{font-size:.76rem;color:#ccccdd;line-height:1.5}
+.comment-empty{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
+.comment-del{font-size:.65rem;color:var(--muted);cursor:pointer;margin-left:8px}
+  
 /* admin tools */
 .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tool-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 12px;cursor:pointer;text-align:left;transition:.15s;font-family:var(--font)}
@@ -567,6 +586,17 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1">🎬 Trailer</button>
       </div>
       <div class="sheet-cast" id="detCast"></div>
+      <div class="comments-section">
+  <div class="comments-title">💬 Comments (<span id="commentCount">0</span>)</div>
+  <div class="comment-form">
+    <div class="comment-input-row">
+      <input type="text" class="comment-name" id="commentName" placeholder="Name" maxlength="20">
+      <textarea class="comment-text" id="commentText" placeholder="Write a comment..." rows="1" maxlength="300"></textarea>
+    </div>
+    <button class="comment-submit" onclick="submitComment()">Post</button>
+  </div>
+  <div class="comment-list" id="commentList"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1999,7 +2029,75 @@ function closeTrailer(){
   document.body.style.overflow = '';
   trailerData = null;
 }
-  
+
+/* ══════════ COMMENTS ══════════ */
+const API_BASE = 'https://YOUR-BACKEND-URL.onrender.com'; // <-- swap this once backend is live
+
+async function loadComments(movieId){
+  const list = $('commentList');
+  list.innerHTML = '<div class="comment-empty">Loading...</div>';
+  try{
+    const res = await fetch(`${API_BASE}/api/comments/${movieId}`);
+    const comments = await res.json();
+    renderComments(comments);
+  }catch(err){
+    list.innerHTML = '<div class="comment-empty">Could not load comments</div>';
+  }
+}
+
+function renderComments(comments){
+  const list = $('commentList');
+  $('commentCount').textContent = comments.length;
+  if(!comments.length){
+    list.innerHTML = '<div class="comment-empty">No comments yet. Be the first!</div>';
+    return;
+  }
+  list.innerHTML = comments.map(c => `
+    <div class="comment-item">
+      <div class="comment-head">
+        <span class="comment-user">${escapeHtml(c.username)}</span>
+        <span class="comment-time">${timeAgo(c.createdAt)}</span>
+      </div>
+      <div class="comment-body">${escapeHtml(c.text)}</div>
+    </div>
+  `).join('');
+}
+
+async function submitComment(){
+  const name = $('commentName').value.trim() || 'Anonymous';
+  const text = $('commentText').value.trim();
+  if(!text){ showToast('Write something first'); return; }
+
+  try{
+    const res = await fetch(`${API_BASE}/api/comments/${currentMovieId}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ username: name, text })
+    });
+    if(!res.ok) throw new Error();
+    $('commentText').value = '';
+    loadComments(currentMovieId);
+  }catch(err){
+    showToast('Failed to post comment');
+  }
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function timeAgo(dateStr){
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff/60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins/60);
+  if(hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs/24)}d ago`;
+}
+                                    
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
