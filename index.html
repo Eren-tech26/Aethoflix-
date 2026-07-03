@@ -2036,13 +2036,32 @@ function closeTrailer(){
 const API_BASE = 'https://aethoflix.vercel.app';
 
 async function loadComments(movieId){
+  // If no movieId passed, get from URL or pl object
+  if(!movieId){
+    const urlParams = new URLSearchParams(location.search);
+    movieId = urlParams.get('id') || pl.id;
+  }
+  
+  if(!movieId){
+    const list = $('commentListPlayer');
+    list.innerHTML = '<div class="comment-empty">Movie ID not found</div>';
+    return;
+  }
+
   const list = $('commentListPlayer');
   list.innerHTML = '<div class="comment-empty">Loading...</div>';
   try{
+    console.log('Loading comments from:', `${API_BASE}/api/comments/${movieId}`);
     const res = await fetch(`${API_BASE}/api/comments/${movieId}`);
+    console.log('Response status:', res.status);
+    
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    
     const comments = await res.json();
+    console.log('Comments loaded:', comments);
     renderComments(comments);
   }catch(err){
+    console.error('Load comments error:', err);
     list.innerHTML = '<div class="comment-empty">Could not load comments</div>';
   }
 }
@@ -2066,21 +2085,64 @@ function renderComments(comments){
 }
 
 async function submitComment(){
+  // Get movie ID from URL first, then pl object
+  const urlParams = new URLSearchParams(location.search);
+  const movieId = urlParams.get('id') || pl.id;
+  
+  if(!movieId){
+    showToast('❌ Movie ID not found');
+    console.error('No movieId available. URL:', location.search, 'pl.id:', pl.id);
+    return;
+  }
+
   const name = $('commentNamePlayer').value.trim() || 'Anonymous';
   const text = $('commentTextPlayer').value.trim();
+  
+  if(!name){ showToast('Enter a name'); return; }
   if(!text){ showToast('Write something first'); return; }
+  if(text.length > 300){ showToast('Comment too long (max 300 chars)'); return; }
+
+  // Disable button while posting
+  const btn = document.querySelector('.comment-submit');
+  btn.disabled = true;
+  btn.textContent = 'Posting...';
 
   try{
-    const res = await fetch(`${API_BASE}/api/comments/${pl.id}`, {
+    console.log('Submitting comment to:', `${API_BASE}/api/comments/${movieId}`);
+    console.log('Data:', { username: name, text });
+    
+    const res = await fetch(`${API_BASE}/api/comments/${movieId}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ username: name, text })
     });
-    if(!res.ok) throw new Error();
+    
+    console.log('Post response status:', res.status);
+    
+    if(!res.ok){
+      const errData = await res.text();
+      console.error('Post error:', errData);
+      throw new Error(`HTTP ${res.status}: ${errData}`);
+    }
+    
+    const result = await res.json();
+    console.log('Post success:', result);
+    
+    // Clear input
+    $('commentNamePlayer').value = '';
     $('commentTextPlayer').value = '';
-    loadComments(pl.id);
+    
+    showToast('✅ Comment posted!');
+    
+    // Reload comments
+    setTimeout(() => loadComments(movieId), 500);
+    
   }catch(err){
-    showToast('Failed to post comment');
+    console.error('Comment submission error:', err);
+    showToast('❌ Failed: ' + err.message);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Post';
   }
 }
 
