@@ -586,17 +586,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1">🎬 Trailer</button>
       </div>
       <div class="sheet-cast" id="detCast"></div>
-      <div class="comments-section">
-  <div class="comments-title">💬 Comments (<span id="commentCount">0</span>)</div>
-  <div class="comment-form">
-    <div class="comment-input-row">
-      <input type="text" class="comment-name" id="commentName" placeholder="Name" maxlength="20">
-      <textarea class="comment-text" id="commentText" placeholder="Write a comment..." rows="1" maxlength="300"></textarea>
-    </div>
-    <button class="comment-submit" onclick="submitComment()">Post</button>
-  </div>
-  <div class="comment-list" id="commentList"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -683,7 +672,20 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="pl-ov" id="plOv"></div>
     <div class="pl-cast" id="plCast"></div>
   </div>
-
+    
+<!-- ══════════ COMMENTS (PLAYER PAGE) ══════════ -->
+<div class="comments-section">
+  <div class="comments-title">💬 Comments (<span id="commentCountPlayer">0</span>)</div>
+  <div class="comment-form">
+    <div class="comment-input-row">
+      <input type="text" class="comment-name" id="commentNamePlayer" placeholder="Name" maxlength="20">
+      <textarea class="comment-text" id="commentTextPlayer" placeholder="Write a comment..." rows="1" maxlength="300"></textarea>
+    </div>
+    <button class="comment-submit" onclick="submitComment()">Post</button>
+  </div>
+  <div class="comment-list" id="commentListPlayer"></div>
+</div>
+    
   <!-- Next episode banner -->
   <div class="next-banner" id="nextBanner">
     <img class="nb-img" id="nbImg" src="" alt="">
@@ -2034,7 +2036,7 @@ function closeTrailer(){
 const API_BASE = 'https://aethoflix.vercel.app';
 
 async function loadComments(movieId){
-  const list = $('commentList');
+  const list = $('commentListPlayer');
   list.innerHTML = '<div class="comment-empty">Loading...</div>';
   try{
     const res = await fetch(`${API_BASE}/api/comments/${movieId}`);
@@ -2046,8 +2048,8 @@ async function loadComments(movieId){
 }
 
 function renderComments(comments){
-  const list = $('commentList');
-  $('commentCount').textContent = comments.length;
+  const list = $('commentListPlayer');
+  $('commentCountPlayer').textContent = comments.length;
   if(!comments.length){
     list.innerHTML = '<div class="comment-empty">No comments yet. Be the first!</div>';
     return;
@@ -2064,19 +2066,19 @@ function renderComments(comments){
 }
 
 async function submitComment(){
-  const name = $('commentName').value.trim() || 'Anonymous';
-  const text = $('commentText').value.trim();
+  const name = $('commentNamePlayer').value.trim() || 'Anonymous';
+  const text = $('commentTextPlayer').value.trim();
   if(!text){ showToast('Write something first'); return; }
 
   try{
-    const res = await fetch(`${API_BASE}/api/comments/${curDetail.id}`, {
+    const res = await fetch(`${API_BASE}/api/comments/${pl.id}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ username: name, text })
     });
     if(!res.ok) throw new Error();
-    $('commentText').value = '';
-    loadComments(curDetail.id);
+    $('commentTextPlayer').value = '';
+    loadComments(pl.id);
   }catch(err){
     showToast('Failed to post comment');
   }
