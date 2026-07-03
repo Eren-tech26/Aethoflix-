@@ -2176,7 +2176,7 @@ function timeAgo(dateStr){
   return `${Math.floor(hrs/24)}d ago`;
 }
 
-/* ══════════ FIREBASE AUTH ══════════ */
+/* ══════════ FIREBASE AUTH + MONGO SYNC ══════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyAh9NuZ_ZpwedlSBWuJY9BmCh_gAZEvZgM",
   authDomain: "aethoflix-427df.firebaseapp.com",
@@ -2187,33 +2187,41 @@ const firebaseConfig = {
 };
 
 let currentUser = null;
-
-async function initFirebase(){
-  if(window.firebase && window.firebase.apps && window.firebase.apps.length) return;
-
-  await Promise.all([
-    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js'),
-    loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js')
-  ]);
-
-  firebase.initializeApp(firebaseConfig);
-  firebase.auth().onAuthStateChanged(user => {
-    if(user) onUserLogin(user);
-    else onUserLogout();
-  });
-}
+let firebaseReady = false;
 
 function loadScript(src){
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
     script.src = src;
     script.onload = resolve;
-    script.onerror = () => reject(new Error('Failed to load ' + src));
+    script.onerror = () => reject(new Error('Script failed to load: ' + src));
     document.head.appendChild(script);
   });
 }
 
+async function initFirebase(){
+  if(firebaseReady) return;
+
+  await loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js');
+  await loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js');
+
+  if(typeof firebase === 'undefined'){
+    throw new Error('Firebase SDK did not load');
+  }
+
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if(user) onUserLogin(user);
+    else onUserLogout();
+  });
+
+  firebaseReady = true;
+}
+
 async function googleSignIn(){
+  const btn = $('authBtn');
+  if(btn) btn.textContent = '⏳';
   try{
     await initFirebase();
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -2221,8 +2229,9 @@ async function googleSignIn(){
     currentUser = result.user;
     showToast('✅ Logged in as ' + currentUser.displayName);
   }catch(err){
-    console.error('Sign-in error:', err.code, err.message);
-    showToast('❌ ' + (err.code || err.message));
+    console.error('SIGN-IN ERROR:', err);
+    showToast('❌ ' + (err.code || err.message || 'Sign-in failed'));
+    if(btn) btn.textContent = '🔑';
   }
 }
 
@@ -2233,13 +2242,13 @@ async function googleSignOut(){
     currentUser = null;
     showToast('👋 Signed out');
   }catch(err){
-    console.error('Sign-out error:', err);
+    console.error('SIGN-OUT ERROR:', err);
   }
 }
 
 async function syncUserToMongo(user){
   try{
-    await fetch(`${API_BASE}/api/user/${user.uid}`, {
+    const res = await fetch(`${API_BASE}/api/user/${user.uid}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -2248,8 +2257,10 @@ async function syncUserToMongo(user){
         photoURL: user.photoURL
       })
     });
+    if(!res.ok) throw new Error('Mongo sync HTTP ' + res.status);
+    console.log('User synced to Mongo');
   }catch(err){
-    console.error('Mongo user sync failed:', err);
+    console.error('MONGO SYNC ERROR:', err);
   }
 }
 
