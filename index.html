@@ -2031,7 +2031,7 @@ function closeTrailer(){
 }
 
 /* ══════════ COMMENTS ══════════ */
-const API_BASE = 'https://YOUR-BACKEND-URL.onrender.com'; // <-- swap this once backend is live
+const API_BASE = 'https://aethoflix.vercel.app';
 
 async function loadComments(movieId){
   const list = $('commentList');
@@ -2069,14 +2069,14 @@ async function submitComment(){
   if(!text){ showToast('Write something first'); return; }
 
   try{
-    const res = await fetch(`${API_BASE}/api/comments/${currentMovieId}`, {
+    const res = await fetch(`${API_BASE}/api/comments/${curDetail.id}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ username: name, text })
     });
     if(!res.ok) throw new Error();
     $('commentText').value = '';
-    loadComments(currentMovieId);
+    loadComments(curDetail.id);
   }catch(err){
     showToast('Failed to post comment');
   }
