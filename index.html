@@ -450,7 +450,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
   <div class="nav-r">
-<div class="vip-badge" id="vipBadge" onclick="try{openVipGate()}catch(e){alert('VIP ERROR: '+e.message)}">👑 VIP</div>
     <div class="nav-icon" onclick="openWishlist()" title="My List">🔖</div>
     <div class="notif-btn" onclick="openNotif()">
       🔔
@@ -472,6 +471,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="notif-mark-all" onclick="markAllRead()">Mark all read</button>
       <button class="notif-drw-close" onclick="closeNotif()">✕</button>
     </div>
+  </div>
+  <div class="vip-badge" id="vipBadge" onclick="openVipGate()" style="margin:10px 16px;padding:10px 12px;font-size:.78rem;justify-content:flex-start;width:auto">
+    👑 VIP Access
   </div>
   <div class="notif-tabs">
     <button class="ntab on" id="ntab-all" onclick="switchNTab('all',this)">All</button>
