@@ -1863,11 +1863,10 @@ function clearBroadcast(){
 
 /* ══════════ VIP SYSTEM ══════════ */
 function checkVipStatus(){
-  const status=lsGet('vipStatus',null);
   const badge=$('vipBadge');
-  badge.classList.add('show');
+  if(!badge) return false;
+  const status=lsGet('vipStatus',null);
   if(status && status.active){
-    // Check expiry
     if(status.expires && Date.now()>status.expires){
       lsSet('vipStatus',{active:false});
       badge.textContent='👑 Redeem';
@@ -1884,11 +1883,14 @@ function checkVipStatus(){
 }
 
 function openVipGate(){
-  $('vipGate').classList.add('on');
-  $('vipInp').value=''; $('vipErr').textContent='';
+  const gate=$('vipGate');
+  if(!gate){ alert('VIP gate element missing from page'); return; }
+  gate.classList.add('on');
+  $('vipInp').value='';
+  $('vipErr').textContent='';
   document.body.style.overflow='hidden';
   const status=lsGet('vipStatus',null);
-  const isVip=status&&status.active&&(!status.expires||Date.now()<status.expires);
+  const isVip=status && status.active && (!status.expires || Date.now()<status.expires);
   const activeBox=$('vipActiveBox');
   if(isVip){
     $('vipGateTitle').textContent='You\'re VIP! 👑';
