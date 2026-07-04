@@ -384,26 +384,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .notif-count{position:absolute;top:1px;right:1px;min-width:14px;height:14px;background:var(--accent);border-radius:7px;font-size:.46rem;font-weight:900;color:#fff;display:none;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg)}
 .notif-count.show{display:flex}
 
-/* ─── WATCH PARTY ─── */
-.party-pg{display:none;min-height:100vh;background:var(--bg);padding-bottom:20px}
-.party-pg.on{display:block;animation:fadeUp .2s ease}
-.party-topbar{padding:10px 4%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0a0a14;border-bottom:1px solid var(--border)}
-.party-code-box{display:flex;align-items:center;gap:8px}
-.party-code{font-family:monospace;font-size:1rem;font-weight:900;letter-spacing:2px;color:var(--gold);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);padding:6px 12px;border-radius:8px}
-.party-copy{font-size:.68rem;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--sub);cursor:pointer;font-family:var(--font)}
-.party-members{font-size:.7rem;color:var(--sub);font-weight:700;display:flex;align-items:center;gap:4px}
-.party-leave{font-size:.68rem;padding:6px 12px;background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.25);border-radius:8px;color:var(--accent);cursor:pointer;font-weight:700;font-family:var(--font)}
-.party-nudge-btn{display:block;padding:12px;background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:var(--font);margin:12px 4% 0;width:92%}
-.party-chat-box{margin:16px 4% 0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
-.party-chat-list{height:280px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.party-msg{background:var(--card);border-radius:8px;padding:8px 10px}
-.party-msg-user{font-size:.68rem;font-weight:700;color:var(--accent);margin-bottom:2px}
-.party-msg-text{font-size:.74rem;color:#ccccdd;line-height:1.4}
-.party-msg-sys{text-align:center;font-size:.66rem;color:var(--muted);font-style:italic;padding:2px 0}
-.party-chat-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
-.party-chat-input{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.76rem;font-family:var(--font);outline:none}
-.party-chat-send{background:var(--accent);color:#fff;padding:9px 16px;border-radius:8px;font-size:.74rem;font-weight:800;font-family:var(--font)}
-  
+
 /* ─── NOTIFICATION DRAWER ─── */
 .notif-drawer{position:fixed;top:0;right:0;bottom:0;width:min(88vw,340px);background:var(--surface);border-left:1px solid var(--border);z-index:8500;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;overflow:hidden}
 .notif-drawer.open{transform:translateX(0)}
@@ -704,7 +685,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
       <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
       <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
-      <button class="ctrl-fs" onclick="openPartyMenu()" title="Watch Party" style="background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.3);color:var(--blue)">🎉 Party</button>
       <button class="ctrl-fs" onclick="openReport()" title="Report Issue" style="background:rgba(229,9,20,.15);border-color:rgba(229,9,20,.3);color:var(--accent)">⚠️ Report</button>
       <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
     </div>
@@ -762,48 +742,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
-<!-- ══════════ WATCH PARTY PAGE ══════════ -->
-<div class="party-pg" id="pg-party">
-
-  <div class="party-topbar">
-    <div class="party-code-box">
-      <div class="party-code" id="partyCodeDisplay">------</div>
-      <button class="party-copy" onclick="copyPartyCode()">📋 Copy</button>
-    </div>
-    <div class="party-members">👥 <span id="partyMemberCount">1</span></div>
-    <button class="party-leave" onclick="leaveParty()">Leave</button>
-  </div>
-
-  <div class="vid-wrap">
-    <iframe class="vid-frame" id="partyVidFrame" src=""
-      allowfullscreen allow="autoplay; fullscreen; picture-in-picture"
-      scrolling="no" referrerpolicy="no-referrer"></iframe>
-  </div>
-
-  <div class="ctrl-bar">
-    <div class="ctrl-top">
-      <div class="ctrl-title" id="partyCtrlTitle" style="text-align:left;flex:1"></div>
-    </div>
-    <div class="src-row">
-      <span class="src-lbl">Source:</span>
-      <button class="src-btn on" onclick="setPartySource(0,this)">Server 1</button>
-      <button class="src-btn" onclick="setPartySource(1,this)">Server 2</button>
-      <button class="src-btn" onclick="setPartySource(2,this)">Server 3</button>
-    </div>
-  </div>
-
-  <button class="party-nudge-btn" id="partyNudgeBtn" onclick="sendPartyNudge()" style="display:none">📢 Notify Everyone: Play Now!</button>
-
-  <div class="party-chat-box">
-    <div class="party-chat-list" id="partyChatList"></div>
-    <div class="party-chat-input-row">
-      <input type="text" class="party-chat-input" id="partyChatInput" placeholder="Say something..." maxlength="200" onkeydown="if(event.key==='Enter')sendPartyMessage()">
-      <button class="party-chat-send" onclick="sendPartyMessage()">Send</button>
-    </div>
-  </div>
-
-</div>
-  
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -2098,65 +2036,7 @@ function dismissAnn(){
 
 
     /* ══════════ WATCH PARTY ══════════ */
-const PARTY_SRC_MAP = [0, 1, 4];
-let party = {
-  code: null, name: null, isHost: false,
-  movieId: null, type: null, season: 1, episode: 1, source: 0,
-  roomPollTimer: null, chatPollTimer: null,
-  lastNudgeTs: 0, chatCount: 0
-};
 
-function openPartyMenu(){
-  $('partyMenuOverlay').classList.add('on');
-  document.body.style.overflow = 'hidden';
-}
-function closePartyMenu(){
-  $('partyMenuOverlay').classList.remove('on');
-  document.body.style.overflow = '';
-}
-
-/* Custom modal (replaces native prompt()) */
-let _cpResolve = null;
-function showInputModal(title, placeholder, defaultValue=''){
-  return new Promise(resolve=>{
-    _cpResolve = resolve;
-    $('customPromptTitle').textContent = title;
-    const input = $('customPromptInput');
-    input.placeholder = placeholder;
-    input.value = defaultValue;
-    $('customPromptOverlay').classList.add('on');
-    document.body.style.overflow = 'hidden';
-    setTimeout(()=>input.focus(), 50);
-    input.onkeydown = e => { if(e.key==='Enter') _cpConfirm(); if(e.key==='Escape') _cpCancel(); };
-  });
-}
-function _cpConfirm(){
-  const val = $('customPromptInput').value;
-  $('customPromptOverlay').classList.remove('on');
-  document.body.style.overflow = '';
-  if(_cpResolve) _cpResolve(val);
-  _cpResolve = null;
-}
-function _cpCancel(){
-  $('customPromptOverlay').classList.remove('on');
-  document.body.style.overflow = '';
-  if(_cpResolve) _cpResolve(null);
-  _cpResolve = null;
-}
-
-async function startHostFlow(){
-  const name = await showInputModal('Host a Party', 'Enter your name');
-  if(!name || !name.trim()) return;
-  const cleanName = name.trim().slice(0,20);
-
-  try{
-    const res = await fetch(`${API_BASE}/api/party/create`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        movieId: pl.id, type: pl.type, season: pl.season, episode: pl.ep, hostName: cleanName
-      })
-    });
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const room = await res.json();
 
@@ -2287,84 +2167,18 @@ async function fetchPartyChat(){
 
 function renderPartyChat(messages){
   const list = $('partyChatList');
-  const wasAtBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 20;
-  list.innerHTML = messages.map(m=>{
-    if(m.system) return `<div class="party-msg-sys">${escapeHtml(m.text)}</div>`;
-    return `<div class="party-msg">
-      <div class="party-msg-user">${escapeHtml(m.username)}</div>
-      <div class="party-msg-text">${escapeHtml(m.text)}</div>
-    </div>`;
-  }).join('');
-  if(wasAtBottom || messages.length <= 1) list.scrollTop = list.scrollHeight;
-}
-
-async function sendPartyMessage(){
-  const input = $('partyChatInput');
-  const text = input.value.trim();
-  if(!text || !party.code) return;
-  input.value = '';
-  try{
-    await fetch(`${API_BASE}/api/party-chat/${party.code}`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username: party.name, text})
-    });
-    fetchPartyChat();
-  }catch(err){
-    console.error('Send party message error:', err);
-    showToast('❌ Message failed to send');
-  }
-}
-
-async function sendPartyNudge(){
-  if(!party.code || !party.isHost) return;
-  try{
-    await fetch(`${API_BASE}/api/party/${party.code}`, {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'nudge', nudgeText:'Play now!'})
-    });
-    await fetch(`${API_BASE}/api/party-chat/${party.code}`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:'System', text:'📢 Host says: Play now!', system:true})
-    });
-    showToast('✅ Everyone notified!');
-    fetchPartyChat();
-  }catch(err){
-    console.error('Nudge error:', err);
-    showToast('❌ Could not send notification');
-  }
-}
-
-function copyPartyCode(){
-  if(!party.code) return;
-  navigator.clipboard?.writeText(party.code).then(()=>showToast('📋 Code copied: ' + party.code));
-}
-
-async function leaveParty(){
-  if(!party.code) return;
-  try{
-    await fetch(`${API_BASE}/api/party/${party.code}`, {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'leave', name: party.name})
-    });
-    await fetch(`${API_BASE}/api/party-chat/${party.code}`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:'System', text: `${party.name} left the party`, system:true})
-    });
-  }catch(err){
-    console.error('Leave party error:', err);
-  }
-  clearInterval(party.roomPollTimer);
-  clearInterval(party.chatPollTimer);
-  $('partyVidFrame').src = '';
-  party.code = null;
-  goHome();
-}
   
+// Host flow — replace startHostFlow() with this
+function goToPartyAsHost(){
+  const url = `party.html?host=1&id=${pl.id}&type=${pl.type}&s=${pl.season}&e=${pl.ep}`;
+  location.href = url;
+}
+
+// Join flow — replace startJoinFlow() with this
+function goToPartyToJoin(){
+  location.href = 'party.html';
+}
+
 /* ══════════ TRAILER SYSTEM ══════════ */
 let trailerData = null;
 
