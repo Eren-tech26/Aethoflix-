@@ -456,13 +456,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <div class="notif-count" id="notifCount"></div>
     </div>
     <div class="nav-icon" onclick="navSearch()">🔍</div>
-    <div style="position:relative">
-  <button class="nav-icon" id="authBtn" title="Sign in">🔑</button>
-  <div id="authMenu" style="display:none;position:absolute;top:42px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:160px;z-index:4000;box-shadow:0 8px 24px rgba(0,0,0,.4)">
-    <div id="authMenuName" style="font-size:.76rem;font-weight:700;padding:6px 8px;color:var(--text)"></div>
-    <div id="authMenuEmail" style="font-size:.62rem;color:var(--sub);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:6px"></div>
-    <button onclick="googleSignOut()" style="width:100%;text-align:left;padding:8px;font-size:.74rem;font-weight:700;color:var(--accent);border-radius:6px">Sign out</button>
-  </div>
     </div>
   </div>
 </nav>
@@ -2297,39 +2290,6 @@ function closeAuthMenu(){
 }
 document.addEventListener('click', (e) => {
   const menu = $('authMenu'), btn = $('authBtn');
-  if(menu && menu.style.display === 'block' && !menu.contains(e.target) && !btn.contains(e.target)){
-    closeAuthMenu();
-  }
-});
-
-function onUserLogin(user){
-  currentUser = user;
-  const btn = $('authBtn');
-  if(btn){
-    btn.innerHTML = user.photoURL
-      ? `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover" alt="">`
-      : (user.displayName || user.email || '?').charAt(0).toUpperCase();
-    btn.title = user.displayName || user.email;
-    btn.onclick = toggleAuthMenu;
-  }
-  const nameEl = $('authMenuName'), emailEl = $('authMenuEmail');
-  if(nameEl) nameEl.textContent = user.displayName || 'Signed in';
-  if(emailEl) emailEl.textContent = user.email || '';
-  const nameInput = $('commentNamePlayer');
-  if(nameInput) nameInput.value = user.displayName;
-  syncUserToMongo(user);
-}
-
-function onUserLogout(){
-  currentUser = null;
-  closeAuthMenu();
-  const btn = $('authBtn');
-  if(btn){
-    btn.innerHTML = '🔑';
-    btn.title = 'Sign in';
-    btn.onclick = googleSignIn;
-  }
-}
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
@@ -2351,12 +2311,6 @@ window.addEventListener('popstate',()=>{
   else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
 });
 
-window.addEventListener('pageshow', (event) => {
-  if(event.persisted){
-    initFirebase();
-  }
-});
-  
 </script>
 </body>
 </html>
