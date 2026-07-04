@@ -667,6 +667,17 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
   
+<div class="overlay" id="customPromptOverlay" onclick="if(event.target===this)_cpCancel()">
+  <div class="sheet" style="max-height:40vh">
+    <button class="sheet-close" onclick="_cpCancel()">✕</button>
+    <div style="padding:24px 20px">
+      <div id="customPromptTitle" style="font-size:1.05rem;font-weight:900;margin-bottom:14px">Enter value</div>
+      <input type="text" id="customPromptInput" class="comment-name" style="width:100%;box-sizing:border-box;margin-bottom:16px;padding:11px 12px;font-size:.85rem">
+      <button class="watch-btn" onclick="_cpConfirm()">Continue</button>
+    </div>
+  </div>
+</div>
+  
 <!-- ══════════ PLAYER PAGE ══════════ -->
 <div class="player-pg" id="pg-player">
 
@@ -2085,8 +2096,9 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
-/* ══════════ WATCH PARTY ══════════ */
-const PARTY_SRC_MAP = [1, 0, 4];
+
+    /* ══════════ WATCH PARTY ══════════ */
+const PARTY_SRC_MAP = [0, 1, 4];
 let party = {
   code: null, name: null, isHost: false,
   movieId: null, type: null, season: 1, episode: 1, source: 0,
@@ -2103,8 +2115,37 @@ function closePartyMenu(){
   document.body.style.overflow = '';
 }
 
+/* Custom modal (replaces native prompt()) */
+let _cpResolve = null;
+function showInputModal(title, placeholder, defaultValue=''){
+  return new Promise(resolve=>{
+    _cpResolve = resolve;
+    $('customPromptTitle').textContent = title;
+    const input = $('customPromptInput');
+    input.placeholder = placeholder;
+    input.value = defaultValue;
+    $('customPromptOverlay').classList.add('on');
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=>input.focus(), 50);
+    input.onkeydown = e => { if(e.key==='Enter') _cpConfirm(); if(e.key==='Escape') _cpCancel(); };
+  });
+}
+function _cpConfirm(){
+  const val = $('customPromptInput').value;
+  $('customPromptOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+  if(_cpResolve) _cpResolve(val);
+  _cpResolve = null;
+}
+function _cpCancel(){
+  $('customPromptOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+  if(_cpResolve) _cpResolve(null);
+  _cpResolve = null;
+}
+
 async function startHostFlow(){
-  const name = prompt('Enter your name:');
+  const name = await showInputModal('Host a Party', 'Enter your name');
   if(!name || !name.trim()) return;
   const cleanName = name.trim().slice(0,20);
 
@@ -2129,7 +2170,7 @@ async function startHostFlow(){
 }
 
 async function startJoinFlow(){
-  const code = prompt('Enter the 6-character party code:');
+  const code = await showInputModal('Join a Party', 'Enter the 6-character code');
   if(!code || !code.trim()) return;
   const cleanCode = code.trim().toUpperCase();
 
@@ -2142,7 +2183,7 @@ async function startJoinFlow(){
     const room = await checkRes.json();
 
     const savedName = localStorage.getItem('afx_partyName') || '';
-    const name = prompt('Enter your name:', savedName);
+    const name = await showInputModal('Join a Party', 'Enter your name', savedName);
     if(!name || !name.trim()) return;
     const cleanName = name.trim().slice(0,20);
 
