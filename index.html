@@ -1886,6 +1886,7 @@ function openVipGate(){
   const gate=$('vipGate');
   if(!gate){ alert('VIP gate element missing from page'); return; }
   gate.classList.add('on');
+  gate.style.cssText='position:fixed !important;inset:0 !important;z-index:999999 !important;background:red !important;display:flex !important;opacity:1 !important;pointer-events:auto !important;align-items:center;justify-content:center';
   $('vipInp').value='';
   $('vipErr').textContent='';
   document.body.style.overflow='hidden';
