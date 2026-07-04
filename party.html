@@ -21,7 +21,6 @@ a{color:inherit;text-decoration:none}
 button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit}
 input{font-family:var(--font)}
 
-/* ── JOIN SCREEN ── */
 .join-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
 .join-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px}
 .live-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);padding:5px 12px;border-radius:20px;font-size:.7rem;font-weight:700;color:var(--green);margin-bottom:18px}
@@ -46,14 +45,12 @@ input{font-family:var(--font)}
 .join-btn:disabled{opacity:.5;pointer-events:none}
 .join-err{font-size:.74rem;color:var(--accent2);margin-top:8px;text-align:center;min-height:1em}
 
-/* ── WAITING FOR APPROVAL ── */
 .wait-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
 .wait-spin{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 18px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .wait-title{font-size:1.1rem;font-weight:800;margin-bottom:6px}
 .wait-sub{font-size:.78rem;color:var(--sub)}
 
-/* ── ROOM LAYOUT ── */
 .room{display:none;min-height:100vh}
 .room.on{display:block}
 .room-top{display:flex;align-items:center;gap:10px;padding:10px 4%;background:#0a0a14;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
@@ -63,7 +60,6 @@ input{font-family:var(--font)}
 .rt-spacer{flex:1}
 .rt-chat-tab{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:.74rem;font-weight:700;color:var(--sub);background:var(--card);border:1px solid var(--border)}
 
-/* ── VIDEO AREA ── */
 .vid-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000}
 .vid-frame{width:100%;height:100%;border:0}
 .vid-meta{padding:10px 4% 6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -72,12 +68,16 @@ input{font-family:var(--font)}
 .src-row{display:flex;gap:6px;padding:0 4% 10px;flex-wrap:wrap}
 .src-btn{padding:6px 13px;background:var(--surface);border:1px solid var(--border);border-radius:16px;font-size:.7rem;font-weight:700;color:var(--sub)}
 .src-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.src-btn:disabled{opacity:.4;pointer-events:none}
 .sync-btn{display:flex;align-items:center;gap:6px;padding:6px 13px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);border-radius:16px;font-size:.7rem;font-weight:700;color:var(--blue)}
 .sync-btn:active{background:rgba(96,165,250,.22)}
 .sync-note{padding:0 4% 12px;font-size:.68rem;color:var(--sub);line-height:1.5}
 .sync-note b{color:var(--gold)}
+.host-status-row{padding:0 4% 12px;display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--sub)}
+.host-status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.host-status-dot.playing{background:var(--green)}
+.host-status-dot.paused{background:var(--gold)}
 
-/* ── HOST CONTROLS PANEL ── */
 .host-panel{margin:0 4% 14px;background:var(--surface);border:1px solid rgba(245,166,35,.3);border-radius:14px;overflow:hidden}
 .hp-head{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer}
 .hp-head-ttl{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:800;color:var(--gold);flex:1}
@@ -97,7 +97,6 @@ input{font-family:var(--font)}
 .req-reject{background:rgba(229,9,20,.12);color:var(--accent);border:1px solid rgba(229,9,20,.28)}
 .end-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;background:rgba(229,9,20,.1);border:1px solid rgba(229,9,20,.3);color:var(--accent);border-radius:9px;font-size:.78rem;font-weight:800;margin-top:14px}
 
-/* ── TABS ── */
 .tabs{display:flex;margin:0 4%;border-bottom:1px solid var(--border)}
 .tab{flex:1;text-align:center;padding:11px 0;font-size:.76rem;font-weight:700;color:var(--sub);position:relative;display:flex;align-items:center;justify-content:center;gap:6px}
 .tab.on{color:var(--accent)}
@@ -105,7 +104,6 @@ input{font-family:var(--font)}
 .tab-count{background:var(--card);padding:1px 7px;border-radius:10px;font-size:.64rem}
 .tab.on .tab-count{background:rgba(229,9,20,.15);color:var(--accent)}
 
-/* ── CHAT ── */
 .tabpanel{display:none}
 .tabpanel.on{display:block}
 .chat-hdr{display:flex;align-items:center;gap:6px;padding:12px 4% 8px;font-size:.68rem;color:var(--sub);font-weight:700}
@@ -119,8 +117,6 @@ input{font-family:var(--font)}
 .msg-user.host{color:var(--gold)}
 .msg-text{font-size:.78rem;color:#ccccdd;line-height:1.4;word-break:break-word}
 .msg-sys{text-align:center;font-size:.68rem;color:var(--muted);font-style:italic;padding:3px 0}
-.msg-ttl{height:2px;background:var(--border);border-radius:1px;margin-top:6px;overflow:hidden}
-.msg-ttl-fill{height:100%;background:var(--muted);width:100%;transition:width 1s linear}
 .chat-input-row{position:sticky;bottom:0;display:flex;gap:8px;padding:10px 4%;background:var(--bg);border-top:1px solid var(--border)}
 .chat-input{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:11px 14px;border-radius:22px;font-size:.8rem;outline:none}
 .chat-input:disabled{opacity:.5}
@@ -128,7 +124,6 @@ input{font-family:var(--font)}
 .chat-send:disabled{opacity:.4}
 .muted-notice{text-align:center;padding:10px 4%;font-size:.72rem;color:var(--accent2);background:rgba(229,9,20,.08)}
 
-/* ── WATCHERS ── */
 .watch-list{padding:10px 4%}
 .watch-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:10px}
 .watch-item:active{background:var(--card)}
@@ -141,7 +136,6 @@ input{font-family:var(--font)}
 .watch-badge.muted{background:rgba(229,9,20,.12);color:var(--accent)}
 .watch-menu-btn{margin-left:auto;color:var(--sub);font-size:1rem;padding:6px}
 
-/* ── ACTION SHEET (mute/kick/ban menu) ── */
 .sheet-overlay{position:fixed;inset:0;background:rgba(4,4,12,.7);z-index:9000;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.2s}
 .sheet-overlay.on{opacity:1;pointer-events:auto}
 .action-sheet{width:100%;background:var(--surface);border-radius:16px 16px 0 0;padding:8px;transform:translateY(30px);transition:.25s}
@@ -151,14 +145,12 @@ input{font-family:var(--font)}
 .action-item.danger{color:var(--accent)}
 .action-cancel{margin-top:6px;text-align:center;padding:14px;font-size:.86rem;font-weight:700;color:var(--sub);border-top:1px solid var(--border)}
 
-/* ── TOAST ── */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:.8rem;font-weight:600;z-index:9999;opacity:0;transition:.25s;max-width:90%;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 
-<!-- ══════════ JOIN SCREEN ══════════ -->
 <div class="join-wrap" id="joinScreen">
   <div class="join-card">
     <div class="live-pill"><span class="live-dot"></span> Live Watch Party</div>
@@ -196,7 +188,6 @@ input{font-family:var(--font)}
   </div>
 </div>
 
-<!-- ══════════ WAITING FOR APPROVAL ══════════ -->
 <div class="wait-wrap" id="waitScreen" style="display:none">
   <div>
     <div class="wait-spin"></div>
@@ -205,7 +196,6 @@ input{font-family:var(--font)}
   </div>
 </div>
 
-<!-- ══════════ ROOM ══════════ -->
 <div class="room" id="room">
   <div class="room-top">
     <button class="rt-back" onclick="leaveRoom()">←</button>
@@ -223,15 +213,18 @@ input{font-family:var(--font)}
     <div class="vid-title" id="vidTitle">Loading…</div>
   </div>
 
-  <div class="src-row">
+  <div class="src-row" id="srcRow">
     <button class="src-btn on" onclick="setSource(0,this)">Server 1</button>
     <button class="src-btn" onclick="setSource(1,this)">Server 2</button>
     <button class="src-btn" onclick="setSource(2,this)">Server 3</button>
     <button class="sync-btn" id="syncBtn" onclick="handleSyncClick()">🔄 Sync with Host</button>
   </div>
+  <div class="host-status-row" id="hostStatusRow" style="display:none">
+    <span class="host-status-dot" id="hostStatusDot"></span>
+    <span id="hostStatusText">Waiting for host status…</span>
+  </div>
   <div class="sync-note" id="syncNote"></div>
 
-  <!-- HOST CONTROLS -->
   <div class="host-panel" id="hostPanel" style="display:none">
     <div class="hp-head" onclick="toggleHostPanel()">
       <div class="hp-head-ttl">👑 Host Controls</div>
@@ -254,13 +247,11 @@ input{font-family:var(--font)}
     </div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab on" id="tabChatBtn" onclick="switchTab('chat')">💬 Chat <span class="tab-count" id="chatTabCount">0</span></button>
     <button class="tab" id="tabPeopleBtn" onclick="switchTab('people')">👥 People <span class="tab-count" id="peopleTabCount">1</span></button>
   </div>
 
-  <!-- CHAT PANEL -->
   <div class="tabpanel on" id="panelChat">
     <div class="chat-hdr"><span class="chat-live-dot"></span> LIVE CHAT <span class="chat-ttl-note">Messages auto-delete after 4 min</span></div>
     <div class="chat-list" id="chatList">
@@ -272,7 +263,6 @@ input{font-family:var(--font)}
     </div>
   </div>
 
-  <!-- PEOPLE PANEL -->
   <div class="tabpanel" id="panelPeople">
     <div class="watch-list" id="watchList"></div>
   </div>
@@ -284,7 +274,6 @@ input{font-family:var(--font)}
   </div>
 </div>
 
-<!-- ACTION SHEET -->
 <div class="sheet-overlay" id="actionSheetOverlay" onclick="if(event.target===this)closeActionSheet()">
   <div class="action-sheet" id="actionSheet"></div>
 </div>
@@ -292,12 +281,10 @@ input{font-family:var(--font)}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ══════════ CONFIG ══════════ */
 const API_BASE = 'https://aethoflix.vercel.app';
-const SRC_MAP = [1, 0, 4]; // party server 1/2/3 -> your site's server 2/1/5, per your instruction
+const SRC_MAP = [1, 0, 4];
 const AVATAR_STYLES = ['🙂','😎','🤠','👽','🐱','🦊','🐼','🎃','🤖','👻','🦄','🐸'];
 
-/* ══════════ STATE ══════════ */
 let state = {
   code: null, name: null, isHost: false,
   movieId: null, type: null, season: 1, episode: 1, source: 0,
@@ -305,12 +292,12 @@ let state = {
   roomPollTimer: null, chatPollTimer: null,
   lastNudgeTs: 0, chatCount: 0,
   hpOpen: false, currentTab: 'chat',
-  myElapsedSeconds: 0, elapsedTimer: null
+  myElapsedSeconds: 0, elapsedTimer: null,
+  hostIsPlaying: false
 };
 
 function $(id){ return document.getElementById(id); }
 
-/* ══════════ TOAST ══════════ */
 let toastTimer;
 function showToast(msg, ms=2800){
   const t = $('toast');
@@ -320,7 +307,6 @@ function showToast(msg, ms=2800){
   toastTimer = setTimeout(()=>t.classList.remove('on'), ms);
 }
 
-/* ══════════ AVATAR PICKER ══════════ */
 let avatarIdx = 0;
 function randomAvatar(){
   avatarIdx = Math.floor(Math.random() * AVATAR_STYLES.length);
@@ -333,7 +319,6 @@ function cycleAvatarStyle(){
   $('avatarBox').textContent = state.avatar;
 }
 
-/* ══════════ URL PARAMS / BOOT ══════════ */
 function getParams(){
   return new URLSearchParams(location.search);
 }
@@ -351,12 +336,10 @@ function getParams(){
   $('displayNameInput').value = savedName;
 
   if(code){
-    // Joining an existing room via link/code
     $('codeFieldWrap').style.display = 'none';
     $('codeInput').value = code.toUpperCase();
     $('joinSub').textContent = `Joining party ${code.toUpperCase()}`;
   } else if(isHostFlow && movieId && type){
-    // Hosting a new room
     $('codeFieldWrap').style.display = 'none';
     $('joinSub').textContent = 'Set up your name and start the party.';
     state._hostSetup = {movieId, type, season, episode};
@@ -367,7 +350,6 @@ function getParams(){
   randomAvatar();
 })();
 
-/* ══════════ JOIN SUBMIT ══════════ */
 async function handleJoinSubmit(){
   const name = $('displayNameInput').value.trim().slice(0,20);
   $('joinErr').textContent = '';
@@ -422,7 +404,6 @@ async function requestJoinParty(name, code){
   const room = await checkRes.json();
 
   if(room.members.includes(name)){
-    // already a member (rejoining) - go straight in
     enterRoom(room, name === room.hostName, name);
     return;
   }
@@ -439,7 +420,6 @@ async function requestJoinParty(name, code){
     return;
   }
 
-  // Show waiting screen, poll until approved
   state.code = code; state.name = name; state.isHost = false;
   state.movieId = room.movieId; state.type = room.type;
   state.season = room.season; state.episode = room.episode;
@@ -476,12 +456,11 @@ function pollForApproval(){
   }, 2000);
 }
 
-/* ══════════ ENTER ROOM ══════════ */
 function enterRoom(room, isHost, name){
   state.code = room.code; state.name = name; state.isHost = isHost;
   state.movieId = room.movieId; state.type = room.type;
   state.season = room.season || 1; state.episode = room.episode || 1;
-  state.source = 0;
+  state.source = isHost ? 0 : (room.hostSource || 0);
 
   $('joinScreen').style.display = 'none';
   $('waitScreen').style.display = 'none';
@@ -494,10 +473,15 @@ function enterRoom(room, isHost, name){
     $('inviteLinkText').textContent = link;
     state._inviteLink = link;
     startHostElapsedTracking();
+  } else {
+    $('hostStatusRow').style.display = 'flex';
   }
 
   $('syncBtn').style.display = isHost ? 'none' : 'flex';
   updateSyncNote();
+  applyControlPermissions();
+
+  document.querySelectorAll('#srcRow .src-btn').forEach((b,i)=>b.classList.toggle('on', i===state.source));
 
   loadVideo();
   fetchRoom();
@@ -509,7 +493,13 @@ function enterRoom(room, isHost, name){
   state.chatPollTimer = setInterval(fetchChat, 1500);
 }
 
-/* ══════════ VIDEO ══════════ */
+function applyControlPermissions(){
+  if(!state.isHost){
+    document.querySelectorAll('#srcRow .src-btn').forEach(b => b.disabled = true);
+    $('srcRow').style.opacity = '0.7';
+  }
+}
+
 function srcUrl(movieId, type, season, ep, src){
   const isTV = (type !== 'movie');
   const urls = isTV ? [
@@ -539,28 +529,59 @@ function loadVideo(){
 }
 
 function setSource(idx, el){
+  if(!state.isHost) return;
   state.source = idx;
   document.querySelectorAll('.src-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   loadVideo();
+  reportHostState({source: idx});
 }
 
-/* ══════════ HOST ELAPSED-TIME TRACKING (for sync) ══════════ */
 function startHostElapsedTracking(){
   state.myElapsedSeconds = 0;
   clearInterval(state.elapsedTimer);
-  state.elapsedTimer = setInterval(async ()=>{
+  state.elapsedTimer = setInterval(()=>{
     state.myElapsedSeconds += 5;
-    try{
-      await fetch(`${API_BASE}/api/party/${state.code}`, {
-        method: 'PUT',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({action:'host-heartbeat', elapsedSeconds: state.myElapsedSeconds})
-      });
-    }catch(err){
-      console.error('Heartbeat error:', err);
-    }
+    reportHostState({});
   }, 5000);
+
+  window.addEventListener('message', handlePlayerMessage);
+}
+
+function handlePlayerMessage(event){
+  if(!state.isHost) return;
+  const data = event.data;
+  if(!data || !data.type) return;
+
+  if(data.type === 'VIDEO_PLAY'){
+    state.hostIsPlaying = true;
+    reportHostState({playing: true});
+  }
+  if(data.type === 'VIDEO_PAUSE'){
+    state.hostIsPlaying = false;
+    reportHostState({playing: false});
+  }
+  if(data.type === 'VIDEO_PROGRESS' && data.payload && typeof data.payload.currentTime === 'number'){
+    state.myElapsedSeconds = data.payload.currentTime;
+    reportHostState({});
+  }
+}
+
+async function reportHostState(extra){
+  try{
+    await fetch(`${API_BASE}/api/party/${state.code}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action:'host-heartbeat',
+        elapsedSeconds: state.myElapsedSeconds,
+        source: extra.source !== undefined ? extra.source : state.source,
+        playing: extra.playing !== undefined ? extra.playing : state.hostIsPlaying
+      })
+    });
+  }catch(err){
+    console.error('Heartbeat error:', err);
+  }
 }
 
 function updateSyncNote(){
@@ -568,7 +589,7 @@ function updateSyncNote(){
     $('syncNote').textContent = '';
     return;
   }
-  $('syncNote').innerHTML = 'If your video looks out of sync, tap <b>Sync with Host</b>. Since the video plays from an outside player, this reloads your video fresh and shows you the host\'s current position \u2014 you may need to seek manually to match.';
+  $('syncNote').innerHTML = 'Your video auto-follows the host\'s server pick. If timing looks off, tap <b>Sync with Host</b> — it\'ll show you the host\'s exact current time to seek to.';
 }
 
 async function handleSyncClick(){
@@ -577,20 +598,19 @@ async function handleSyncClick(){
     if(!res.ok) return;
     const room = await res.json();
 
-    const secs = room.hostElapsedSeconds || 0;
+    const secs = Math.floor(room.hostElapsedSeconds || 0);
     const mins = Math.floor(secs / 60);
     const rem = secs % 60;
     const timeStr = `${mins}:${rem.toString().padStart(2,'0')}`;
+    const stateStr = room.hostPlaying ? 'playing' : 'paused';
 
-    loadVideo(); // reloads the iframe fresh
-    showToast(`🔄 Reloaded. Host is around ${timeStr} — seek to match once loaded.`, 5000);
+    showToast(`🔄 Host is ${stateStr} at ${timeStr} — seek to match.`, 5000);
   }catch(err){
     console.error('Sync error:', err);
     showToast('❌ Could not fetch host position');
   }
 }
 
-/* ══════════ ROOM POLLING ══════════ */
 async function fetchRoom(){
   if(!state.code) return;
   try{
@@ -599,6 +619,21 @@ async function fetchRoom(){
     const room = await res.json();
 
     state._lastRoom = room;
+
+    if(!state.isHost && typeof room.hostSource === 'number' && room.hostSource !== state.source){
+      state.source = room.hostSource;
+      document.querySelectorAll('.src-btn').forEach((b,i)=>b.classList.toggle('on', i===room.hostSource));
+      loadVideo();
+    }
+
+    if(!state.isHost){
+      const secs = Math.floor(room.hostElapsedSeconds || 0);
+      const mins = Math.floor(secs / 60);
+      const rem = secs % 60;
+      const timeStr = `${mins}:${rem.toString().padStart(2,'0')}`;
+      $('hostStatusDot').className = 'host-status-dot ' + (room.hostPlaying ? 'playing' : 'paused');
+      $('hostStatusText').textContent = `Host is ${room.hostPlaying ? '▶ playing' : '⏸ paused'} at ${timeStr}`;
+    }
 
     const memberCount = (room.members || []).length;
     $('peopleCountPill').textContent = `👥 ${memberCount}`;
@@ -611,12 +646,10 @@ async function fetchRoom(){
       renderPendingRequests(room);
     }
 
-    // Check if I've been muted
     const amMuted = (room.mutedUsers || []).includes(state.name);
     $('mutedNotice').style.display = amMuted ? 'block' : 'none';
     $('chatInputRow').style.display = amMuted ? 'none' : 'flex';
 
-    // Check if I've been kicked/banned
     if(!state.isHost && !(room.members || []).includes(state.name)){
       clearInterval(state.roomPollTimer);
       clearInterval(state.chatPollTimer);
@@ -686,7 +719,6 @@ async function respondToRequest(name, approve){
   }
 }
 
-/* ══════════ ACTION SHEET (mute/kick/ban) ══════════ */
 let actionTarget = null;
 function openActionSheet(name, isMuted){
   actionTarget = name;
@@ -721,7 +753,6 @@ async function doAction(action){
   }
 }
 
-/* ══════════ CHAT ══════════ */
 async function fetchChat(){
   if(!state.code) return;
   try{
@@ -790,7 +821,6 @@ async function postSystemMessage(text){
   }
 }
 
-/* ══════════ TABS ══════════ */
 function switchTab(tab){
   state.currentTab = tab;
   $('tabChatBtn').classList.toggle('on', tab==='chat');
@@ -800,7 +830,6 @@ function switchTab(tab){
   $('chatInputRow').style.display = tab==='chat' ? 'flex' : 'none';
 }
 
-/* ══════════ HOST PANEL TOGGLE ══════════ */
 function toggleHostPanel(){
   state.hpOpen = !state.hpOpen;
   $('hpBody').classList.toggle('open', state.hpOpen);
@@ -812,7 +841,6 @@ function copyInviteLink(){
   navigator.clipboard?.writeText(state._inviteLink).then(()=>showToast('📋 Invite link copied'));
 }
 
-/* ══════════ END / LEAVE ══════════ */
 async function confirmEndRoom(){
   if(!confirm('End the party for everyone? This cannot be undone.')) return;
   try{
@@ -846,11 +874,11 @@ function cleanupAndExit(){
   clearInterval(state.roomPollTimer);
   clearInterval(state.chatPollTimer);
   clearInterval(state.elapsedTimer);
+  window.removeEventListener('message', handlePlayerMessage);
   $('vidFrame').src = '';
   location.href = location.pathname;
 }
 
-/* ══════════ UTILS ══════════ */
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str ?? '';
