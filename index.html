@@ -2219,6 +2219,16 @@ async function initFirebase(){
     else onUserLogout();
   });
 
+  try{
+    const result = await firebase.auth().getRedirectResult();
+    if(result && result.user){
+      showToast('✅ Logged in as ' + result.user.displayName);
+    }
+  }catch(err){
+    console.error('REDIRECT RESULT ERROR:', err);
+    if(err.code) showToast('❌ ' + err.code);
+  }
+
   firebaseReady = true;
 }
 
@@ -2228,13 +2238,11 @@ async function googleSignIn(){
   try{
     await initFirebase();
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
-    currentUser = result.user;
-    showToast('✅ Logged in as ' + currentUser.displayName);
+    await firebase.auth().signInWithRedirect(provider);
   }catch(err){
     console.error('SIGN-IN ERROR:', err);
     showToast('❌ ' + (err.code || err.message || 'Sign-in failed'));
-    onUserLogout();
+    if(btn) btn.textContent = '🔑';
   }
 }
 
@@ -2261,7 +2269,6 @@ async function syncUserToMongo(user){
       })
     });
     if(!res.ok) throw new Error('Mongo sync HTTP ' + res.status);
-    console.log('User synced to Mongo');
   }catch(err){
     console.error('MONGO SYNC ERROR:', err);
   }
@@ -2274,8 +2281,7 @@ function onUserLogin(user){
     if(user.photoURL){
       btn.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover" alt="">`;
     } else {
-      const initial = (user.displayName || user.email || '?').charAt(0).toUpperCase();
-      btn.textContent = initial;
+      btn.textContent = (user.displayName || user.email || '?').charAt(0).toUpperCase();
     }
     btn.title = user.displayName || user.email;
     btn.onclick = googleSignOut;
@@ -2293,7 +2299,7 @@ function onUserLogout(){
     btn.title = 'Sign in';
     btn.onclick = googleSignIn;
   }
-  }
+}
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
