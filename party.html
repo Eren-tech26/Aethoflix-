@@ -90,6 +90,8 @@ input{font-family:var(--font)}
 .invite-row{display:flex;gap:8px}
 .invite-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--sub);padding:10px 12px;border-radius:8px;font-size:.74rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .invite-copy{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:.8rem}
+.code-display-row{margin-top:10px;display:flex;align-items:center;gap:8px}
+.code-display-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:1.3rem;font-weight:800;letter-spacing:4px;text-align:center;color:var(--gold)}
 .req-item{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:9px;padding:9px 10px;margin-bottom:6px}
 .req-name{flex:1;font-size:.8rem;font-weight:700}
 .req-btn{font-size:.68rem;font-weight:800;padding:6px 11px;border-radius:6px}
@@ -237,6 +239,10 @@ input{font-family:var(--font)}
         <div class="invite-input" id="inviteLinkText"></div>
         <button class="invite-copy" onclick="copyInviteLink()">📋</button>
       </div>
+      <div class="code-display-row">
+        <div class="code-display-box" id="partyCodeText"></div>
+        <button class="invite-copy" onclick="copyPartyCode()">📋</button>
+      </div>
 
       <div id="pendingSection" style="display:none">
         <div class="hp-sec-lbl">✅ Join Requests</div>
@@ -282,7 +288,7 @@ input{font-family:var(--font)}
 
 <script>
 const API_BASE = 'https://aethoflix.vercel.app';
-const SRC_MAP = [1, 0, 4];
+const SRC_MAP = [0, 1, 4];
 const AVATAR_STYLES = ['🙂','😎','🤠','👽','🐱','🦊','🐼','🎃','🤖','👻','🦄','🐸'];
 
 let state = {
@@ -472,6 +478,7 @@ function enterRoom(room, isHost, name){
     const link = `${location.origin}${location.pathname}?code=${room.code}`;
     $('inviteLinkText').textContent = link;
     state._inviteLink = link;
+    $('partyCodeText').textContent = room.code;
     startHostElapsedTracking();
   } else {
     $('hostStatusRow').style.display = 'flex';
@@ -494,10 +501,7 @@ function enterRoom(room, isHost, name){
 }
 
 function applyControlPermissions(){
-  if(!state.isHost){
-    document.querySelectorAll('#srcRow .src-btn').forEach(b => b.disabled = true);
-    $('srcRow').style.opacity = '0.7';
-  }
+  // Server switching is now available to all guests, not just the host.
 }
 
 function srcUrl(movieId, type, season, ep, src){
@@ -529,12 +533,11 @@ function loadVideo(){
 }
 
 function setSource(idx, el){
-  if(!state.isHost) return;
   state.source = idx;
   document.querySelectorAll('.src-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   loadVideo();
-  reportHostState({source: idx});
+  if(state.isHost) reportHostState({source: idx});
 }
 
 function startHostElapsedTracking(){
@@ -589,7 +592,7 @@ function updateSyncNote(){
     $('syncNote').textContent = '';
     return;
   }
-  $('syncNote').innerHTML = 'Your video auto-follows the host\'s server pick. If timing looks off, tap <b>Sync with Host</b> — it\'ll show you the host\'s exact current time to seek to.';
+  $('syncNote').innerHTML = 'You can pick any server yourself. If timing looks off, tap <b>Sync with Host</b> — it\'ll show you the host\'s exact current time to seek to.';
 }
 
 async function handleSyncClick(){
@@ -619,12 +622,6 @@ async function fetchRoom(){
     const room = await res.json();
 
     state._lastRoom = room;
-
-    if(!state.isHost && typeof room.hostSource === 'number' && room.hostSource !== state.source){
-      state.source = room.hostSource;
-      document.querySelectorAll('.src-btn').forEach((b,i)=>b.classList.toggle('on', i===room.hostSource));
-      loadVideo();
-    }
 
     if(!state.isHost){
       const secs = Math.floor(room.hostElapsedSeconds || 0);
@@ -839,6 +836,11 @@ function toggleHostPanel(){
 function copyInviteLink(){
   if(!state._inviteLink) return;
   navigator.clipboard?.writeText(state._inviteLink).then(()=>showToast('📋 Invite link copied'));
+}
+
+function copyPartyCode(){
+  if(!state.code) return;
+  navigator.clipboard?.writeText(state.code).then(()=>showToast('📋 Party code copied'));
 }
 
 async function confirmEndRoom(){
