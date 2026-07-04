@@ -262,7 +262,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .ann-txt{flex:1;font-size:.76rem;font-weight:600;color:#c8d8f8;line-height:1.45}
 .ann-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--sub);font-size:.7rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .ann-close:active{background:rgba(255,255,255,.16)}
-.vip-gate{position:fixed;inset:0;z-index:8000;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
+.vip-gate{position:fixed;inset:0;z-index:9500;background:rgba(4,4,12,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
 .vip-gate.on{opacity:1;pointer-events:auto}
 .vip-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:30px 24px;width:88%;max-width:340px;text-align:center;position:relative}
 .vip-crown{font-size:2.6rem;margin-bottom:10px}
@@ -450,6 +450,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
   <div class="nav-r">
+    <div class="vip-badge" id="vipBadge" onclick="openVipGate()">👑 VIP</div>
     <div class="nav-icon" onclick="openWishlist()" title="My List">🔖</div>
     <div class="notif-btn" onclick="openNotif()">
       🔔
@@ -472,10 +473,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="notif-drw-close" onclick="closeNotif()">✕</button>
     </div>
   </div>
-  <div class="vip-badge" id="vipBadge" onclick="openVipGate()" style="margin:10px 16px;padding:10px 12px;font-size:.78rem;justify-content:flex-start;width:auto">
-    👑 VIP Access
-  </div>
-  <div class="notif-tabs">
+   <div class="notif-tabs">
     <button class="ntab on" id="ntab-all" onclick="switchNTab('all',this)">All</button>
     <button class="ntab" id="ntab-announce" onclick="switchNTab('announce',this)">📢 Admin</button>
     <button class="ntab" id="ntab-movies" onclick="switchNTab('movies',this)">🎬 Movies</button>
