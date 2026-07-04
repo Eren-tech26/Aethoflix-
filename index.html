@@ -641,9 +641,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <button class="sheet-close" onclick="closePartyMenu()">✕</button>
     <div style="padding:24px 20px">
       <div style="font-size:1.2rem;font-weight:900;margin-bottom:4px">🎉 Watch Party</div>
-      <div style="font-size:.76rem;color:var(--sub);margin-bottom:20px">Watch together with friends, anywhere</div>
-      <button class="watch-btn" onclick="startHostFlow()" style="margin-bottom:10px">👑 Host a Party</button>
-      <button class="wl-btn" onclick="startJoinFlow()">🔑 Join a Party</button>
+      <div style="font-size:.76rem;color:var(--sub);margin-bottom:20px">Watch together with friends, in sync.</div>
+      <button class="watch-btn" onclick="goToPartyAsHost()" style="margin-bottom:10px">👑 Host a Party</button>
+      <button class="wl-btn" onclick="goToPartyToJoin()">🔑 Join a Party</button>
     </div>
   </div>
 </div>
@@ -2034,140 +2034,6 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
-
-    /* ══════════ WATCH PARTY ══════════ */
-
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const room = await res.json();
-
-    localStorage.setItem('afx_partyName', cleanName);
-    closePartyMenu();
-    openPartyPage(room.code, room.movieId, room.type, room.season, room.episode, true, cleanName);
-  }catch(err){
-    console.error('Host party error:', err);
-    showToast('❌ Could not create party. Try again.');
-  }
-}
-
-async function startJoinFlow(){
-  const code = await showInputModal('Join a Party', 'Enter the 6-character code');
-  if(!code || !code.trim()) return;
-  const cleanCode = code.trim().toUpperCase();
-
-  try{
-    const checkRes = await fetch(`${API_BASE}/api/party/${cleanCode}`);
-    if(!checkRes.ok){
-      showToast('❌ Party not found. Check the code.');
-      return;
-    }
-    const room = await checkRes.json();
-
-    const savedName = localStorage.getItem('afx_partyName') || '';
-    const name = await showInputModal('Join a Party', 'Enter your name', savedName);
-    if(!name || !name.trim()) return;
-    const cleanName = name.trim().slice(0,20);
-
-    await fetch(`${API_BASE}/api/party/${cleanCode}`, {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'join', name: cleanName})
-    });
-
-    await fetch(`${API_BASE}/api/party-chat/${cleanCode}`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username:'System', text: `${cleanName} joined the party`, system:true})
-    });
-
-    localStorage.setItem('afx_partyName', cleanName);
-    closePartyMenu();
-    openPartyPage(cleanCode, room.movieId, room.type, room.season, room.episode, false, cleanName);
-  }catch(err){
-    console.error('Join party error:', err);
-    showToast('❌ Could not join party. Try again.');
-  }
-}
-
-function openPartyPage(code, movieId, type, season, episode, isHost, name){
-  party.code = code; party.name = name; party.isHost = isHost;
-  party.movieId = movieId; party.type = type;
-  party.season = season || 1; party.episode = episode || 1; party.source = 0;
-
-  $$('.pg,.player-pg,.party-pg').forEach(p=>p.classList.remove('on'));
-  $('pg-party').classList.add('on');
-  $('nav').style.display='none';
-  window.scrollTo(0,0);
-
-  $('partyCodeDisplay').textContent = code;
-  $('partyNudgeBtn').style.display = isHost ? 'block' : 'none';
-  $$('#pg-party .src-btn').forEach((b,i)=>b.classList.toggle('on', i===0));
-
-  loadPartyVideo();
-  loadPartyMeta();
-
-  $('partyChatList').innerHTML = '';
-  party.chatCount = 0;
-  fetchPartyChat();
-  fetchPartyRoom();
-
-  clearInterval(party.roomPollTimer);
-  clearInterval(party.chatPollTimer);
-  party.roomPollTimer = setInterval(fetchPartyRoom, 1500);
-  party.chatPollTimer = setInterval(fetchPartyChat, 1500);
-}
-
-function loadPartyVideo(){
-  const realSrc = PARTY_SRC_MAP[party.source];
-  $('partyVidFrame').src = srcUrl(party.movieId, party.type, party.season, party.episode, realSrc);
-}
-
-async function loadPartyMeta(){
-  const tmdbType = party.type==='anime' ? 'tv' : party.type;
-  const meta = await api(`${tmdbType}/${party.movieId}`);
-  if(meta) $('partyCtrlTitle').textContent = meta.title || meta.name || '';
-}
-
-function setPartySource(idx, el){
-  party.source = idx;
-  $$('#pg-party .src-btn').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  loadPartyVideo();
-}
-
-async function fetchPartyRoom(){
-  if(!party.code) return;
-  try{
-    const res = await fetch(`${API_BASE}/api/party/${party.code}`);
-    if(!res.ok) return;
-    const room = await res.json();
-    $('partyMemberCount').textContent = (room.members||[]).length;
-
-    if(room.nudge && room.nudge.ts && room.nudge.ts > party.lastNudgeTs){
-      party.lastNudgeTs = room.nudge.ts;
-      if(!party.isHost) showToast('🎬 ' + room.nudge.text, 4000);
-    }
-  }catch(err){
-    console.error('Party room poll error:', err);
-  }
-}
-
-async function fetchPartyChat(){
-  if(!party.code) return;
-  try{
-    const res = await fetch(`${API_BASE}/api/party-chat/${party.code}`);
-    if(!res.ok) return;
-    const messages = await res.json();
-    if(messages.length === party.chatCount) return;
-    party.chatCount = messages.length;
-    renderPartyChat(messages);
-  }catch(err){
-    console.error('Party chat poll error:', err);
-  }
-}
-
-function renderPartyChat(messages){
-  const list = $('partyChatList');
-  
 // Host flow — replace startHostFlow() with this
 function goToPartyAsHost(){
   const url = `party.html?host=1&id=${pl.id}&type=${pl.type}&s=${pl.season}&e=${pl.ep}`;
