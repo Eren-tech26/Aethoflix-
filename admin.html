@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Admin — AethoFlix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#080810;--surface:#0f0f1a;--card:#14141f;--border:#1e1e2e;
+  --accent:#e50914;--gold:#f5a623;--text:#f0f0f5;--sub:#8888aa;--muted:#3a3a55;
+  --blue:#60a5fa;--green:#22c55e;--font:'Inter',sans-serif;
+}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:var(--font)}
+
+.apin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:20px}
+.apin-ic{font-size:2.8rem}
+.apin-title{font-size:1.1rem;font-weight:800}
+.apin-sub{font-size:.74rem;color:var(--sub);text-align:center}
+.apin-dots{display:flex;gap:12px;margin:8px 0}
+.apin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:.2s}
+.apin-dot.filled{background:var(--accent)}
+.apin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:220px}
+.apin-key{height:52px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;font-size:1.1rem;font-weight:700;color:var(--text);transition:.15s}
+.apin-key:active{background:var(--card);transform:scale(.94)}
+.apin-key.del{font-size:.9rem;color:var(--sub)}
+.apin-err{font-size:.7rem;color:var(--accent);min-height:18px;text-align:center}
+
+.admin-body{display:none;padding:16px 4% 40px;max-width:720px;margin:0 auto}
+.admin-header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 18px}
+.admin-logo{font-size:1.1rem;font-weight:900;color:var(--accent)}
+.admin-logo span{color:var(--text);font-weight:300}
+.admin-badge{font-size:.54rem;font-weight:900;background:var(--accent);color:#fff;padding:2px 7px;border-radius:4px;letter-spacing:1px;margin-left:6px}
+.refresh-btn{font-size:.7rem;font-weight:700;color:var(--sub);background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:8px}
+.refresh-btn:active{background:var(--surface)}
+
+.adm-sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.adm-sec-hdr{padding:13px 15px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.adm-sec-ic{font-size:1.1rem}
+.adm-sec-ttl{font-size:.82rem;font-weight:800}
+.adm-sec-sub{font-size:.64rem;color:var(--sub);margin-left:auto}
+.adm-sec-body{padding:14px 15px}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat-val{font-size:1.5rem;font-weight:900;margin-bottom:2px}
+.stat-lbl{font-size:.6rem;color:var(--sub);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.stat-val.gold{color:var(--gold)}
+.stat-val.red{color:var(--accent)}
+.stat-val.green{color:var(--green)}
+.stat-val.blue{color:var(--blue)}
+
+.wt-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:6px}
+.wt-ic{font-size:1.2rem}
+.wt-info{flex:1;min-width:0}
+.wt-title{font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wt-sub{font-size:.64rem;color:var(--sub)}
+.wt-live{font-size:.56rem;font-weight:900;background:rgba(34,197,94,.15);color:var(--green);padding:2px 7px;border-radius:9px}
+.no-data{text-align:center;padding:20px;color:var(--muted);font-size:.76rem}
+
+.mw-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 12px;margin-bottom:6px}
+.mw-rank{font-size:.9rem;font-weight:900;color:var(--gold);width:24px;flex-shrink:0}
+.mw-info{flex:1;min-width:0}
+.mw-title{font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mw-type{font-size:.62rem;color:var(--sub)}
+.mw-count{font-size:.72rem;font-weight:800;color:var(--blue)}
+.range-tabs{display:flex;gap:6px;margin-bottom:10px}
+.range-tab{padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:14px;font-size:.68rem;font-weight:700;color:var(--sub)}
+.range-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.bc-inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:.78rem;outline:none;min-height:70px;resize:none}
+.bc-inp:focus{border-color:var(--accent)}
+.bc-btn{width:100%;margin-top:8px;padding:10px;background:var(--accent);color:#fff;border-radius:8px;font-size:.78rem;font-weight:800}
+.bc-btn.secondary{background:var(--surface);color:var(--sub);border:1px solid var(--border);margin-top:6px}
+
+.gen-row{display:flex;gap:8px;margin-bottom:12px}
+.gen-sel{flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.76rem;outline:none}
+.gen-btn{padding:9px 16px;background:var(--accent);color:#fff;border-radius:8px;font-size:.76rem;font-weight:800;white-space:nowrap}
+.code-list{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.code-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+.code-val{font-family:monospace;font-size:.8rem;font-weight:700;flex:1;letter-spacing:1px;color:var(--gold)}
+.code-meta{font-size:.58rem;color:var(--sub)}
+.code-badge{font-size:.5rem;font-weight:900;padding:2px 5px;border-radius:3px;letter-spacing:.5px;flex-shrink:0}
+.code-badge.active{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.code-badge.used{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.code-badge.revoked{background:rgba(229,9,20,.1);color:var(--accent);border:1px solid rgba(229,9,20,.2)}
+.code-copy,.code-revoke{font-size:.68rem;padding:4px 8px;border-radius:5px;flex-shrink:0}
+.code-copy{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--sub)}
+.code-revoke{background:rgba(229,9,20,.1);border:1px solid rgba(229,9,20,.2);color:var(--accent)}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:.8rem;font-weight:600;z-index:9999;opacity:0;transition:.25s;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="apin-wrap" id="apinWrap">
+  <div class="apin-ic">🔐</div>
+  <div class="apin-title">Admin Access</div>
+  <div class="apin-sub">Enter your 4-digit PIN to continue</div>
+  <div class="apin-dots" id="apinDots">
+    <div class="apin-dot" id="ad0"></div>
+    <div class="apin-dot" id="ad1"></div>
+    <div class="apin-dot" id="ad2"></div>
+    <div class="apin-dot" id="ad3"></div>
+  </div>
+  <div class="apin-err" id="apinErr"></div>
+  <div class="apin-grid">
+    <button class="apin-key" onclick="pinKey('1')">1</button>
+    <button class="apin-key" onclick="pinKey('2')">2</button>
+    <button class="apin-key" onclick="pinKey('3')">3</button>
+    <button class="apin-key" onclick="pinKey('4')">4</button>
+    <button class="apin-key" onclick="pinKey('5')">5</button>
+    <button class="apin-key" onclick="pinKey('6')">6</button>
+    <button class="apin-key" onclick="pinKey('7')">7</button>
+    <button class="apin-key" onclick="pinKey('8')">8</button>
+    <button class="apin-key" onclick="pinKey('9')">9</button>
+    <button class="apin-key del" onclick="pinDel()">⌫</button>
+    <button class="apin-key" onclick="pinKey('0')">0</button>
+    <button class="apin-key del" onclick="location.href='index.html'">✕</button>
+  </div>
+</div>
+
+<div class="admin-body" id="adminBody">
+  <div class="admin-header">
+    <div><span class="admin-logo">Aetho<span>flix</span></span><span class="admin-badge">ADMIN</span></div>
+    <button class="refresh-btn" onclick="refreshAll()">🔄 Refresh</button>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">📊</span><span class="adm-sec-ttl">Visit Overview</span></div>
+    <div class="adm-sec-body">
+      <div class="stat-row" style="margin-bottom:8px">
+        <div class="stat-card"><div class="stat-val gold" id="statToday">0</div><div class="stat-lbl">Today</div></div>
+        <div class="stat-card"><div class="stat-val blue" id="statWeek">0</div><div class="stat-lbl">This Week</div></div>
+        <div class="stat-card"><div class="stat-val green" id="statMonth">0</div><div class="stat-lbl">This Month</div></div>
+        <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">All Time</div></div>
+      </div>
+      <div class="stat-card" style="text-align:center">
+        <div class="stat-val red" id="statActiveNow">0</div>
+        <div class="stat-lbl">Watching Right Now</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">👁️</span><span class="adm-sec-ttl">Currently Watching</span><span class="adm-sec-sub" id="watchingCount"></span></div>
+    <div class="adm-sec-body" id="watchingList"><div class="no-data">Loading…</div></div>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">🏆</span><span class="adm-sec-ttl">Most Watched</span></div>
+    <div class="adm-sec-body">
+      <div class="range-tabs">
+        <button class="range-tab on" onclick="setMWRange('today',this)">Today</button>
+        <button class="range-tab" onclick="setMWRange('week',this)">This Week</button>
+        <button class="range-tab" onclick="setMWRange('all',this)">All Time</button>
+      </div>
+      <div id="mostWatchedList"><div class="no-data">Loading…</div></div>
+    </div>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">📢</span><span class="adm-sec-ttl">Site Announcement</span></div>
+    <div class="adm-sec-body">
+      <textarea class="bc-inp" id="bcInp" placeholder="Type announcement shown to all visitors…" rows="3"></textarea>
+      <button class="bc-btn" onclick="saveBroadcast()">📢 Save Announcement</button>
+      <button class="bc-btn secondary" onclick="clearBroadcast()">Clear Announcement</button>
+    </div>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">🎟️</span><span class="adm-sec-ttl">VIP Code Generator</span></div>
+    <div class="adm-sec-body">
+      <div class="gen-row">
+        <select class="gen-sel" id="codeType">
+          <option value="permanent">Permanent</option>
+          <option value="7d">7 Days</option>
+          <option value="30d">30 Days</option>
+          <option value="1use">1-Time Use</option>
+        </select>
+        <button class="gen-btn" onclick="generateCode()">+ Generate</button>
+      </div>
+      <div class="code-list" id="codeList"><div class="no-data">Loading…</div></div>
+    </div>
+  </div>
+
+  <div class="adm-sec">
+    <div class="adm-sec-hdr"><span class="adm-sec-ic">🔑</span><span class="adm-sec-ttl">Change PIN</span></div>
+    <div class="adm-sec-body">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="newPinInp" maxlength="4" placeholder="New 4-digit PIN" style="flex:1;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.8rem;outline:none">
+        <button class="gen-btn" onclick="changePin()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = 'https://aethoflix.vercel.app';
+const $ = id => document.getElementById(id);
+
+/* ── PIN gate ── */
+const DEFAULT_PIN = '2611';
+let pinBuf = '';
+function lsGet(k,def=null){ try{const v=localStorage.getItem('afx_'+k);return v===null?def:JSON.parse(v);}catch{return def;} }
+function lsSet(k,v){ try{localStorage.setItem('afx_'+k,JSON.stringify(v));}catch{} }
+
+function pinKey(d){
+  if(pinBuf.length>=4) return;
+  pinBuf+=d; updateDots();
+  if(pinBuf.length===4) setTimeout(checkPin,120);
+}
+function pinDel(){ pinBuf=pinBuf.slice(0,-1); updateDots(); }
+function updateDots(){ for(let i=0;i<4;i++) $('ad'+i).classList.toggle('filled', i<pinBuf.length); }
+function checkPin(){
+  const saved = lsGet('adminPin', DEFAULT_PIN);
+  if(pinBuf===saved){
+    $('apinWrap').style.display='none';
+    $('adminBody').style.display='block';
+    refreshAll();
+  }else{
+    $('apinErr').textContent='Wrong PIN. Try again.';
+    pinBuf=''; updateDots();
+    setTimeout(()=>$('apinErr').textContent='',1500);
+  }
+}
+
+/* ── Toast ── */
+let toastTmr;
+function showToast(msg,ms=2500){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTmr); toastTmr=setTimeout(()=>t.classList.remove('show'),ms);
+}
+
+/* ── Refresh everything ── */
+function refreshAll(){
+  loadStats();
+  loadMostWatched('today');
+  loadVipCodes();
+  loadBroadcast();
+}
+
+/* ── Visit stats + currently watching ── */
+async function loadStats(){
+  try{
+    const res = await fetch(`${API_BASE}/api/analytics?type=stats`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    $('statToday').textContent = data.viewsToday ?? 0;
+    $('statWeek').textContent = data.viewsWeek ?? 0;
+    $('statMonth').textContent = data.viewsMonth ?? 0;
+    $('statTotal').textContent = data.totalViews ?? 0;
+    $('statActiveNow').textContent = data.activeNow ?? 0;
+    renderWatching(data.activeSessions || []);
+  }catch(err){
+    console.error('Stats load error:', err);
+    $('watchingList').innerHTML = '<div class="no-data">Could not load — check API is deployed</div>';
+  }
+}
+
+function renderWatching(sessions){
+  $('watchingCount').textContent = sessions.length ? `${sessions.length} active` : '';
+  if(!sessions.length){
+    $('watchingList').innerHTML = '<div class="no-data">No one is watching right now</div>';
+    return;
+  }
+  $('watchingList').innerHTML = sessions.map(s=>{
+    const epLabel = s.type!=='movie' ? ` · S${s.season||1} E${s.episode||1}` : '';
+    const mins = Math.floor((Date.now()-s.startedAt)/60000);
+    return `<div class="wt-item">
+      <div class="wt-ic">${s.type==='movie'?'🎬':s.type==='anime'?'🏮':'📺'}</div>
+      <div class="wt-info">
+        <div class="wt-title">${escapeHtml(s.title||'Untitled')}${epLabel}</div>
+        <div class="wt-sub">Watching for ${mins < 1 ? 'just now' : mins+'m'}</div>
+      </div>
+      <span class="wt-live">● LIVE</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── Most watched ── */
+let mwRange = 'today';
+function setMWRange(range, el){
+  mwRange = range;
+  document.querySelectorAll('.range-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  loadMostWatched(range);
+}
+async function loadMostWatched(range){
+  try{
+    const res = await fetch(`${API_BASE}/api/analytics?type=most-watched&range=${range}`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const items = data.items || [];
+    if(!items.length){
+      $('mostWatchedList').innerHTML = '<div class="no-data">No watch data yet for this range</div>';
+      return;
+    }
+    $('mostWatchedList').innerHTML = items.map((it,i)=>`
+      <div class="mw-item">
+        <div class="mw-rank">#${i+1}</div>
+        <div class="mw-info">
+          <div class="mw-title">${escapeHtml(it.title||'Untitled')}</div>
+          <div class="mw-type">${it.type||''}</div>
+        </div>
+        <div class="mw-count">${it.count} view${it.count!==1?'s':''}</div>
+      </div>
+    `).join('');
+  }catch(err){
+    console.error('Most watched error:', err);
+    $('mostWatchedList').innerHTML = '<div class="no-data">Could not load — check API is deployed</div>';
+  }
+}
+
+/* ── Broadcast ── */
+async function loadBroadcast(){
+  try{
+    const res = await fetch(`${API_BASE}/api/broadcast`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    $('bcInp').value = data.message || '';
+  }catch(err){
+    console.error('Broadcast load error:', err);
+  }
+}
+async function saveBroadcast(){
+  const message = $('bcInp').value.trim();
+  try{
+    const res = await fetch(`${API_BASE}/api/broadcast`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ message })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    showToast('📢 Announcement saved & live for all visitors');
+  }catch(err){
+    console.error('Save broadcast error:', err);
+    showToast('❌ Failed to save — check API is deployed');
+  }
+}
+async function clearBroadcast(){
+  $('bcInp').value = '';
+  await saveBroadcast();
+}
+
+/* ── VIP codes ── */
+async function loadVipCodes(){
+  try{
+    const res = await fetch(`${API_BASE}/api/vip`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    renderCodeList(data.codes || []);
+  }catch(err){
+    console.error('VIP load error:', err);
+    $('codeList').innerHTML = '<div class="no-data">Could not load — check API is deployed</div>';
+  }
+}
+function renderCodeList(codes){
+  if(!codes.length){ $('codeList').innerHTML = '<div class="no-data">No codes yet. Generate one above.</div>'; return; }
+  $('codeList').innerHTML = codes.map(c=>{
+    const statusLabel = c.status==='active'?'ACTIVE':c.status==='used'?'USED':'REVOKED';
+    const exp = c.expires ? `Exp: ${new Date(c.expires).toLocaleDateString()}` : (c.type==='1use'?'1-time use':'Permanent');
+    return `<div class="code-row">
+      <div style="flex:1;min-width:0">
+        <div class="code-val">${c.code}</div>
+        <div class="code-meta">${exp} · ${c.type}</div>
+      </div>
+      <span class="code-badge ${c.status}">${statusLabel}</span>
+      <button class="code-copy" onclick="copyCode('${c.code}')">Copy</button>
+      ${c.status==='active' ? `<button class="code-revoke" onclick="revokeCode('${c.code}')">Revoke</button>` : ''}
+    </div>`;
+  }).join('');
+}
+async function generateCode(){
+  const type = $('codeType').value;
+  try{
+    const res = await fetch(`${API_BASE}/api/vip`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'generate', type })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const doc = await res.json();
+    showToast('✅ Code generated: '+doc.code);
+    loadVipCodes();
+  }catch(err){
+    console.error('Generate code error:', err);
+    showToast('❌ Failed to generate — check API is deployed');
+  }
+}
+async function revokeCode(code){
+  try{
+    const res = await fetch(`${API_BASE}/api/vip`, {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'revoke', code })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    showToast('🚫 Code revoked');
+    loadVipCodes();
+  }catch(err){
+    console.error('Revoke error:', err);
+    showToast('❌ Failed to revoke');
+  }
+}
+function copyCode(code){
+  navigator.clipboard?.writeText(code).then(()=>showToast('📋 Copied: '+code));
+}
+
+/* ── Change PIN (local to this browser, same as before) ── */
+function changePin(){
+  const np = $('newPinInp').value.trim();
+  if(!/^\d{4}$/.test(np)){ showToast('❌ Must be exactly 4 digits'); return; }
+  lsSet('adminPin', np);
+  $('newPinInp').value='';
+  showToast('🔑 PIN updated successfully');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+/* ── Auto-refresh "currently watching" every 10s while dashboard is open ── */
+setInterval(()=>{
+  if($('adminBody').style.display === 'block') loadStats();
+}, 10000);
+</script>
+</body>
+</html>
