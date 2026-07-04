@@ -22,11 +22,16 @@ const partySchema = new mongoose.Schema({
   episode: Number,
   hostName: String,
   members: [{type: String}],
+  pendingRequests: [{type: String}],
+  mutedUsers: [{type: String}],
+  bannedUsers: [{type: String}],
+  hostElapsedSeconds: {type: Number, default: 0},
+  hostElapsedUpdatedAt: {type: Number, default: 0},
   nudge: {
     text: String,
     ts: Number
   },
-  createdAt: {type: Date, default: Date.now}
+  createdAt: {type: Date, default: Date.now, expires: 21600}
 });
 
 const Party = mongoose.models.Party || mongoose.model('Party', partySchema);
@@ -50,6 +55,8 @@ export default async function handler(req, res){
   try{
     if(req.method === 'POST'){
       const {movieId, type, season, episode, hostName} = req.body;
+      if(!hostName || !hostName.trim()) return res.status(400).json({error: 'Host name required'});
+
       let newCode = generateCode();
       let exists = await Party.findOne({code: newCode});
       while(exists){
@@ -61,6 +68,11 @@ export default async function handler(req, res){
         movieId, type, season, episode,
         hostName,
         members: [hostName],
+        pendingRequests: [],
+        mutedUsers: [],
+        bannedUsers: [],
+        hostElapsedSeconds: 0,
+        hostElapsedUpdatedAt: Date.now(),
         nudge: null
       });
       return res.status(201).json(room);
@@ -73,22 +85,69 @@ export default async function handler(req, res){
     }
 
     if(req.method === 'PUT'){
-      const {action, name, nudgeText} = req.body;
+      const {action, name, nudgeText, elapsedSeconds} = req.body;
       const room = await Party.findOne({code});
       if(!room) return res.status(404).json({error: 'Room not found'});
 
-      if(action === 'join'){
+      if(action === 'request-join'){
+        if(room.bannedUsers.includes(name)) return res.status(403).json({error: 'You have been removed from this party'});
+        if(!room.members.includes(name) && !room.pendingRequests.includes(name)){
+          room.pendingRequests.push(name);
+        }
+      }
+
+      else if(action === 'approve-join'){
+        room.pendingRequests = room.pendingRequests.filter(n => n !== name);
         if(!room.members.includes(name)) room.members.push(name);
       }
-      if(action === 'leave'){
+
+      else if(action === 'reject-join'){
+        room.pendingRequests = room.pendingRequests.filter(n => n !== name);
+      }
+
+      else if(action === 'leave'){
         room.members = room.members.filter(m => m !== name);
       }
-      if(action === 'nudge'){
+
+      else if(action === 'mute'){
+        if(!room.mutedUsers.includes(name)) room.mutedUsers.push(name);
+      }
+
+      else if(action === 'unmute'){
+        room.mutedUsers = room.mutedUsers.filter(m => m !== name);
+      }
+
+      else if(action === 'kick'){
+        room.members = room.members.filter(m => m !== name);
+        room.mutedUsers = room.mutedUsers.filter(m => m !== name);
+      }
+
+      else if(action === 'ban'){
+        room.members = room.members.filter(m => m !== name);
+        room.mutedUsers = room.mutedUsers.filter(m => m !== name);
+        if(!room.bannedUsers.includes(name)) room.bannedUsers.push(name);
+      }
+
+      else if(action === 'nudge'){
         room.nudge = {text: nudgeText, ts: Date.now()};
+      }
+
+      else if(action === 'host-heartbeat'){
+        room.hostElapsedSeconds = elapsedSeconds || 0;
+        room.hostElapsedUpdatedAt = Date.now();
+      }
+
+      else {
+        return res.status(400).json({error: 'Unknown action'});
       }
 
       await room.save();
       return res.status(200).json(room);
+    }
+
+    if(req.method === 'DELETE'){
+      await Party.deleteOne({code});
+      return res.status(200).json({success: true});
     }
 
     res.status(405).json({error: 'Method not allowed'});
