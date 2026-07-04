@@ -1909,28 +1909,34 @@ function openVipGate(){
 }
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
-function redeemVip(){
+async function redeemVip(){
   const entered=$('vipInp').value.trim().toUpperCase();
   if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  const codes=lsGet('vipCodes',[]);
-  const idx=codes.findIndex(c=>c.code===entered);
-  if(idx===-1){ $('vipErr').textContent='❌ Invalid code. Check with your admin.'; return; }
-  const code=codes[idx];
-  if(code.status==='revoked'){ $('vipErr').textContent='❌ This code has been revoked.'; return; }
-  if(code.status==='used'&&code.type==='1use'){ $('vipErr').textContent='❌ This code has already been used.'; return; }
-  if(code.expires&&Date.now()>code.expires){ $('vipErr').textContent='❌ This code has expired.'; return; }
-  // Mark used if 1-time
-  if(code.type==='1use') codes[idx].status='used';
-  lsSet('vipCodes',codes);
-  // Save VIP status
-  lsSet('vipStatus',{active:true,code:entered,expires:code.expires,since:Date.now()});
-  // Log redemption
-  const rr=lsGet('vipRedemptions',[]);
-  rr.push({code:entered,at:Date.now()});
-  lsSet('vipRedemptions',rr);
-  closeVipGate();
-  checkVipStatus();
-  showToast('👑 VIP unlocked! Welcome.',3000);
+  $('vipErr').textContent='Checking…';
+  try{
+    const res=await fetch(`${API_BASE}/api/vip`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'redeem',code:entered})
+    });
+    const data=await res.json();
+    if(!data.success){
+      const reasons={
+        not_found:'❌ Invalid code. Check with your admin.',
+        revoked:'❌ This code has been revoked.',
+        used:'❌ This code has already been used.',
+        expired:'❌ This code has expired.'
+      };
+      $('vipErr').textContent=reasons[data.reason]||'❌ Invalid code.';
+      return;
+    }
+    lsSet('vipStatus',{active:true,code:data.code,expires:data.expires,since:Date.now()});
+    closeVipGate();
+    checkVipStatus();
+    showToast('👑 VIP unlocked! Welcome.',3000);
+  }catch(err){
+    console.error('Redeem error:',err);
+    $('vipErr').textContent='❌ Could not reach server. Try again.';
+  }
 }
 
 /* ══════════ NOTIFICATIONS ══════════ */
