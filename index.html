@@ -927,6 +927,45 @@ async function api(path){
 
 const GENRES={28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10749:'Romance',878:'Sci-Fi',53:'Thriller',10759:'Action & Adventure',10765:'Sci-Fi & Fantasy'};
 const gl = id => GENRES[id]||'';
+  function logPageView(){
+  try{
+    fetch(`${API_BASE}/api/analytics`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'pageview', path: location.pathname, referrer: document.referrer })
+    }).catch(()=>{});
+  }catch(err){}
+}
+let watchSessionId = null;
+let watchHeartbeatTimer = null;
+function startWatchSession(id, type, title, season, ep){
+  watchSessionId = 'ws_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+  fetch(`${API_BASE}/api/analytics`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ action:'watch-start', sessionId: watchSessionId, movieId: id, type, title, season, episode: ep })
+  }).catch(()=>{});
+  clearInterval(watchHeartbeatTimer);
+  watchHeartbeatTimer = setInterval(()=>{
+    if(!watchSessionId) return;
+    fetch(`${API_BASE}/api/analytics`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'watch-heartbeat', sessionId: watchSessionId, season: pl.season, episode: pl.ep })
+    }).catch(()=>{});
+  }, 15000);
+}
+function endWatchSession(){
+  if(watchSessionId){
+    fetch(`${API_BASE}/api/analytics`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'watch-end', sessionId: watchSessionId })
+    }).catch(()=>{});
+  }
+  watchSessionId = null;
+  clearInterval(watchHeartbeatTimer);
+}
 
 /* ══════════ NAV ══════════ */
 window.addEventListener('scroll',()=>$('nav').classList.toggle('solid',scrollY>10));
@@ -1308,6 +1347,7 @@ async function openPlayer(id,type,season,ep){
   $('ctrlTitle').textContent=title;
   $('plTitle').textContent=title;
   document.title=title+' — AethoFlix';
+  startWatchSession(id, type, title, season, ep);
 
   let metaHtml=`<span class="pl-rat">★ ${rat}</span><span>${yr}</span>`;
   if(runtime) metaHtml+=`<span class="pl-tag">${runtime}</span>`;
@@ -1486,6 +1526,7 @@ function safePlay(id, type, season, ep){
 
 /* Close player */
 function closePlayer(){
+  endWatchSession();
   $('vidFrame').src='';
   document.title='AethoFlix';
   const u=new URL(location.href.split('?')[0]);
@@ -2228,6 +2269,8 @@ function timeAgo(dateStr){
   const p=new URLSearchParams(location.search);
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
+  logPageView();
+  checkVipStatus();
   checkVipStatus();
   checkAnnouncement();
   initHome();
