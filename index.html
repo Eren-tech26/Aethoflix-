@@ -2321,6 +2321,12 @@ window.addEventListener('popstate',()=>{
   else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
 });
 
+window.addEventListener('pageshow', (event) => {
+  if(event.persisted){
+    initFirebase();
+  }
+});
+  
 </script>
 </body>
 </html>
