@@ -2036,6 +2036,14 @@ function dismissAnn(){
 }
 
 // Host flow — replace startHostFlow() with this
+  function openPartyMenu(){
+  $('partyMenuOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closePartyMenu(){
+  $('partyMenuOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
 function goToPartyAsHost(){
   const url = `party.html?host=1&id=${pl.id}&type=${pl.type}&s=${pl.season}&e=${pl.ep}`;
   location.href = url;
