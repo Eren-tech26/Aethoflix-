@@ -634,6 +634,19 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
+<!-- ══════════ PARTY MENU MODAL ══════════ -->
+<div class="overlay" id="partyMenuOverlay" onclick="if(event.target===this)closePartyMenu()">
+  <div class="sheet" style="max-height:60vh">
+    <button class="sheet-close" onclick="closePartyMenu()">✕</button>
+    <div style="padding:24px 20px">
+      <div style="font-size:1.2rem;font-weight:900;margin-bottom:4px">🎉 Watch Party</div>
+      <div style="font-size:.76rem;color:var(--sub);margin-bottom:20px">Watch together with friends, anywhere</div>
+      <button class="watch-btn" onclick="startHostFlow()" style="margin-bottom:10px">👑 Host a Party</button>
+      <button class="wl-btn" onclick="startJoinFlow()">🔑 Join a Party</button>
+    </div>
+  </div>
+</div>
+  
 <!-- ══════════ PLAYER PAGE ══════════ -->
 <div class="player-pg" id="pg-player">
 
@@ -660,6 +673,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       <button class="src-btn" onclick="setSource(3,this)">Server 4</button>
       <button class="src-btn" onclick="setSource(4,this)">Server 5</button>
       <button class="src-btn" onclick="setSource(5,this)">Server 6</button>
+      <button class="ctrl-fs" onclick="openPartyMenu()" title="Watch Party" style="background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.3);color:var(--blue)">🎉 Party</button>
       <button class="ctrl-fs" onclick="openReport()" title="Report Issue" style="background:rgba(229,9,20,.15);border-color:rgba(229,9,20,.3);color:var(--accent)">⚠️ Report</button>
       <button class="ctrl-fs" onclick="goFS()">⛶ Fullscreen</button>
     </div>
@@ -2009,6 +2023,22 @@ function dismissAnn(){
   $('annBanner').classList.remove('show');
 }
 
+/* ══════════ PARTY MENU ══════════ */
+function openPartyMenu(){
+  $('partyMenuOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closePartyMenu(){
+  $('partyMenuOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+function startHostFlow(){
+  showToast('Host flow coming next!');
+}
+function startJoinFlow(){
+  showToast('Join flow coming next!');
+}
+  
 /* ══════════ TRAILER SYSTEM ══════════ */
 let trailerData = null;
 
@@ -2178,119 +2208,6 @@ function timeAgo(dateStr){
   return `${Math.floor(hrs/24)}d ago`;
 }
 
-/* ══════════ FIREBASE AUTH + MONGO SYNC ══════════ */
-const firebaseConfig = {
-  apiKey: "AIzaSyAh9NuZ_ZpwedlSBWuJY9BmCh_gAZEvZgM",
-  authDomain: "aethoflix-427df.firebaseapp.com",
-  projectId: "aethoflix-427df",
-  storageBucket: "aethoflix-427df.firebasestorage.app",
-  messagingSenderId: "405036201332",
-  appId: "1:405036201332:web:2fb9065549e711107ee821"
-};
-
-let currentUser = null;
-let firebaseReady = false;
-let firebaseInitPromise = null;
-
-function loadScript(src){
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('Script failed to load: ' + src));
-    document.head.appendChild(script);
-  });
-}
-
-function initFirebase(){
-  if(firebaseInitPromise) return firebaseInitPromise;
-
-  firebaseInitPromise = (async () => {
-    await loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js');
-
-    if(typeof firebase === 'undefined'){
-      throw new Error('Firebase SDK did not load');
-    }
-
-    if(!firebase.apps.length){
-      firebase.initializeApp(firebaseConfig);
-    }
-
-    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-    firebase.auth().onAuthStateChanged(user => {
-      if(user) onUserLogin(user);
-      else onUserLogout();
-    });
-
-    try{
-      const result = await firebase.auth().getRedirectResult();
-      if(result && result.user){
-        showToast('✅ Logged in as ' + result.user.displayName);
-      }
-    }catch(err){
-      console.error('REDIRECT RESULT ERROR:', err);
-      if(err.code) showToast('❌ ' + err.code);
-    }
-
-    firebaseReady = true;
-  })();
-
-  return firebaseInitPromise;
-}
-
-async function googleSignIn(){
-  const btn = $('authBtn');
-  if(btn) btn.textContent = '⏳';
-  try{
-    await initFirebase();
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await firebase.auth().signInWithRedirect(provider);
-  }catch(err){
-    console.error('SIGN-IN ERROR:', err);
-    showToast('❌ ' + (err.code || err.message || 'Sign-in failed'));
-    if(btn) btn.textContent = '🔑';
-  }
-}
-
-async function googleSignOut(){
-  try{
-    await initFirebase();
-    await firebase.auth().signOut();
-    currentUser = null;
-    closeAuthMenu();
-    showToast('👋 Signed out');
-  }catch(err){
-    console.error('SIGN-OUT ERROR:', err);
-  }
-}
-
-async function syncUserToMongo(user){
-  try{
-    const res = await fetch(`${API_BASE}/api/user/${user.uid}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ email: user.email, displayName: user.displayName, photoURL: user.photoURL })
-    });
-    if(!res.ok) throw new Error('Mongo sync HTTP ' + res.status);
-  }catch(err){
-    console.error('MONGO SYNC ERROR:', err);
-  }
-}
-
-function toggleAuthMenu(){
-  const menu = $('authMenu');
-  if(menu) menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-function closeAuthMenu(){
-  const menu = $('authMenu');
-  if(menu) menu.style.display = 'none';
-}
-document.addEventListener('click', (e) => {
-  const menu = $('authMenu'), btn = $('authBtn');
-  
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
