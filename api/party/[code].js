@@ -27,6 +27,8 @@ const partySchema = new mongoose.Schema({
   bannedUsers: [{type: String}],
   hostElapsedSeconds: {type: Number, default: 0},
   hostElapsedUpdatedAt: {type: Number, default: 0},
+  hostSource: {type: Number, default: 0},
+  hostPlaying: {type: Boolean, default: false},
   nudge: {
     text: String,
     ts: Number
@@ -73,6 +75,8 @@ export default async function handler(req, res){
         bannedUsers: [],
         hostElapsedSeconds: 0,
         hostElapsedUpdatedAt: Date.now(),
+        hostSource: 0,
+        hostPlaying: false,
         nudge: null
       });
       return res.status(201).json(room);
@@ -135,6 +139,8 @@ export default async function handler(req, res){
       else if(action === 'host-heartbeat'){
         room.hostElapsedSeconds = elapsedSeconds || 0;
         room.hostElapsedUpdatedAt = Date.now();
+        if(req.body.source !== undefined) room.hostSource = req.body.source;
+        if(req.body.playing !== undefined) room.hostPlaying = req.body.playing;
       }
 
       else {
