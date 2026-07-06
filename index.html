@@ -2434,7 +2434,15 @@ function doLogout(){
 }
 
 function updateUserBadge(){
-  // Nav badge removed — will be replaced by the ☰ menu drawer labels (next step)
+  const lbl=$('menuAuthLabel'), sub=$('menuAuthSub');
+  if(!lbl) return;
+  if(currentUsername){
+    lbl.textContent = '@'+currentUsername;
+    if(sub) sub.textContent = 'Tap to manage account';
+  }else{
+    lbl.textContent = 'Sign In';
+    if(sub) sub.textContent = 'Access your account';
+  }
 }
 
 let currentUsername = null;
