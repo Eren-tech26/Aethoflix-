@@ -2294,6 +2294,10 @@ async function submitRedeemModal(){const c=document.getElementById('redeemInput'
 
 function openMenu(){document.getElementById('menuDrawer').classList.add('open');document.getElementById('menuBackdrop').classList.add('show');document.body.style.overflow='hidden';}
 function closeMenu(){document.getElementById('menuDrawer').classList.remove('open');document.getElementById('menuBackdrop').classList.remove('show');document.body.style.overflow='';}  
+  function openMenu(){$('menuDrawer').classList.add('open');$('menuBackdrop').classList.add('show');document.body.style.overflow='hidden';}
+function closeMenu(){$('menuDrawer').classList.remove('open');$('menuBackdrop').classList.remove('show');document.body.style.overflow='';}
+function checkVipStatus(){const status=lsGet('vipStatus',null);let isVip=false;if(status&&status.active){if(status.expires&&Date.now()>status.expires){lsSet('vipStatus',{active:false});isVip=false;}else{isVip=true;}}return isVip;}
+  
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
