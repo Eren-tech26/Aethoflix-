@@ -510,14 +510,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <button class="menu-close" onclick="closeMenu()">✕</button>
   </div>
   <div class="menu-body">
-    <div class="menu-item" onclick="closeMenu();openAuth()">
+<div class="menu-item" onclick="closeMenu(); openAuthModal();">
       <span class="menu-ic">👤</span>
       <div>
         <div id="menuAuthLabel">Sign In</div>
         <div class="menu-sub" id="menuAuthSub">Access your account</div>
       </div>
     </div>
-    <div class="menu-item" onclick="closeMenu();openVipGate()">
+<div class="menu-item" onclick="closeMenu(); openRedeemModal();">
       <span class="menu-ic">👑</span>
       <div id="menuVipLabel">VIP · Redeem Code</div>
     </div>
@@ -533,6 +533,33 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
 </div>
 
+  <!-- Auth Modal -->
+<div id="authModalContainer" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:9000;">
+  <div style="background:#0f0f1a;border:1px solid #1e1e2e;border-radius:12px;padding:20px;max-width:400px;width:90%;">
+    <span onclick="closeAuthModal()" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;color:#8888aa;">×</span>
+    <h2 style="margin:0 0 10px 0;">Account</h2>
+    <div style="display:flex;gap:10px;margin-bottom:15px;">
+      <button class="modal-tab active" onclick="switchAuthMode('login', this)" style="flex:1;padding:8px;background:#14141f;border:1px solid #1e1e2e;color:#8888aa;cursor:pointer;border-radius:6px;font-weight:bold;">Sign In</button>
+      <button class="modal-tab" onclick="switchAuthMode('register', this)" style="flex:1;padding:8px;background:#14141f;border:1px solid #1e1e2e;color:#8888aa;cursor:pointer;border-radius:6px;font-weight:bold;">Register</button>
+    </div>
+    <input type="text" id="authModalUser" placeholder="Username" maxlength="20" style="width:100%;padding:10px;margin:8px 0;background:#14141f;border:1px solid #1e1e2e;color:#f0f0f5;border-radius:6px;box-sizing:border-box;">
+    <input type="password" id="authModalPass" placeholder="Password" maxlength="64" style="width:100%;padding:10px;margin:8px 0;background:#14141f;border:1px solid #1e1e2e;color:#f0f0f5;border-radius:6px;box-sizing:border-box;">
+    <div id="authModalError" style="color:#ff6b6b;font-size:0.8rem;margin:8px 0;text-align:center;"></div>
+    <button id="authModalSubmit" onclick="submitAuthModal()" style="width:100%;padding:10px;background:#e50914;color:white;border:none;border-radius:6px;font-weight:bold;cursor:pointer;">Sign In</button>
+  </div>
+</div>
+
+<!-- Redeem Modal -->
+<div id="redeemModalContainer" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:9000;">
+  <div style="background:#0f0f1a;border:1px solid #1e1e2e;border-radius:12px;padding:20px;max-width:400px;width:90%;">
+    <span onclick="closeRedeemModal()" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;color:#8888aa;">×</span>
+    <h2 style="margin:0 0 15px 0;">VIP Access</h2>
+    <p id="redeemStatus" style="text-align:center;margin:10px 0;font-size:0.9rem;">Enter your VIP code below</p>
+    <input type="text" id="redeemInput" placeholder="Enter VIP code" maxlength="50" style="width:100%;padding:10px;margin:8px 0;background:#14141f;border:1px solid #1e1e2e;color:#f0f0f5;border-radius:6px;box-sizing:border-box;text-transform:uppercase;">
+    <div id="redeemModalError" style="color:#ff6b6b;font-size:0.8rem;margin:8px 0;text-align:center;"></div>
+    <button id="redeemSubmit" onclick="submitRedeemModal()" style="width:100%;padding:10px;background:#f5a623;color:black;border:none;border-radius:6px;font-weight:bold;cursor:pointer;">🔓 Unlock VIP</button>
+  </div>
+</div>
   
 <!-- BOTTOM NAV -->
 <div class="bnav">
@@ -2256,6 +2283,14 @@ function timeAgo(dateStr){
   return `${Math.floor(hrs/24)}d ago`;
 }
 
+let authModalMode='login';
+function openAuthModal(){document.getElementById('authModalContainer').style.display='flex';document.getElementById('authModalUser').value='';document.getElementById('authModalPass').value='';document.getElementById('authModalError').textContent='';document.getElementById('authModalUser').focus();}
+function closeAuthModal(){document.getElementById('authModalContainer').style.display='none';}
+function switchAuthMode(m,b){authModalMode=m;document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');b.style.background='#e50914';b.style.borderColor='#e50914';b.style.color='white';document.getElementById('authModalSubmit').textContent=m==='login'?'Sign In':'Create Account';}
+async function submitAuthModal(){const u=document.getElementById('authModalUser').value.trim(),p=document.getElementById('authModalPass').value,e=document.getElementById('authModalError'),b=document.getElementById('authModalSubmit');if(!u||!p){e.textContent='Fill all fields';return;}b.disabled=true;const t=b.textContent;b.textContent='Loading...';try{const r=await fetch(`${API_BASE}/api/auth`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:authModalMode,username:u,password:p})}),d=await r.json();if(d.success){localStorage.setItem('authToken',d.token);currentUsername=d.username;closeAuthModal();showToast?.(`Welcome @${d.username}!`);}else{e.textContent=d.reason||'Error';};}catch{e.textContent='Network error';}b.disabled=false;b.textContent=t;}
+function openRedeemModal(){const s=localStorage.getItem('vipStatus'),d=document.getElementById('redeemStatus'),i=document.getElementById('redeemInput'),b=document.getElementById('redeemSubmit');if(s){d.innerHTML='✅ VIP Active';i.style.display='none';b.style.display='none';}else{d.textContent='Enter your VIP code below';i.style.display='block';b.style.display='block';i.value='';i.focus();}document.getElementById('redeemModalError').textContent='';document.getElementById('redeemModalContainer').style.display='flex';}
+function closeRedeemModal(){document.getElementById('redeemModalContainer').style.display='none';}
+async function submitRedeemModal(){const c=document.getElementById('redeemInput').value.trim().toUpperCase(),e=document.getElementById('redeemModalError'),b=document.getElementById('redeemSubmit');if(!c){e.textContent='Enter code';return;}b.disabled=true;const t=b.textContent;b.textContent='Checking...';try{const r=await fetch(`${API_BASE}/api/redeem`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:c})}),d=await r.json();if(d.success){localStorage.setItem('vipStatus',JSON.stringify({code:c,expires:d.expires}));e.style.color='#22c55e';e.textContent='✅ VIP Unlocked!';setTimeout(()=>{closeRedeemModal();showToast?.('VIP Activated!');},1500);}else{e.textContent=d.reason==='invalid'?'Invalid code':'Code used/expired';};}catch{e.textContent='Network error';}b.disabled=false;b.textContent=t;}
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
