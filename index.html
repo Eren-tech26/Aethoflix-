@@ -34,7 +34,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .nav.solid{background:rgba(8,8,16,.98);border-bottom:1px solid var(--border)}
 .logo{font-size:1.4rem;font-weight:900;letter-spacing:-1px;cursor:pointer;color:var(--accent);text-transform:uppercase}
 .logo span{color:var(--text);font-weight:300}
-.nav-r{display:flex;gap:8px}
+.nav-r{display:flex;gap:6px;align-items:center}
 .nav-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;transition:.2s}
 .nav-icon:active{background:rgba(255,255,255,.14)}
 
@@ -391,7 +391,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .auth-inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:11px 12px;border-radius:8px;font-size:.85rem;font-family:var(--font);outline:none;margin-bottom:10px}
 .auth-inp:focus{border-color:var(--accent)}
 .auth-err{font-size:.72rem;color:var(--accent);min-height:18px;margin-bottom:4px}
-.user-badge{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.62rem;font-weight:800;padding:4px 9px;border-radius:12px;cursor:pointer}
+.user-badge{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:.62rem;font-weight:800;padding:4px 9px;border-radius:12px;cursor:pointer;white-space:nowrap}
   
 /* ─── NOTIFICATION DRAWER ─── */
 .notif-drawer{position:fixed;top:0;right:0;bottom:0;width:min(88vw,340px);background:var(--surface);border-left:1px solid var(--border);z-index:8500;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;overflow:hidden}
@@ -2398,7 +2398,7 @@ function doLogout(){
 
 function updateUserBadge(){
   const badge=$('userBadge'); if(!badge) return;
-  badge.textContent = currentUsername ? `👤 @${currentUsername}` : '👤 Sign In';
+  badge.textContent = currentUsername ? `👤 ${currentUsername}` : '👤';
 }
 
 let currentUsername = null;
