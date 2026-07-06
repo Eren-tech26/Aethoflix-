@@ -2291,7 +2291,9 @@ async function submitAuthModal(){const u=document.getElementById('authModalUser'
 function openRedeemModal(){const s=localStorage.getItem('vipStatus'),d=document.getElementById('redeemStatus'),i=document.getElementById('redeemInput'),b=document.getElementById('redeemSubmit');if(s){d.innerHTML='✅ VIP Active';i.style.display='none';b.style.display='none';}else{d.textContent='Enter your VIP code below';i.style.display='block';b.style.display='block';i.value='';i.focus();}document.getElementById('redeemModalError').textContent='';document.getElementById('redeemModalContainer').style.display='flex';}
 function closeRedeemModal(){document.getElementById('redeemModalContainer').style.display='none';}
 async function submitRedeemModal(){const c=document.getElementById('redeemInput').value.trim().toUpperCase(),e=document.getElementById('redeemModalError'),b=document.getElementById('redeemSubmit');if(!c){e.textContent='Enter code';return;}b.disabled=true;const t=b.textContent;b.textContent='Checking...';try{const r=await fetch(`${API_BASE}/api/redeem`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:c})}),d=await r.json();if(d.success){localStorage.setItem('vipStatus',JSON.stringify({code:c,expires:d.expires}));e.style.color='#22c55e';e.textContent='✅ VIP Unlocked!';setTimeout(()=>{closeRedeemModal();showToast?.('VIP Activated!');},1500);}else{e.textContent=d.reason==='invalid'?'Invalid code':'Code used/expired';};}catch{e.textContent='Network error';}b.disabled=false;b.textContent=t;}
-  
+
+function openMenu(){document.getElementById('menuDrawer').classList.add('open');document.getElementById('menuBackdrop').classList.add('show');document.body.style.overflow='hidden';}
+function closeMenu(){document.getElementById('menuDrawer').classList.remove('open');document.getElementById('menuBackdrop').classList.remove('show');document.body.style.overflow='';}  
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
