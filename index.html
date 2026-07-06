@@ -480,8 +480,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
   <div class="nav-icon" onclick="navSearch()">🔍</div>
   <div class="hamburger-btn" onclick="openMenu()">☰</div>
-</div>>
-  </div>
+</div>
 </nav>
 
 <!-- NOTIFICATION BACKDROP -->
@@ -2382,6 +2381,16 @@ function openAuth(){
   }
   $('authOverlay').classList.add('on');
   document.body.style.overflow='hidden';
+}
+  function openMenu(){
+  $('menuDrawer').classList.add('open');
+  $('menuBackdrop').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  $('menuDrawer').classList.remove('open');
+  $('menuBackdrop').classList.remove('show');
+  document.body.style.overflow = '';
 }
 function closeAuth(){
   $('authOverlay').classList.remove('on');
