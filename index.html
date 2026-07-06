@@ -798,38 +798,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ══════════ VIP GATE ══════════ -->
-<div class="vip-gate" id="vipGate">
-  <div class="vip-box">
-    <button class="vip-close" onclick="closeVipGate()">✕</button>
-    <div class="vip-crown">👑</div>
-    <div class="vip-title" id="vipGateTitle">VIP Access</div>
-    <div class="vip-sub" id="vipGateSub">Enter your VIP code to unlock the built-in player. Codes are provided by the admin.</div>
-    <div id="vipActiveBox" style="display:none;font-size:.74rem;color:var(--sub);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;text-align:left;line-height:1.6"></div>
-    <input class="vip-inp" id="vipInp" placeholder="Enter VIP code" maxlength="12" autocomplete="off" spellcheck="false" oninput="this.value=this.value.toUpperCase()">
-    <button class="vip-btn" id="vipRedeemBtn" onclick="try{redeemVip()}catch(e){alert('REDEEM ERROR: '+e.message)}">🔓 Unlock VIP</button>
-    <div class="vip-err" id="vipErr"></div>
-  </div>
-</div>
-
-<!-- ══════════ auth ══════════ -->  
-  <div class="overlay" id="authOverlay" onclick="if(event.target===this)closeAuth()">
-  <div class="sheet" style="max-height:60vh">
-    <button class="sheet-close" onclick="closeAuth()">✕</button>
-    <div style="padding:24px 20px">
-      <div class="auth-tabs">
-        <button class="auth-tab on" id="authTabLogin" onclick="setAuthTab('login')">Sign In</button>
-        <button class="auth-tab" id="authTabRegister" onclick="setAuthTab('register')">Register</button>
-      </div>
-      <input class="auth-inp" id="authUser" placeholder="Username" maxlength="20" autocomplete="off">
-      <input class="auth-inp" id="authPass" type="password" placeholder="Password" maxlength="64">
-      <div class="auth-err" id="authErr"></div>
-      <button class="watch-btn" id="authSubmitBtn" onclick="submitAuth()">Sign In</button>
-      <button class="wl-btn" id="authLogoutBtn" style="display:none;margin-top:8px" onclick="doLogout()">Log Out</button>
-    </div>
-  </div>
-  </div>
-
 <!-- ══════════ ADMIN PANEL ══════════ -->
 <div class="admin-overlay" id="adminOverlay">
   <!-- PIN gate (shown first) -->
