@@ -966,6 +966,7 @@ setTimeout(() => {
   if (splash) {
     splash.style.transition = 'opacity 0.4s ease';
     splash.style.opacity = '0';
+    splash.style.pointerEvents = 'none';
     setTimeout(() => splash.remove(), 400);
   }
 }, 3200);
