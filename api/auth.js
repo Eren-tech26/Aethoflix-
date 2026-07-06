@@ -19,10 +19,34 @@ async function connectDB(){
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, lowercase: true, trim: true, minlength: 3, maxlength: 20, match: /^[a-z0-9_]+$/ },
+  email: { type: String, unique: true, sparse: true, lowercase: true, trim: true, default: null },
   passwordHash: { type: String, required: true },
   createdAt: { type: Number, default: () => Date.now() }
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+
+// Turns "john.doe+92@example.com" into a clean username candidate "john_doe92"
+function slugifyEmail(email){
+  let base = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  if(base.length < 3) base = ('user_' + base).slice(0, 20);
+  if(base.length > 20) base = base.slice(0, 20);
+  return base;
+}
+
+// Ensures the derived username is unique, appending a short numeric suffix if needed
+async function uniqueUsernameFrom(base){
+  let candidate = base;
+  let i = 0;
+  while(await User.findOne({ username: candidate })){
+    i++;
+    const suffix = String(i);
+    candidate = (base.slice(0, 20 - suffix.length) + suffix);
+  }
+  return candidate;
+}
 
 function makeToken(user){
   return jwt.sign({ uid: user._id, username: user.username }, JWT_SECRET, { expiresIn: '30d' });
@@ -54,20 +78,37 @@ export default async function handler(req, res){
       if(action === 'register'){
         let { username, password } = req.body;
         if(!username || !password) return res.status(400).json({ success: false, reason: 'missing_fields' });
-        username = username.toLowerCase().trim();
+        const identifier = username.toLowerCase().trim();
+        const isEmail = identifier.includes('@');
 
-        if(!/^[a-z0-9_]{3,20}$/.test(username)){
-          return res.status(200).json({ success: false, reason: 'invalid_username' });
-        }
         if(password.length < 6){
           return res.status(200).json({ success: false, reason: 'weak_password' });
         }
 
-        const existing = await User.findOne({ username });
-        if(existing) return res.status(200).json({ success: false, reason: 'taken' });
+        let email = null;
+        let finalUsername;
+
+        if(isEmail){
+          if(!EMAIL_RE.test(identifier)){
+            return res.status(200).json({ success: false, reason: 'invalid_email' });
+          }
+          const existingEmail = await User.findOne({ email: identifier });
+          if(existingEmail) return res.status(200).json({ success: false, reason: 'taken' });
+
+          email = identifier;
+          finalUsername = await uniqueUsernameFrom(slugifyEmail(identifier));
+        }else{
+          if(!USERNAME_RE.test(identifier)){
+            return res.status(200).json({ success: false, reason: 'invalid_username' });
+          }
+          const existingUser = await User.findOne({ username: identifier });
+          if(existingUser) return res.status(200).json({ success: false, reason: 'taken' });
+
+          finalUsername = identifier;
+        }
 
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = await User.create({ username, passwordHash });
+        const user = await User.create({ username: finalUsername, email, passwordHash });
         const token = makeToken(user);
         return res.status(201).json({ success: true, username: user.username, token });
       }
@@ -75,9 +116,9 @@ export default async function handler(req, res){
       if(action === 'login'){
         let { username, password } = req.body;
         if(!username || !password) return res.status(400).json({ success: false, reason: 'missing_fields' });
-        username = username.toLowerCase().trim();
+        const identifier = username.toLowerCase().trim();
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ $or: [{ username: identifier }, { email: identifier }] });
         if(!user) return res.status(200).json({ success: false, reason: 'not_found' });
 
         const match = await bcrypt.compare(password, user.passwordHash);
