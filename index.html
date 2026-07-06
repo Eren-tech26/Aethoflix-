@@ -38,6 +38,22 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .nav-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;transition:.2s}
 .nav-icon:active{background:rgba(255,255,255,.14)}
 
+.menu-drawer{position:fixed;top:0;right:0;bottom:0;width:min(80vw,300px);background:var(--surface);border-left:1px solid var(--border);z-index:8500;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;overflow:hidden}
+.menu-drawer.open{transform:translateX(0)}
+.menu-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.menu-title{font-size:.9rem;font-weight:900}
+.menu-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}
+.menu-body{flex:1;overflow-y:auto;padding:8px 0}
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04)}
+.menu-item:active{background:rgba(255,255,255,.03)}
+.menu-ic{font-size:1.2rem;width:24px;text-align:center;flex-shrink:0}
+.menu-sub{font-size:.6rem;color:var(--sub);font-weight:600;margin-top:1px}
+.menu-divider{height:8px;background:var(--card)}
+.menu-backdrop{position:fixed;inset:0;z-index:8400;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s}
+.menu-backdrop.show{opacity:1;pointer-events:auto}
+.hamburger-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;flex-shrink:0}
+.hamburger-btn:active{background:rgba(255,255,255,.14)}
+  
 /* ─── BOTTOM NAV ─── */
 .bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bnav);background:rgba(8,8,16,.98);border-top:1px solid var(--border);display:flex;z-index:3000;padding-bottom:env(safe-area-inset-bottom,0)}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:.5rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:.15s}
@@ -457,16 +473,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <!-- TOP NAV -->
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
-  <div class="nav-r">
-  <div class="vip-badge" id="vipBadge" onclick="openVipGate()">👑 VIP</div>
-    <div class="nav-icon" onclick="openWishlist()" title="My List">🔖</div>
-    <div class="user-badge" id="userBadge" onclick="openAuth()">👤 Sign In</div>
-    <div class="notif-btn" onclick="openNotif()">
-      🔔
-      <div class="notif-count" id="notifCount"></div>
-    </div>
-    <div class="nav-icon" onclick="navSearch()">🔍</div>
-    </div>
+<div class="nav-r">
+  <div class="notif-btn" onclick="openNotif()">
+    🔔
+    <div class="notif-count" id="notifCount"></div>
+  </div>
+  <div class="nav-icon" onclick="navSearch()">🔍</div>
+  <div class="hamburger-btn" onclick="openMenu()">☰</div>
+</div>>
   </div>
 </nav>
 
@@ -490,7 +504,37 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   </div>
   <div class="notif-body" id="notifBody"></div>
 </div>
+<div class="menu-backdrop" id="menuBackdrop" onclick="closeMenu()"></div>
+<div class="menu-drawer" id="menuDrawer">
+  <div class="menu-hdr">
+    <div class="menu-title">Menu</div>
+    <button class="menu-close" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="menu-body">
+    <div class="menu-item" onclick="closeMenu();openAuth()">
+      <span class="menu-ic">👤</span>
+      <div>
+        <div id="menuAuthLabel">Sign In</div>
+        <div class="menu-sub" id="menuAuthSub">Access your account</div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="closeMenu();openVipGate()">
+      <span class="menu-ic">👑</span>
+      <div id="menuVipLabel">VIP · Redeem Code</div>
+    </div>
+    <div class="menu-item" onclick="closeMenu();openWishlist()">
+      <span class="menu-ic">🔖</span>
+      <div>My List</div>
+    </div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" onclick="window.open('https://t.me/aethosupport','_blank')">
+      <span class="menu-ic">💬</span>
+      <div>Help & Support</div>
+    </div>
+  </div>
+</div>
 
+  
 <!-- BOTTOM NAV -->
 <div class="bnav">
   <button class="bn on" id="bn-home" onclick="goHome()"><span class="bn-ic">🏠</span>Home</button>
@@ -1891,25 +1935,18 @@ function clearBroadcast(){
 
 /* ══════════ VIP SYSTEM ══════════ */
 function checkVipStatus(){
-  const badge=$('vipBadge');
-  if(!badge) return false;
   const status=lsGet('vipStatus',null);
+  let isVip=false;
   if(status && status.active){
     if(status.expires && Date.now()>status.expires){
       lsSet('vipStatus',{active:false});
-      badge.textContent='👑 Redeem';
-      badge.classList.remove('vip-on');
-      return false;
+      isVip=false;
+    }else{
+      isVip=true;
     }
-    badge.textContent='👑 VIP';
-    badge.classList.add('vip-on');
-    return true;
   }
-  badge.textContent='👑 Redeem';
-  badge.classList.remove('vip-on');
-  return false;
+  return isVip;
 }
-
 function openVipGate(){
   const gate=$('vipGate');
   if(!gate){ alert('VIP gate element missing from page'); return; }
@@ -2397,8 +2434,7 @@ function doLogout(){
 }
 
 function updateUserBadge(){
-  const badge=$('userBadge'); if(!badge) return;
-  badge.textContent = currentUsername ? `👤 ${currentUsername}` : '👤';
+  // Nav badge removed — will be replaced by the ☰ menu drawer labels (next step)
 }
 
 let currentUsername = null;
