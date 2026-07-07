@@ -121,6 +121,7 @@ window.submitArAuth = async function(){
       window.showToast?.(`Welcome @${data.username}!`);
     } else {
       const msgs = { taken:'Username taken', not_found:'Account not found', wrong_password:'Wrong password', invalid_username:'Invalid username', weak_password:'Password too weak', missing_fields:'Fill all fields' };
+errDiv.textContent = msgs[data.reason] || data.error || 'Something went wrong';
       errDiv.textContent = msgs[data.reason] || 'Error: ' + data.reason;
     }
   } catch(e){
