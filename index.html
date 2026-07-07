@@ -458,18 +458,6 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
-<div id="splash" style="position:fixed;inset:0;background:#000;z-index:99999;display:flex;justify-content:center;align-items:center;font-family:Arial,Helvetica,sans-serif">
-  <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,0,21,.18),transparent 70%);animation:ambient 2.5s forwards"></div>
-  <div style="position:absolute;width:22px;height:22px;border-radius:50%;border:3px solid #ff0015;box-shadow:0 0 15px rgba(255,0,21,.9),0 0 35px rgba(255,0,21,.5);animation:portalGrow 2s cubic-bezier(.22,1,.36,1) forwards,portalCollapse .35s cubic-bezier(.22,1,.36,1) forwards 2s"></div>
-  <div id="splashLogo" style="position:relative;display:flex;align-items:center;font-size:34px;font-weight:900;letter-spacing:.5px;overflow:hidden">
-    <span style="color:#ff0015;opacity:0;transform:translateX(-40px);text-shadow:0 0 10px rgba(255,0,21,.5);animation:leftIn .45s cubic-bezier(.22,1,.36,1) forwards 2s">AETH</span>
-    <span style="color:#ff0015;opacity:0;transform:scale(.7);text-shadow:0 0 10px rgba(255,0,21,.5);animation:oIn .25s cubic-bezier(.22,1,.36,1) forwards 2s">O</span>
-    <span style="color:#fff;opacity:0;transform:translateX(40px);animation:rightIn .45s cubic-bezier(.22,1,.36,1) forwards 2s">FLIX</span>
-  </div>
-  <div style="position:absolute;left:50%;top:calc(50% + 38px);transform:translateX(-50%);color:rgba(255,255,255,.55);font-size:10px;letter-spacing:4px;white-space:nowrap;opacity:0;animation:taglineIn .6s ease forwards 2.5s">MOVIES • SERIES • ANIME</div>
-</div>
-
 <!-- TOP NAV -->
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
@@ -928,17 +916,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <script>
 
 const API_BASE = 'https://aethoflix.vercel.app';
-  
-setTimeout(() => {
-  const splash = document.getElementById('splash');
-  if (splash) {
-    splash.style.transition = 'opacity 0.4s ease';
-    splash.style.opacity = '0';
-    splash.style.pointerEvents = 'none';
-    setTimeout(() => splash.remove(), 400);
-  }
-}, 3200);
-  
+    
 /* ══════════ CONFIG ══════════ */
 const TMDB   = 'fca1c3fa675f74cf4aa8d24b72dd4807';
 const IMG    = 'https://image.tmdb.org/t/p/';
