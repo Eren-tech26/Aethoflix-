@@ -2125,7 +2125,16 @@ function closeTrailer(){
   trailerData = null;
 }
 
-
+function openMenu(){
+  $('menuDrawer').classList.add('open');
+  $('menuBackdrop').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeMenu(){
+  $('menuDrawer').classList.remove('open');
+  $('menuBackdrop').classList.remove('show');
+  document.body.style.overflow='';
+}
     /* ══════════ COMMENTS ══════════ */
 
 async function loadComments(movieId){
