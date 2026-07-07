@@ -114,7 +114,7 @@ window.submitArAuth = async function(){
     });
     const data = await res.json();
     if(data.success){
-      localStorage.setItem('authToken', data.token);
+      _lsSet('authToken', data.token);
       window.currentUsername = data.username;
       window.closeAuthRedeem();
       window.updateUserBadge?.();
