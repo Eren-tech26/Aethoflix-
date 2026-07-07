@@ -510,14 +510,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <button class="menu-close" onclick="closeMenu()">✕</button>
   </div>
   <div class="menu-body">
-    <div class="menu-item" onclick="closeMenu();openAuth()">
+<div class="menu-item" onclick="closeMenu(); setTimeout(function() { openAuth(); }, 200);">
       <span class="menu-ic">👤</span>
       <div>
         <div id="menuAuthLabel">Sign In</div>
         <div class="menu-sub" id="menuAuthSub">Access your account</div>
       </div>
     </div>
-    <div class="menu-item" onclick="closeMenu();openVipGate()">
+    <div class="menu-item" onclick="closeMenu(); setTimeout(function() { openVipGate(); }, 200);">
       <span class="menu-ic">👑</span>
       <div id="menuVipLabel">VIP · Redeem Code</div>
     </div>
