@@ -2256,7 +2256,6 @@ function timeAgo(dateStr){
   return `${Math.floor(hrs/24)}d ago`;
 }
 
-<script src="auth.js"></script>
   
 /* ══════════ BOOT ══════════ */
 (async function boot(){
@@ -2264,8 +2263,10 @@ function timeAgo(dateStr){
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
   logPageView();
-  checkAnnouncement();
-  initHome();
+checkVipStatus();
+checkAuthStatus();
+checkAnnouncement();
+initHome();
   // Pre-fetch notif data in background + update badge
   Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
   if(id&&type) setTimeout(()=>openPlayer(id,type,s,e),200);
@@ -2278,6 +2279,6 @@ window.addEventListener('popstate',()=>{
   else{ $('vidFrame').src=''; document.title='AethoFlix'; goHome(); $('nav').style.display=''; }
 });
 
-</script>
+<script src="auth.js"></script>
 </body>
 </html>
