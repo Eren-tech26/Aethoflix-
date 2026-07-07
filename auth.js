@@ -12,14 +12,16 @@ const html = `
     <button class="sheet-close" onclick="closeAuthRedeem()">✕</button>
     <div style="padding:24px 20px">
       <div class="auth-tabs">
-        <button class="auth-tab on" id="arTabLogin" onclick="setArTab('login')">Sign In</button>
-        <button class="auth-tab" id="arTabRegister" onclick="setArTab('register')">Register</button>
-        <button class="auth-tab" id="arTabRedeem" onclick="setArTab('redeem')">👑 VIP</button>
+  <button class="auth-tab" id="arTabLogin" onclick="setArTab('login')">Sign In</button>
+  <button class="auth-tab on" id="arTabRegister" onclick="setArTab('register')">Sign Up</button>
+  <button class="auth-tab" id="arTabRedeem" onclick="setArTab('redeem')">👑 VIP</button>
+</div>
       </div>
       <div id="arAuthPanel">
         <input class="auth-inp" id="arUser" placeholder="Username" maxlength="20" autocomplete="off">
         <input class="auth-inp" id="arPass" type="password" placeholder="Password" maxlength="64">
         <div class="auth-err" id="arAuthErr"></div>
+        <p style="text-align:center;font-size:.72rem;color:var(--sub);margin-top:10px">Already have an account? <span style="color:var(--accent);cursor:pointer" onclick="setArTab('login')">Sign In</span></p>
         <button class="watch-btn" id="arAuthBtn" onclick="submitArAuth()">Sign In</button>
         <button class="wl-btn" id="arLogoutBtn" style="display:none;margin-top:8px" onclick="doArLogout()">Log Out</button>
       </div>
