@@ -984,7 +984,7 @@ function startWatchSession(id, type, title, season, ep){
   fetch(`${API_BASE}/api/analytics`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ action:'watch-start', sessionId: watchSessionId, movieId: id, type, title, season, episode: ep })
+body: JSON.stringify({ action:'watch-start', sessionId: watchSessionId, movieId: id, type, title, season, episode: ep, username:(lsGet('user',null)?.username||lsGet('user',null)?.name||'Guest'), email:lsGet('user',null)?.email||null })
   }).catch(()=>{});
   clearInterval(watchHeartbeatTimer);
   watchHeartbeatTimer = setInterval(()=>{
@@ -1294,7 +1294,7 @@ async function openDetail(id,type){
   $('detBot').textContent='@'+bot;
   $('watchBotLbl').textContent='@'+bot;
   if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
-  const isVip=false; // Will be updated with new auth system
+  const isVip=getVipStatus();
   if(isVip){
     $('tgBox').style.display='none';
     $('watchBtn').innerHTML='▶ Watch Now';
@@ -1573,7 +1573,8 @@ async function loadReco(id,tmdbType){
 /* ══════════ SAFE PLAY — checks VIP before opening player ══════════ */
 // Non-VIP users are sent to the bot via the detail sheet instead of directly to player
 function safePlay(id, type, season, ep){
-  openDetail(id, type);
+  if(getVipStatus()) openPlayer(id, type, season||1, ep||1);
+  else openDetail(id, type);
 }
 
 /* Close player */
@@ -1896,23 +1897,30 @@ function toolWipeVip(){
   showToast('💣 All VIP data wiped');
 }
 
-function saveBroadcast(){
+async function saveBroadcast(){
   const msg=$('bcInp').value.trim();
+  try{
+    await fetch(`${API_BASE}/api/broadcast`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+  }catch(e){ console.error(e); }
+  cachedBroadcast=msg;
   lsSet('broadcast',msg);
-  lsSet('annDismissed',''); // reset dismiss so banner shows again
-  nData.shows=[]; nData.movies=[]; // reset cache so announce shows fresh
+  lsSet('annDismissed','');
+  nData.shows=[]; nData.movies=[];
   checkAnnouncement();
   updateNotifBadge();
   showToast('📢 Announcement saved & live');
 }
-function clearBroadcast(){
+async function clearBroadcast(){
+  try{
+    await fetch(`${API_BASE}/api/broadcast`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:''})});
+  }catch{}
+  cachedBroadcast='';
   lsSet('broadcast','');
   $('bcInp').value='';
   checkAnnouncement();
   updateNotifBadge();
   showToast('🗑️ Announcement cleared');
 }
-
 
 /* ══════════ NOTIFICATIONS ══════════ */
 let nTab='all', nData={ movies:[], shows:[], announce:[] };
@@ -1935,6 +1943,7 @@ function switchNTab(tab, el){
 }
 
 async function loadNotifTab(tab){
+  await refreshBroadcast();
   const body=$('notifBody');
   body.innerHTML=`<div class="notif-load">${Array(5).fill(`<div class="notif-sk-row"><div class="sk notif-sk-img"></div><div class="notif-sk-lines"><div class="sk notif-sk-line"></div><div class="sk notif-sk-line"></div><div class="sk notif-sk-line short"></div></div></div>`).join('')}</div>`;
 
@@ -2000,7 +2009,7 @@ function renderAnnounce(read){
 }
 
 function buildAnnounceItems(){
-  const msg=lsGet('broadcast','');
+  const msg=cachedBroadcast||lsGet('broadcast','');
   if(!msg) return [];
   return [{id:'ann_'+msg.slice(0,10),type:'announce',tag:'ANNOUNCEMENT',title:'Admin Message',overview:msg,poster:null,date:null,category:'announce'}];
 }
@@ -2067,7 +2076,7 @@ async function updateNotifBadge(){
 
 /* ══════════ ANNOUNCEMENT BANNER ══════════ */
 function checkAnnouncement(){
-  const msg=lsGet('broadcast','');
+  const msg=cachedBroadcast||lsGet('broadcast','');
   if(!msg){ $('annBanner').classList.remove('show'); return; }
   const dismissed=lsGet('annDismissed','');
   if(dismissed===msg){ $('annBanner').classList.remove('show'); return; }
@@ -2283,6 +2292,7 @@ function timeAgo(dateStr){
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
   logPageView();
+  await refreshBroadcast();
   checkAnnouncement();
   initHome();
   Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
