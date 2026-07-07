@@ -1,6 +1,7 @@
 {
   "name": "aethoflix-backend",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "mongoose": "^8.0.0",
     "bcryptjs": "^2.4.3",
