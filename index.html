@@ -998,7 +998,7 @@ function startWatchSession(id, type, title, season, ep){
   fetch(`${API_BASE}/api/analytics`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-body: JSON.stringify({ action:'watch-start', sessionId: watchSessionId, movieId: id, type, title, season, episode: ep, username:(lsGet('user',null)?.username||lsGet('user',null)?.name||'Guest'), email:lsGet('user',null)?.email||null })
+body: JSON.stringify({ action:'watch-start', sessionId: watchSessionId, movieId: id, type, title, season, episode: ep, username: window.currentUsername||'Guest', email: '' })
   }).catch(()=>{});
   clearInterval(watchHeartbeatTimer);
   watchHeartbeatTimer = setInterval(()=>{
