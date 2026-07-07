@@ -72,12 +72,12 @@ export default async function handler(req, res){
       }
 
       if(action === 'watch-start'){
-        const { sessionId, movieId, type, title, season, episode } = req.body;
+        const { sessionId, movieId, type, title, season, episode, username, email } = req.body;
         if(!sessionId) return res.status(400).json({ error: 'sessionId required' });
 
         await WatchSession.findOneAndUpdate(
           { sessionId },
-          { sessionId, movieId, type, title, season, episode, startedAt: Date.now(), lastSeen: Date.now() },
+          { sessionId, movieId, type, title, season, episode, username: username||'Guest', email: email||'', startedAt: Date.now(), lastSeen: Date.now() },
           { upsert: true }
         );
         await WatchLog.create({ movieId, type, title });
