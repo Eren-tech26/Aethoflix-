@@ -31,6 +31,8 @@ const watchSessionSchema = new mongoose.Schema({
   title: String,
   season: Number,
   episode: Number,
+  username: String,
+  email: String,
   startedAt: { type: Number, default: () => Date.now() },
   lastSeen: { type: Number, default: () => Date.now() }
 });
