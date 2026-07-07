@@ -232,9 +232,8 @@ window.checkAuthStatus = async function(){
   } catch{}
   window.updateUserBadge();
 };
+
 window.checkVipStatus();
 window.checkAuthStatus();
 
 })();
-})();
-
