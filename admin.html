@@ -273,9 +273,13 @@ function renderWatching(sessions){
   $('watchingList').innerHTML = sessions.map(s=>{
     const epLabel = s.type!=='movie' ? ` · S${s.season||1} E${s.episode||1}` : '';
     const mins = Math.floor((Date.now()-s.startedAt)/60000);
+    const userBadge = (s.username && s.username!=='Guest')
+      ? `<span style="display:inline-block;font-size:.56rem;font-weight:900;background:rgba(229,9,20,.12);color:var(--accent);border:1px solid rgba(229,9,20,.25);padding:2px 8px;border-radius:8px;margin-bottom:3px">${escapeHtml(s.username)}</span>`
+      : `<span style="display:inline-block;font-size:.56rem;font-weight:700;color:var(--muted);margin-bottom:3px">Guest</span>`;
     return `<div class="wt-item">
       <div class="wt-ic">${s.type==='movie'?'🎬':s.type==='anime'?'🏮':'📺'}</div>
       <div class="wt-info">
+        <div>${userBadge}</div>
         <div class="wt-title">${escapeHtml(s.title||'Untitled')}${epLabel}</div>
         <div class="wt-sub">Watching for ${mins < 1 ? 'just now' : mins+'m'}</div>
       </div>
