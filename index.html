@@ -2292,7 +2292,7 @@ function timeAgo(dateStr){
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
   logPageView();
-  await refreshBroadcast();
+  refreshBroadcast(); // no await — runs in background
   checkAnnouncement();
   initHome();
   Promise.all([fetchMovieNotifs(),fetchShowNotifs()]).then(updateNotifBadge);
