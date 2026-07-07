@@ -457,7 +457,13 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 </style>
 </head>
 <body>
-
+<script>
+if (!sessionStorage.getItem('introShown')) {
+  sessionStorage.setItem('introShown', '1');
+  window.location.href = 'intro.html';
+}
+</script>
+  
 <!-- TOP NAV -->
 <nav class="nav" id="nav">
   <div class="logo" id="logoBtn" onclick="logoTap()">Aetho<span>flix</span></div>
