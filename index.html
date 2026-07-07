@@ -952,6 +952,21 @@ let srchFilter='all', lastQ='', srchTmr=null;
 let pl = { id:null, type:null, season:1, ep:1, episodes:[], seasons:[], source:0, nextEp:null };
 let curDetail=null;
 let ovOpen = false;
+let cachedBroadcast = '';
+async function refreshBroadcast(){
+  try{
+    const res=await fetch(`${API_BASE}/api/broadcast`);
+    if(!res.ok) return;
+    const data=await res.json();
+    cachedBroadcast=data.message||'';
+    lsSet('broadcast',cachedBroadcast);
+  }catch{ cachedBroadcast=lsGet('broadcast',''); }
+}
+function getVipStatus(){
+  if(typeof window.isVipUser==='function') return window.isVipUser();
+  const u=lsGet('user',null);
+  return !!(u&&u.isVip)||!!lsGet('vipStatus',false);
+}  
 
 /* ══════════ UTILS ══════════ */
 const $  = id => document.getElementById(id);
