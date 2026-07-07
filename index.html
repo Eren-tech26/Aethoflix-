@@ -510,16 +510,16 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <button class="menu-close" onclick="closeMenu()">✕</button>
   </div>
   <div class="menu-body">
-<div class="menu-item" onclick="closeMenu(); setTimeout(function() { openAuth(); }, 200);">
+<div class="menu-item" onclick="closeMenu(); openAuthRedeem('login');">
       <span class="menu-ic">👤</span>
       <div>
         <div id="menuAuthLabel">Sign In</div>
-        <div class="menu-sub" id="menuAuthSub">Access your account</div>
+        <div class="menu-sub">Access your account</div>
       </div>
     </div>
-    <div class="menu-item" onclick="closeMenu(); setTimeout(function() { openVipGate(); }, 200);">
+    <div class="menu-item" onclick="closeMenu(); openAuthRedeem('redeem');">
       <span class="menu-ic">👑</span>
-      <div id="menuVipLabel">VIP · Redeem Code</div>
+      <div>VIP · Redeem Code</div>
     </div>
     <div class="menu-item" onclick="closeMenu();openWishlist()">
       <span class="menu-ic">🔖</span>
@@ -1283,7 +1283,7 @@ async function openDetail(id,type){
   $('detBot').textContent='@'+bot;
   $('watchBotLbl').textContent='@'+bot;
   if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
-  const isVip=checkVipStatus();
+  const isVip=false; // Will be updated with new auth system
   if(isVip){
     $('tgBox').style.display='none';
     $('watchBtn').innerHTML='▶ Watch Now';
@@ -2263,8 +2263,6 @@ function timeAgo(dateStr){
   const id=p.get('id'), type=p.get('type');
   const s=parseInt(p.get('s'))||1, e=parseInt(p.get('e'))||1;
   logPageView();
-  checkVipStatus();
-  checkAuthStatus();
   checkAnnouncement();
   initHome();
   // Pre-fetch notif data in background + update badge
