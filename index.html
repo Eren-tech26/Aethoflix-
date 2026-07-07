@@ -1977,34 +1977,36 @@ function openVipGate(){
 function closeVipGate(){ $('vipGate').classList.remove('on'); document.body.style.overflow=''; }
 
 async function redeemVip(){
-  const entered=$('vipInp').value.trim().toUpperCase();
-  if(!entered){ $('vipErr').textContent='Please enter a code.'; return; }
-  $('vipErr').textContent='Checking…';
+  const code=$('vipInp').value.trim().toUpperCase();
+  const errDiv=$('vipErr');
+  errDiv.textContent='';
+  if(!code){ errDiv.textContent='Enter a code'; return; }
+  
+  const btn=$('vipRedeemBtn');
+  btn.disabled=true;
+  const orig=btn.textContent;
+  btn.textContent='Checking...';
+  
   try{
-    const res=await fetch(`${API_BASE}/api/vip`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'redeem',code:entered})
-    });
+    const res=await fetch('https://aethoflix.vercel.app/api/vip?check='+encodeURIComponent(code));
     const data=await res.json();
-    if(!data.success){
-      const reasons={
-        not_found:'❌ Invalid code. Check with your admin.',
-        revoked:'❌ This code has been revoked.',
-        used:'❌ This code has already been used.',
-        expired:'❌ This code has expired.'
-      };
-      $('vipErr').textContent=reasons[data.reason]||'❌ Invalid code.';
-      return;
+    
+    if(data.valid){
+      const status={code:data.code,active:true,expires:data.expires,since:Date.now(),type:data.type};
+      localStorage.setItem('vipStatus',JSON.stringify(status));
+      errDiv.style.color='#22c55e';
+      errDiv.textContent='✅ VIP Activated!';
+      setTimeout(()=>{ closeVipGate(); showToast?.('VIP Unlocked!'); },1500);
+    }else{
+      const msgs={not_found:'Invalid code',revoked:'Code revoked',used:'Code already used',expired:'Code expired'};
+      errDiv.textContent=msgs[data.reason]||'Error: '+data.reason;
     }
-    lsSet('vipStatus',{active:true,code:data.code,expires:data.expires,since:Date.now()});
-    closeVipGate();
-    checkVipStatus();
-    showToast('👑 VIP unlocked! Welcome.',3000);
-  }catch(err){
-    console.error('Redeem error:',err);
-    $('vipErr').textContent='❌ Could not reach server. Try again.';
+  }catch(e){
+    errDiv.textContent='Network error';
   }
-}
+  btn.disabled=false;
+  btn.textContent=orig;
+      }
 
 /* ══════════ NOTIFICATIONS ══════════ */
 let nTab='all', nData={ movies:[], shows:[], announce:[] };
@@ -2409,30 +2411,37 @@ function setAuthTab(mode){
 async function submitAuth(){
   const username=$('authUser').value.trim();
   const password=$('authPass').value;
-  if(!username||!password){ $('authErr').textContent='Fill in both fields.'; return; }
-
-  $('authSubmitBtn').textContent='Please wait…';
+  const errDiv=$('authErr');
+  errDiv.textContent='';
+  if(!username||!password){ errDiv.textContent='Fill all fields'; return; }
+  
+  const btn=$('authSubmitBtn');
+  btn.disabled=true;
+  const orig=btn.textContent;
+  btn.textContent='Loading...';
+  
   try{
-    const res=await fetch(`${API_BASE}/api/auth`,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:authMode, username, password})
+    const res=await fetch('https://aethoflix.vercel.app/api/auth',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:authMode,username,password})
     });
     const data=await res.json();
-    if(!data.success){
-      const msgs={taken:'Username already taken.',not_found:'No account with that username.',wrong_password:'Wrong password.',invalid_username:'Username must be 3-20 letters/numbers/underscore.',weak_password:'Password must be 6+ characters.',missing_fields:'Fill in both fields.'};
-      $('authErr').textContent=msgs[data.reason]||'Something went wrong.';
-      $('authSubmitBtn').textContent=authMode==='login'?'Sign In':'Create Account';
-      return;
+    
+    if(data.success){
+      localStorage.setItem('authToken',data.token);
+      currentUsername=data.username;
+      closeAuth();
+      showToast?.(`Welcome @${data.username}!`);
+    }else{
+      const msgs={taken:'Username taken',not_found:'Account not found',wrong_password:'Wrong password',invalid_username:'Invalid username',weak_password:'Password too weak',missing_fields:'Fill all fields'};
+      errDiv.textContent=msgs[data.reason]||'Error: '+data.reason;
     }
-    lsSet('authToken', data.token);
-    currentUsername = data.username;
-    closeAuth();
-    updateUserBadge();
-    showToast(`👋 Welcome, @${data.username}`);
-  }catch(err){
-    $('authErr').textContent='Could not reach server.';
-    $('authSubmitBtn').textContent=authMode==='login'?'Sign In':'Create Account';
+  }catch(e){
+    errDiv.textContent='Network error';
   }
+  btn.disabled=false;
+  btn.textContent=orig;
 }
 
 function doLogout(){
