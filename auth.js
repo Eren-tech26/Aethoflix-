@@ -1,12 +1,6 @@
 /* ══════════ AUTH + REDEEM — auth.js ══════════ */
-/* Drop this one line into index.html, inside <body>:
-   <script src="auth.js"></script>
-*/
-
 (function(){
 
-/* ── Inject modal HTML ── */
-const html = `
 const html = `
 <div class="overlay" id="authRedeemOverlay" onclick="if(event.target===this)closeAuthRedeem()">
   <div class="sheet" style="max-height:75vh">
@@ -16,6 +10,7 @@ const html = `
         <button class="auth-tab" id="arTabLogin" onclick="setArTab('login')">Sign In</button>
         <button class="auth-tab on" id="arTabRegister" onclick="setArTab('register')">Sign Up</button>
         <button class="auth-tab" id="arTabRedeem" onclick="setArTab('redeem')">👑 VIP</button>
+      </div>
       <div id="arAuthPanel">
         <input class="auth-inp" id="arUser" placeholder="Username" maxlength="20" autocomplete="off">
         <input class="auth-inp" id="arPass" type="password" placeholder="Password" maxlength="64">
@@ -36,19 +31,16 @@ const html = `
 
 document.body.insertAdjacentHTML('beforeend', html);
 
-/* ── State ── */
-let arMode = 'login';
+let arMode = 'register';
 window.currentUsername = window.currentUsername || null;
 
-/* ── Helpers (reuse index.html's if present) ── */
 const _$ = id => document.getElementById(id);
 const _lsGet = (k, def=null) => { try{ const v=localStorage.getItem('afx_'+k); return v===null?def:JSON.parse(v); }catch{ return def; } };
 const _lsSet = (k, v) => { try{ localStorage.setItem('afx_'+k, JSON.stringify(v)); }catch{} };
 const API = window.API_BASE || 'https://aethoflix.vercel.app';
 
-/* ── Open / Close ── */
 window.openAuthRedeem = function(mode){
-  arMode = mode || 'login';
+  arMode = mode || 'register';
   _$('authRedeemOverlay').classList.add('on');
   document.body.style.overflow = 'hidden';
   setArTab(arMode);
@@ -58,11 +50,9 @@ window.closeAuthRedeem = function(){
   document.body.style.overflow = '';
 };
 
-/* Also keep old names working */
 window.openAuth = () => window.openAuthRedeem('login');
 window.openVipGate = () => window.openAuthRedeem('redeem');
 
-/* ── Tabs ── */
 window.setArTab = function(mode){
   arMode = mode;
   _$('arTabLogin').classList.toggle('on', mode==='login');
@@ -77,7 +67,6 @@ window.setArTab = function(mode){
     _$('arAuthPanel').style.display = 'block';
     _$('arRedeemPanel').style.display = 'none';
     _$('arAuthErr').textContent = '';
-
     const token = _lsGet('authToken', null);
     if(token && window.currentUsername){
       _$('arUser').style.display = 'none';
@@ -88,25 +77,22 @@ window.setArTab = function(mode){
       _$('arUser').style.display = '';
       _$('arPass').style.display = '';
       _$('arAuthBtn').style.display = '';
-      _$('arAuthBtn').textContent = mode==='login' ? 'Sign In' : 'Create Account';
+      _$('arAuthBtn').textContent = mode==='login' ? 'Sign In' : 'Sign Up';
       _$('arLogoutBtn').style.display = 'none';
     }
   }
 };
 
-/* ── Login / Register ── */
 window.submitArAuth = async function(){
   const username = _$('arUser').value.trim();
   const password = _$('arPass').value;
   const errDiv = _$('arAuthErr');
   errDiv.textContent = '';
   if(!username || !password){ errDiv.textContent = 'Fill all fields'; return; }
-
   const btn = _$('arAuthBtn');
   btn.disabled = true;
   const orig = btn.textContent;
   btn.textContent = 'Loading...';
-
   try{
     const res = await fetch(`${API}/api/auth`, {
       method: 'POST',
@@ -121,8 +107,8 @@ window.submitArAuth = async function(){
       window.updateUserBadge?.();
       window.showToast?.(`Welcome @${data.username}!`);
     } else {
-      const msgs = { taken:'Username taken', not_found:'Account not found', wrong_password:'Wrong password', invalid_username:'Invalid username', weak_password:'Password too weak', missing_fields:'Fill all fields' };
-errDiv.textContent = msgs[data.reason] || data.error || 'Something went wrong';
+      const msgs = { taken:'Username taken', not_found:'Account not found', wrong_password:'Wrong password', invalid_username:'Username: 3-20 chars, lowercase letters/numbers/_ only', weak_password:'Password must be at least 6 characters', missing_fields:'Fill all fields' };
+      errDiv.textContent = msgs[data.reason] || data.error || 'Something went wrong';
     }
   } catch(e){
     errDiv.textContent = 'Network error';
@@ -131,7 +117,6 @@ errDiv.textContent = msgs[data.reason] || data.error || 'Something went wrong';
   btn.textContent = orig;
 };
 
-/* ── Logout ── */
 window.doArLogout = function(){
   _lsSet('authToken', null);
   window.currentUsername = null;
@@ -140,7 +125,6 @@ window.doArLogout = function(){
   window.showToast?.('Logged out');
 };
 
-/* ── Redeem panel ── */
 function loadArRedeemPanel(){
   const status = _lsGet('vipStatus', null);
   const isVip = status && status.active && (!status.expires || Date.now() < status.expires);
@@ -148,11 +132,8 @@ function loadArRedeemPanel(){
   const codeInp = _$('arCode');
   const redeemBtn = _$('arRedeemBtn');
   _$('arRedeemErr').textContent = '';
-
   if(isVip){
-    const expStr = status.expires
-      ? new Date(status.expires).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-      : 'Never';
+    const expStr = status.expires ? new Date(status.expires).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Never';
     activeBox.innerHTML = `<b style="color:var(--text)">👑 VIP Active</b><br><b>Code:</b> ${status.code}<br><b>Expires:</b> ${expStr}`;
     activeBox.style.display = 'block';
     codeInp.style.display = 'none';
@@ -171,12 +152,10 @@ window.submitArRedeem = async function(){
   const errDiv = _$('arRedeemErr');
   errDiv.textContent = '';
   if(!code){ errDiv.textContent = 'Enter a code'; return; }
-
   const btn = _$('arRedeemBtn');
   btn.disabled = true;
   const orig = btn.textContent;
   btn.textContent = 'Checking...';
-
   try{
     const res = await fetch(`${API}/api/vip?check=` + encodeURIComponent(code));
     const data = await res.json();
@@ -185,13 +164,10 @@ window.submitArRedeem = async function(){
       localStorage.setItem('afx_vipStatus', JSON.stringify(status));
       errDiv.style.color = '#22c55e';
       errDiv.textContent = '✅ VIP Activated!';
-      setTimeout(() => {
-        window.closeAuthRedeem();
-        window.showToast?.('👑 VIP Unlocked!');
-      }, 1500);
+      setTimeout(() => { window.closeAuthRedeem(); window.showToast?.('👑 VIP Unlocked!'); }, 1500);
     } else {
       const msgs = { not_found:'Invalid code', revoked:'Code revoked', used:'Code already used', expired:'Code expired' };
-      errDiv.textContent = msgs[data.reason] || 'Error: ' + data.reason;
+      errDiv.textContent = msgs[data.reason] || 'Something went wrong';
     }
   } catch(e){
     errDiv.textContent = 'Network error';
@@ -200,28 +176,22 @@ window.submitArRedeem = async function(){
   btn.textContent = orig;
 };
 
-/* ── VIP status check ── */
 window.checkVipStatus = function(){
   const status = _lsGet('vipStatus', null);
   let isVip = false;
   if(status && status.active){
-    if(status.expires && Date.now() > status.expires){
-      _lsSet('vipStatus', { active: false });
-    } else {
-      isVip = true;
-    }
+    if(status.expires && Date.now() > status.expires){ _lsSet('vipStatus', { active: false }); }
+    else { isVip = true; }
   }
   return isVip;
 };
 
-/* ── User badge ── */
 window.updateUserBadge = function(){
   const lbl = _$('menuAuthLabel');
   if(!lbl) return;
   lbl.textContent = window.currentUsername ? '@' + window.currentUsername : 'Sign In';
 };
 
-/* ── Auth status on load ── */
 window.checkAuthStatus = async function(){
   const token = _lsGet('authToken', null);
   if(!token){ window.updateUserBadge(); return; }
