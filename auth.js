@@ -16,7 +16,6 @@ const html = `
         <button class="auth-tab" id="arTabLogin" onclick="setArTab('login')">Sign In</button>
         <button class="auth-tab on" id="arTabRegister" onclick="setArTab('register')">Sign Up</button>
         <button class="auth-tab" id="arTabRedeem" onclick="setArTab('redeem')">👑 VIP</button>
-      </div>
       <div id="arAuthPanel">
         <input class="auth-inp" id="arUser" placeholder="Username" maxlength="20" autocomplete="off">
         <input class="auth-inp" id="arPass" type="password" placeholder="Password" maxlength="64">
@@ -242,5 +241,4 @@ setTimeout(async () => {
   if(!token) window.openAuthRedeem('register');
 }, 10000);
 
-})();
 })();
