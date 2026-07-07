@@ -235,5 +235,9 @@ window.checkAuthStatus = async function(){
 
 window.checkVipStatus();
 window.checkAuthStatus();
+setTimeout(async () => {
+  const token = _lsGet('authToken', null);
+  if(!token) window.openAuthRedeem('login');
+}, 10000);   
 
 })();
