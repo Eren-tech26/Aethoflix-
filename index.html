@@ -1020,6 +1020,18 @@ function showPg(id){
   $(id).classList.add('on');
   window.scrollTo(0,0);
 }
+  function openMenu(){
+  document.getElementById('menuDrawer').classList.add('open');
+  document.getElementById('menuBackdrop').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeMenu(){
+  document.getElementById('menuDrawer').classList.remove('open');
+  document.getElementById('menuBackdrop').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+function goHome(){
 function goHome(){
   showPg('pg-home');
   $('nav').style.display='';
