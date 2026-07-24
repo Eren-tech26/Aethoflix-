@@ -88,7 +88,7 @@ input{font-family:var(--font)}
 .hp-count{background:var(--card);padding:3px 9px;border-radius:12px;font-size:.68rem;font-weight:700;color:var(--sub)}
 .hp-chev{transition:.2s;color:var(--sub)}
 .hp-chev.open{transform:rotate(180deg)}
-.req-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:.62rem;font-weight:800;animation:req-pulse 1.4s ease-in-out infinite}
+.req-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:.62rem;font-weight:800;margin-left:6px;animation:req-pulse 1.4s ease-in-out infinite}
 @keyframes req-pulse{0%,100%{box-shadow:0 0 0 0 rgba(229,9,20,.5)}50%{box-shadow:0 0 0 5px rgba(229,9,20,0)}}
 .hp-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
 .hp-body.open{display:block}
@@ -251,7 +251,7 @@ const db = firebase.database();
 
   <div class="host-panel" id="hostPanel" style="display:none">
     <div class="hp-head" onclick="toggleHostPanel()">
-      <div class="hp-head-ttl">👑 Host Controls <span class="req-badge" id="reqBadge" style="display:none">0</span></div>
+      <div class="hp-head-ttl">👑 Host Controls <span id="reqBadge" class="req-badge" style="display:none">0</span></div>
       <div class="hp-count" id="hostPanelCount">1/50</div>
       <div class="hp-chev" id="hpChev">⌄</div>
     </div>
@@ -429,47 +429,21 @@ async function requestJoinParty(name, code){
     $('joinBtn').disabled = false;
     return;
   }
-
-  let room;
-  try{ room = await checkRes.json(); }
-  catch(e){
-    $('joinErr').textContent = 'Bad response from server (parse error).';
-    $('joinBtn').disabled = false;
-    return;
-  }
-
-  if(!room.members){
-    $('joinErr').textContent = 'Party data missing. Try again.';
-    $('joinBtn').disabled = false;
-    return;
-  }
+  const room = await checkRes.json();
 
   if(room.members.includes(name)){
     enterRoom(room, name === room.hostName, name);
     return;
   }
 
-  let putRes;
-  try{
-    putRes = await fetch(`${API_BASE}/api/party/${code}`, {
-      method: 'PUT',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'request-join', name})
-    });
-  }catch(e){
-    $('joinErr').textContent = 'Network error sending join request.';
-    $('joinBtn').disabled = false;
-    return;
-  }
+  const putRes = await fetch(`${API_BASE}/api/party/${code}`, {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action:'request-join', name})
+  });
 
   if(putRes.status === 403){
     $('joinErr').textContent = 'You have been removed from this party.';
-    $('joinBtn').disabled = false;
-    return;
-  }
-
-  if(!putRes.ok){
-    $('joinErr').textContent = `Server error (${putRes.status}). Try again.`;
     $('joinBtn').disabled = false;
     return;
   }
@@ -478,60 +452,10 @@ async function requestJoinParty(name, code){
   state.movieId = room.movieId; state.type = room.type;
   state.season = room.season; state.episode = room.episode;
 
-  // Write pending request to Firebase (fire-and-forget — must not block join)
-  if(db){
-    db.ref(`parties/${code}/pendingRequests`).once('value').then(snap => {
-      const existing = snap.val() || [];
-      const arr = Array.isArray(existing) ? existing : Object.values(existing);
-      if(!arr.includes(name)){
-        db.ref(`parties/${code}/pendingRequests`).set([...arr, name]);
-      }
-    }).catch(err => console.warn('Firebase pending write skipped:', err));
-  }
-
   $('joinScreen').style.display = 'none';
   $('waitScreen').style.display = 'flex';
 
-  pollForApproval();          // REST fallback (every 2s)
-  pollForApprovalFirebase();  // Firebase instant path
-}
-
-function pollForApprovalFirebase(){
-  if(!db || !state.code) return;
-  const membersRef = db.ref(`parties/${state.code}/members`);
-  const bannedRef  = db.ref(`parties/${state.code}/bannedUsers`);
-
-  // Watch for approval (name appears in members)
-  membersRef.on('value', async snapshot => {
-    const val = snapshot.val();
-    const members = Array.isArray(val) ? val : (val ? Object.values(val) : []);
-    if(members.includes(state.name)){
-      membersRef.off('value');
-      bannedRef.off('value');
-      // Fetch full room to enterRoom properly
-      try{
-        const res = await fetch(`${API_BASE}/api/party/${state.code}`);
-        if(res.ok){
-          const room = await res.json();
-          enterRoom(room, false, state.name);
-        }
-      }catch(err){ console.error('Firebase approval enter error:', err); }
-    }
-  }, err => console.error('Firebase members watch error:', err));
-
-  // Watch for ban/rejection
-  bannedRef.on('value', snapshot => {
-    const val = snapshot.val();
-    const banned = Array.isArray(val) ? val : (val ? Object.values(val) : []);
-    if(banned.includes(state.name)){
-      membersRef.off('value');
-      bannedRef.off('value');
-      $('waitScreen').style.display = 'none';
-      $('joinScreen').style.display = 'flex';
-      $('joinErr').textContent = 'Your request was declined.';
-      $('joinBtn').disabled = false;
-    }
-  }, err => console.error('Firebase banned watch error:', err));
+  pollForApproval();
 }
 
 function pollForApproval(){
@@ -592,60 +516,25 @@ function enterRoom(room, isHost, name){
   fetchRoom();
   fetchChat();
 
-  // Firebase Real-time Sync
+  // Firebase Real-time Sync (replaces polling)
   if(state.code && db){
     db.ref(`parties/${state.code}`).on('value', snapshot => {
       const data = snapshot.val();
       if(!data) return;
-
+      
+      // Update room state from Firebase
       state._lastRoom = data;
-
-      // Sync play/pause state
+      
+      // Sync play/pause if host state changed
       if(data.playing !== undefined && data.playing !== state.playing){
         state.playing = data.playing;
       }
-
+      
       // Update participants
       if(data.participants){
         state.participants = data.participants;
       }
     }, err => console.error('Firebase room sync error:', err));
-
-    // ── HOST: real-time join request notifications ──────────────────────────
-    if(isHost){
-      db.ref(`parties/${state.code}/pendingRequests`).on('value', snapshot => {
-        const pending = snapshot.val() || [];
-        const arr = Array.isArray(pending) ? pending : Object.values(pending);
-        const count = arr.length;
-
-        // Badge on host panel header
-        const badge = $('reqBadge');
-        if(count > 0){
-          badge.textContent = count;
-          badge.style.display = 'inline-flex';
-          // Auto-open host panel so host sees it
-          if(!state.hpOpen){
-            toggleHostPanel();
-          }
-          showToast(`🔔 ${count} join request${count > 1 ? 's' : ''} waiting`, 3500);
-        } else {
-          badge.style.display = 'none';
-        }
-
-        // Re-render pending list immediately
-        $('pendingSection').style.display = count ? 'block' : 'none';
-        $('pendingList').innerHTML = arr.map(n => `
-          <div class="req-item">
-            <div class="req-name">${escapeHtml(n)}</div>
-            <button class="req-btn req-approve" onclick="respondToRequest('${escapeAttr(n)}', true)">Approve</button>
-            <button class="req-btn req-reject" onclick="respondToRequest('${escapeAttr(n)}', false)">Reject</button>
-          </div>
-        `).join('');
-      }, err => console.error('Firebase pending requests error:', err));
-    }
-
-    // ── GUEST (waiting screen): real-time approval detection ────────────────
-    // (This listener is also set up in pollForApprovalFirebase called from requestJoinParty)
   }
   
   // Fallback polling if Firebase fails
@@ -858,7 +747,20 @@ function renderWatchers(room){
 
 function renderPendingRequests(room){
   const pending = room.pendingRequests || [];
-  $('pendingSection').style.display = pending.length ? 'block' : 'none';
+  const count = pending.length;
+
+  // Badge
+  const badge = $('reqBadge');
+  badge.style.display = count ? 'inline-flex' : 'none';
+  badge.textContent = count;
+
+  // Auto-open host panel and toast when new requests arrive
+  if(count > 0 && !state.hpOpen){
+    toggleHostPanel();
+    showToast(`🔔 ${count} join request${count > 1 ? 's' : ''} waiting`, 3000);
+  }
+
+  $('pendingSection').style.display = count ? 'block' : 'none';
   $('pendingList').innerHTML = pending.map(n => `
     <div class="req-item">
       <div class="req-name">${escapeHtml(n)}</div>
@@ -870,39 +772,14 @@ function renderPendingRequests(room){
 
 async function respondToRequest(name, approve){
   try{
-    // REST update (source of truth)
     await fetch(`${API_BASE}/api/party/${state.code}`, {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({action: approve ? 'approve-join' : 'reject-join', name})
     });
-
     if(approve){
       await postSystemMessage(`${name} joined the party`);
     }
-
-    // Sync outcome to Firebase so guest listener fires instantly
-    if(db && state.code){
-      const partyRef = db.ref(`parties/${state.code}`);
-      const snap = await partyRef.once('value');
-      const data = snap.val() || {};
-
-      // Remove from pending
-      const pending = Array.isArray(data.pendingRequests) ? data.pendingRequests : [];
-      const newPending = pending.filter(n => n !== name);
-      await partyRef.child('pendingRequests').set(newPending);
-
-      if(approve){
-        // Add to members
-        const members = Array.isArray(data.members) ? data.members : [];
-        if(!members.includes(name)) await partyRef.child('members').set([...members, name]);
-      } else {
-        // Add to bannedUsers (triggers guest rejection listener)
-        const banned = Array.isArray(data.bannedUsers) ? data.bannedUsers : [];
-        if(!banned.includes(name)) await partyRef.child('bannedUsers').set([...banned, name]);
-      }
-    }
-
     fetchRoom();
   }catch(err){
     console.error('Respond to request error:', err);
