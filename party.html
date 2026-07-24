@@ -6,9 +6,22 @@
 <title>Watch Party - AethoFlix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyDp1hpAUlp2cH0Y9a5Ws5PfQJmRPwhhyk",
+  authDomain: "party-36528.firebaseapp.com",
+  databaseURL: "https://party-36528-default-rtdb.firebaseio.com",
+  projectId: "party-36528",
+  storageBucket: "party-36528.firebasestorage.app",
+  messagingSenderId: "286701046415",
+  appId: "1:286701046415:web:23e9651dc7bb9f1efa"
+});
+const db = firebase.database();
+</script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -156,22 +169,6 @@ input{font-family:var(--font)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:.8rem;font-weight:600;z-index:9999;opacity:0;transition:.25s;max-width:90%;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
-
-<!-- Firebase Configuration & Initialization -->
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDp1hpAUlp2cH0Y9a5Ws5PfQJmRPwhhyk",
-  authDomain: "party-36528.firebaseapp.com",
-  databaseURL: "https://party-36528-default-rtdb.firebaseio.com",
-  projectId: "party-36528",
-  storageBucket: "party-36528.firebasestorage.app",
-  messagingSenderId: "286701046415",
-  appId: "1:286701046415:web:23e9651dc7bb9f1efa"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-</script>
 </head>
 <body>
 
@@ -452,6 +449,13 @@ async function requestJoinParty(name, code){
   state.movieId = room.movieId; state.type = room.type;
   state.season = room.season; state.episode = room.episode;
 
+  // Write to Firebase so host gets real-time notification (fire-and-forget)
+  db.ref('parties/'+code+'/pendingRequests').once('value').then(function(snap){
+    var val = snap.val();
+    var arr = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+    if(!arr.includes(name)) db.ref('parties/'+code+'/pendingRequests').set(arr.concat([name]));
+  }).catch(function(){});
+
   $('joinScreen').style.display = 'none';
   $('waitScreen').style.display = 'flex';
 
@@ -502,8 +506,29 @@ function enterRoom(room, isHost, name){
     state._inviteLink = link;
     $('partyCodeText').textContent = room.code;
     startHostElapsedTracking();
-    // Always open host panel so requests are visible immediately
+    // Open host panel immediately so requests are visible
     if(!state.hpOpen) toggleHostPanel();
+    // Firebase: real-time pending request listener
+    db.ref(`parties/${state.code}/pendingRequests`).on('value', snap => {
+      const val = snap.val();
+      const pending = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+      const count = pending.length;
+      const badge = $('reqBadge');
+      badge.style.display = count ? 'inline-flex' : 'none';
+      badge.textContent = count;
+      if(count > 0 && count !== state._lastPendingCount){
+        if(!state.hpOpen) toggleHostPanel();
+        showToast(`🔔 ${count} join request${count>1?'s':''} waiting`, 3500);
+      }
+      state._lastPendingCount = count;
+      $('pendingSection').style.display = count ? 'block' : 'none';
+      $('pendingList').innerHTML = pending.map(n=>`
+        <div class="req-item">
+          <div class="req-name">${escapeHtml(n)}</div>
+          <button class="req-btn req-approve" onclick="respondToRequest('${escapeAttr(n)}',true)">Approve</button>
+          <button class="req-btn req-reject" onclick="respondToRequest('${escapeAttr(n)}',false)">Reject</button>
+        </div>`).join('');
+    });
   } else {
     $('hostStatusRow').style.display = 'flex';
   }
@@ -518,32 +543,10 @@ function enterRoom(room, isHost, name){
   fetchRoom();
   fetchChat();
 
-  // Firebase Real-time Sync (replaces polling)
-  if(state.code && db){
-    db.ref(`parties/${state.code}`).on('value', snapshot => {
-      const data = snapshot.val();
-      if(!data) return;
-      
-      // Update room state from Firebase
-      state._lastRoom = data;
-      
-      // Sync play/pause if host state changed
-      if(data.playing !== undefined && data.playing !== state.playing){
-        state.playing = data.playing;
-      }
-      
-      // Update participants
-      if(data.participants){
-        state.participants = data.participants;
-      }
-    }, err => console.error('Firebase room sync error:', err));
-  }
-  
-  // Fallback polling if Firebase fails
   clearInterval(state.roomPollTimer);
   clearInterval(state.chatPollTimer);
-  state.roomPollTimer = setInterval(fetchRoom, 3000);
-  state.chatPollTimer = setInterval(fetchChat, 3000);
+  state.roomPollTimer = setInterval(fetchRoom, 1500);
+  state.chatPollTimer = setInterval(fetchChat, 1500);
 }
 
 function applyControlPermissions(){
@@ -618,19 +621,6 @@ function handlePlayerMessage(event){
 
 async function reportHostState(extra){
   try{
-    const playing = extra.playing !== undefined ? extra.playing : state.hostIsPlaying;
-    const timestamp = state.myElapsedSeconds;
-    
-    // Broadcast to Firebase in real-time
-    if(state.code && db){
-      await db.ref(`parties/${state.code}`).update({
-        playing: playing,
-        timestamp: timestamp,
-        lastUpdated: Date.now()
-      });
-    }
-    
-    // Also update server (keep for compatibility)
     await fetch(`${API_BASE}/api/party/${state.code}`, {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
@@ -638,7 +628,7 @@ async function reportHostState(extra){
         action:'host-heartbeat',
         elapsedSeconds: state.myElapsedSeconds,
         source: extra.source !== undefined ? extra.source : state.source,
-        playing: playing
+        playing: extra.playing !== undefined ? extra.playing : state.hostIsPlaying
       })
     });
   }catch(err){
@@ -749,28 +739,14 @@ function renderWatchers(room){
 
 function renderPendingRequests(room){
   const pending = room.pendingRequests || [];
-  const count = pending.length;
-
-  // Badge
-  const badge = $('reqBadge');
-  badge.style.display = count ? 'inline-flex' : 'none';
-  badge.textContent = count;
-
-  // Toast on new requests
-  if(count > 0 && !state._lastPendingCount){
-    showToast(`🔔 ${count} join request${count > 1 ? 's' : ''} waiting`, 3000);
-  }
-  state._lastPendingCount = count;
-
-  // Always show the section so host can see it
-  $('pendingSection').style.display = 'block';
-  $('pendingList').innerHTML = count ? pending.map(n => `
+  $('pendingSection').style.display = pending.length ? 'block' : 'none';
+  $('pendingList').innerHTML = pending.map(n => `
     <div class="req-item">
       <div class="req-name">${escapeHtml(n)}</div>
       <button class="req-btn req-approve" onclick="respondToRequest('${escapeAttr(n)}', true)">Approve</button>
       <button class="req-btn req-reject" onclick="respondToRequest('${escapeAttr(n)}', false)">Reject</button>
     </div>
-  `).join('') : '<div style="font-size:.74rem;color:var(--sub);padding:8px 0">No pending requests</div>';
+  `).join('');
 }
 
 async function respondToRequest(name, approve){
@@ -783,6 +759,12 @@ async function respondToRequest(name, approve){
     if(approve){
       await postSystemMessage(`${name} joined the party`);
     }
+    // Remove from Firebase pending list
+    db.ref('parties/'+state.code+'/pendingRequests').once('value').then(function(snap){
+      var val = snap.val();
+      var arr = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+      db.ref('parties/'+state.code+'/pendingRequests').set(arr.filter(function(n){return n!==name;}));
+    }).catch(function(){});
     fetchRoom();
   }catch(err){
     console.error('Respond to request error:', err);
@@ -950,6 +932,7 @@ function cleanupAndExit(){
   clearInterval(state.chatPollTimer);
   clearInterval(state.elapsedTimer);
   window.removeEventListener('message', handlePlayerMessage);
+  if(state.code) db.ref('parties/'+state.code+'/pendingRequests').off();
   $('vidFrame').src = '';
   location.href = location.pathname;
 }
