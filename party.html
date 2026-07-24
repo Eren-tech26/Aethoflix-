@@ -429,21 +429,47 @@ async function requestJoinParty(name, code){
     $('joinBtn').disabled = false;
     return;
   }
-  const room = await checkRes.json();
+
+  let room;
+  try{ room = await checkRes.json(); }
+  catch(e){
+    $('joinErr').textContent = 'Bad response from server (parse error).';
+    $('joinBtn').disabled = false;
+    return;
+  }
+
+  if(!room.members){
+    $('joinErr').textContent = 'Party data missing. Try again.';
+    $('joinBtn').disabled = false;
+    return;
+  }
 
   if(room.members.includes(name)){
     enterRoom(room, name === room.hostName, name);
     return;
   }
 
-  const putRes = await fetch(`${API_BASE}/api/party/${code}`, {
-    method: 'PUT',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({action:'request-join', name})
-  });
+  let putRes;
+  try{
+    putRes = await fetch(`${API_BASE}/api/party/${code}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'request-join', name})
+    });
+  }catch(e){
+    $('joinErr').textContent = 'Network error sending join request.';
+    $('joinBtn').disabled = false;
+    return;
+  }
 
   if(putRes.status === 403){
     $('joinErr').textContent = 'You have been removed from this party.';
+    $('joinBtn').disabled = false;
+    return;
+  }
+
+  if(!putRes.ok){
+    $('joinErr').textContent = `Server error (${putRes.status}). Try again.`;
     $('joinBtn').disabled = false;
     return;
   }
@@ -452,19 +478,15 @@ async function requestJoinParty(name, code){
   state.movieId = room.movieId; state.type = room.type;
   state.season = room.season; state.episode = room.episode;
 
-  // Write pending request to Firebase so host gets real-time notification
+  // Write pending request to Firebase (fire-and-forget — must not block join)
   if(db){
-    try{
-      const pendingRef = db.ref(`parties/${code}/pendingRequests`);
-      const snap = await pendingRef.once('value');
+    db.ref(`parties/${code}/pendingRequests`).once('value').then(snap => {
       const existing = snap.val() || [];
       const arr = Array.isArray(existing) ? existing : Object.values(existing);
       if(!arr.includes(name)){
-        await pendingRef.set([...arr, name]);
+        db.ref(`parties/${code}/pendingRequests`).set([...arr, name]);
       }
-    }catch(err){
-      console.error('Firebase pending write error:', err);
-    }
+    }).catch(err => console.warn('Firebase pending write skipped:', err));
   }
 
   $('joinScreen').style.display = 'none';
@@ -1063,3 +1085,4 @@ function escapeAttr(str){
 </script>
 </body>
 </html>
+
