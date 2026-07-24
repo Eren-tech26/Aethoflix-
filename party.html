@@ -502,6 +502,8 @@ function enterRoom(room, isHost, name){
     state._inviteLink = link;
     $('partyCodeText').textContent = room.code;
     startHostElapsedTracking();
+    // Always open host panel so requests are visible immediately
+    if(!state.hpOpen) toggleHostPanel();
   } else {
     $('hostStatusRow').style.display = 'flex';
   }
@@ -754,20 +756,21 @@ function renderPendingRequests(room){
   badge.style.display = count ? 'inline-flex' : 'none';
   badge.textContent = count;
 
-  // Auto-open host panel and toast when new requests arrive
-  if(count > 0 && !state.hpOpen){
-    toggleHostPanel();
+  // Toast on new requests
+  if(count > 0 && !state._lastPendingCount){
     showToast(`🔔 ${count} join request${count > 1 ? 's' : ''} waiting`, 3000);
   }
+  state._lastPendingCount = count;
 
-  $('pendingSection').style.display = count ? 'block' : 'none';
-  $('pendingList').innerHTML = pending.map(n => `
+  // Always show the section so host can see it
+  $('pendingSection').style.display = 'block';
+  $('pendingList').innerHTML = count ? pending.map(n => `
     <div class="req-item">
       <div class="req-name">${escapeHtml(n)}</div>
       <button class="req-btn req-approve" onclick="respondToRequest('${escapeAttr(n)}', true)">Approve</button>
       <button class="req-btn req-reject" onclick="respondToRequest('${escapeAttr(n)}', false)">Reject</button>
     </div>
-  `).join('');
+  `).join('') : '<div style="font-size:.74rem;color:var(--sub);padding:8px 0">No pending requests</div>';
 }
 
 async function respondToRequest(name, approve){
