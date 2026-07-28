@@ -182,6 +182,12 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
 .sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
 .sheet-cast b{color:var(--text)}
+.cast-row{display:flex;gap:10px;overflow-x:auto;padding:8px 0 4px;margin-top:4px}
+.cast-row::-webkit-scrollbar{display:none}
+.cast-chip{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;width:58px;cursor:default}
+.cast-av{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--card);border:2px solid var(--border)}
+.cast-av-fb{width:52px;height:52px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid var(--border)}
+.cast-nm{font-size:.5rem;font-weight:700;color:var(--sub);text-align:center;line-height:1.2;word-break:break-word}
 .sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
 
 /* ─── PLAYER PAGE ─── */
@@ -639,7 +645,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         <span class="bot-lbl" id="watchBotLbl" style="background:rgba(0,0,0,.25)"></span>
       </button>
       <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15)">More Info</button>
+        <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15)">🎬 Trailer</button>
       </div>
       <div class="sheet-cast" id="detCast"></div>
       <a href="https://www.effectivecpmnetwork.com/hixuwd6t?key=b821c1e4d995c75e66c30e775fa96" target="_blank" style="display:block;text-align:center;margin-top:10px;color:var(--sub);text-decoration:none;font-size:.7rem">Sponsored</a>
@@ -1310,7 +1316,16 @@ async function openDetail(id,type){
   $('detOv').textContent=meta.overview||'';
   $('detBot').textContent='@'+bot;
   $('watchBotLbl').textContent='@'+bot;
-  if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
+  const castData=(meta.credits?.cast||[]).slice(0,8);
+if(castData.length){
+  const chips=castData.map(c=>{
+    const img=c.profile_path
+      ?`<img class="cast-av" src="${IMG}w185${c.profile_path}" loading="lazy" alt="${c.name}">`
+      :`<div class="cast-av-fb">👤</div>`;
+    return `<div class="cast-chip">${img}<div class="cast-nm">${c.name.split(' ').slice(0,2).join('\n')}</div></div>`;
+  }).join('');
+  $('detCast').innerHTML=`<div style="font-size:.62rem;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px">Cast</div><div class="cast-row">${chips}</div>`;
+}
   const isVip=getVipStatus();
   if(isVip){
     $('tgBox').style.display='none';
@@ -1424,7 +1439,16 @@ async function openPlayer(id,type,season,ep){
   if(genres) metaHtml+=`<span class="pl-tag">${genres}</span>`;
   $('plMeta').innerHTML=metaHtml;
   $('plOv').textContent=meta.overview||'';
-  if(cast) $('plCast').innerHTML=`<b style="color:var(--text)">Cast:</b> ${cast}`;
+  const castItems=(meta.credits?.cast||[]).slice(0,8);
+if(castItems.length){
+  const chips=castItems.map(c=>{
+    const img=c.profile_path
+      ?`<img class="cast-av" src="${IMG}w185${c.profile_path}" loading="lazy" alt="${c.name}">`
+      :`<div class="cast-av-fb">👤</div>`;
+    return `<div class="cast-chip">${img}<div class="cast-nm">${c.name.split(' ').slice(0,2).join('\n')}</div></div>`;
+  }).join('');
+  $('plCast').innerHTML=`<div style="font-size:.62rem;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px">Cast</div><div class="cast-row">${chips}</div>`;
+}
 
   saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
