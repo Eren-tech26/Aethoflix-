@@ -53,14 +53,17 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .hamburger-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;flex-shrink:0}
 .hamburger-btn:active{background:rgba(255,255,255,.14)}
   
-<!-- BOTTOM NAV -->
-<div class="bnav">
-  <button class="bn on" id="bn-home" onclick="goHome()"><span class="bn-ic">Home</span><span style="font-size:.4rem">Home</span></button>
-  <button class="bn" id="bn-movie" onclick="browseType('movie','Movies')"><span class="bn-ic">Movies</span><span style="font-size:.4rem">Movies</span></button>
-  <button class="bn" id="bn-tv" onclick="browseType('tv','Series')"><span class="bn-ic">Series</span><span style="font-size:.4rem">Series</span></button>
-  <button class="bn" id="bn-anime" onclick="browseType('anime','Anime')"><span class="bn-ic">Anime</span><span style="font-size:.4rem">Anime</span></button>
-  <button class="bn" id="bn-search" onclick="navSearch()"><span class="bn-ic">Search</span><span style="font-size:.4rem">Search</span></button>
-</div>
+/* ─── BOTTOM NAV PILL ─── */
+.bottom-nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:fit-content;height:54px;background:rgba(17,17,17,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;z-index:3000;padding:0 12px;border-radius:27px;box-shadow:0 8px 32px rgba(0,0,0,.5);gap:2px}
+.bottom-nav-btn{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--sub);font-size:.5rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:.2s;padding:10px 16px;border-radius:20px;white-space:nowrap;cursor:pointer;background:none;border:none}
+.bottom-nav-btn:hover{color:#fff}
+.bottom-nav-btn.on{color:var(--accent);background:rgba(229,9,20,.12)}
+.bottom-nav-ic{font-size:1.2rem;line-height:1}
+.bottom-nav-menu{position:fixed;bottom:82px;right:20px;width:180px;background:var(--surface);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);z-index:3001;display:none;flex-direction:column;overflow:hidden;backdrop-filter:blur(8px)}
+.bottom-nav-menu.show{display:flex}
+.bottom-nav-menu-item{padding:12px 16px;font-size:.8rem;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:.15s}
+.bottom-nav-menu-item:last-child{border-bottom:none}
+.bottom-nav-menu-item:hover{background:rgba(255,255,255,.05);color:#fff}
 
 /* ─── PAGES ─── */
 .pg{display:none;min-height:100vh;animation:fadeUp .2s ease}
@@ -458,7 +461,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 </style>
 </head>
 <body>
-
+  
   <!-- Popunder -->
 <script src="https://pl30500442.effectivecpmnetwork.com/4b/49/64/4b496415b20c423e16f07673b3c18598.js"></script>
 
@@ -805,6 +808,20 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+  <!-- BOTTOM NAV PILL -->
+<div class="bottom-nav">
+  <button class="bottom-nav-btn on" onclick="goHome()"><span class="bottom-nav-ic">Home</span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="browseType('movie','Movies')"><span class="bottom-nav-ic">Movies</span><span>Movies</span></button>
+  <button class="bottom-nav-btn" onclick="browseType('tv','Series')"><span class="bottom-nav-ic">Series</span><span>Series</span></button>
+  <button class="bottom-nav-btn" onclick="browseType('anime','Anime')"><span class="bottom-nav-ic">Anime</span><span>Anime</span></button>
+  <button class="bottom-nav-btn" onclick="toggleBottomMenu()"><span class="bottom-nav-ic">...</span><span>Menu</span></button>
+</div>
+
+<div class="bottom-nav-menu" id="bottomNavMenu">
+  <div class="bottom-nav-menu-item" onclick="navSearch();toggleBottomMenu()">Search</div>
+  <div class="bottom-nav-menu-item" onclick="openWishlist();toggleBottomMenu()">My List</div>
+  <div class="bottom-nav-menu-item" onclick="openMenu();toggleBottomMenu()">Settings</div>
+</div>
 
 <!-- ══════════ ADMIN PANEL ══════════ -->
 <div class="admin-overlay" id="adminOverlay">
@@ -2306,7 +2323,10 @@ function timeAgo(dateStr){
   return `${Math.floor(hrs/24)}d ago`;
 }
 
-  
+  function toggleBottomMenu(){
+  const menu=document.getElementById('bottomNavMenu');
+  menu.classList.toggle('show');
+  }
 /* ══════════ BOOT ══════════ */
 (async function boot(){
   const p=new URLSearchParams(location.search);
