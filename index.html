@@ -728,11 +728,8 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   <!-- Sticky video + controls -->
   <div class="vid-wrap">
     <iframe class="vid-frame" id="vidFrame" src=""
-        style="border:none;width:100%;height:100%"
-        scrolling="no" referrerpolicy="no-referrer"
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
-        allow="autoplay; encrypted-media">sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
-allow="autoplay; encrypted-media"</iframe>
+      allowfullscreen allow="autoplay; fullscreen; picture-in-picture"
+      scrolling="no" referrerpolicy="no-referrer"></iframe>
   </div>
 
   <div class="ctrl-bar">
@@ -1397,7 +1394,7 @@ async function openPlayer(id,type,season,ep){
   history.pushState({id,type,season,ep},'',u);
 
   // Load frame
-  $('vidFrame').src=`https://bingr.one/watch/${type}/${id}${type==='tv'?`/${season}/${episode}`:''}`;
+  $('vidFrame').src=srcUrl(id,type,season,ep,0);
   $$('.src-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
 
   // Reset UI
@@ -1454,7 +1451,7 @@ async function openPlayer(id,type,season,ep){
 function setSource(idx,el){
   pl.source=idx;
   $$('.src-btn').forEach(b=>b.classList.remove('on')); el.classList.add('on');
-  $('vidFrame').src=`https://bingr.one/watch/${pl.type}/${pl.id}${pl.type==='tv'?`/${pl.season}/${pl.episode}`:''}`;
+  $('vidFrame').src=srcUrl(pl.id,pl.type,pl.season,pl.ep,idx);
   const notice=$('s1Notice');
   if(notice){
     notice.style.display=idx===0?'block':'none';
