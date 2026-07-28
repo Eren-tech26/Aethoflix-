@@ -1605,6 +1605,7 @@ function safePlay(id, type, season, ep){
 function closePlayer(){
   endWatchSession();
   $('vidFrame').src='';
+  pl = { id:null, type:null, season:1, ep:1, source:0 };
   document.title='AethoFlix';
   const u=new URL(location.href.split('?')[0]);
   history.pushState({},'',u);
