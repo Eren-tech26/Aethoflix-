@@ -85,7 +85,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .h-desc{font-size:.79rem;color:#aaaac8;line-height:1.65;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .h-btns{display:flex;gap:8px}
 .hbtn{display:flex;align-items:center;gap:6px;padding:10px 20px;border-radius:50px;font-size:.84rem;font-weight:800;transition:.2s;cursor:pointer}
-.hbtn-play{background:var(--accent);color:#fff;box-shadow:0 4px 24px rgba(229,9,20,.45)}
+.hbtn-play{background:#fff;color:#111;box-shadow:0 4px 24px rgba(255,255,255,.25)}
 .hbtn-play:active{transform:scale(.96);box-shadow:0 2px 12px rgba(229,9,20,.3)}
 .hbtn-info{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .hbtn-info:active{background:rgba(255,255,255,.18)}
@@ -183,8 +183,13 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .wl-btn:active{transform:scale(.98)}
 .watch-btn:active{transform:scale(.97);background:var(--accent2)}
 .watch-btn .bot-lbl{font-size:.62rem;background:rgba(0,0,0,.22);padding:2px 8px;border-radius:4px;font-weight:700}
-.sheet-cast{font-size:.68rem;color:var(--sub);margin-top:10px;line-height:1.5}
-.sheet-cast b{color:var(--text)}
+.sheet-cast{margin-top:12px}
+.cast-row{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px}.cast-row::-webkit-scrollbar{display:none}
+.cast-av{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:52px;cursor:default}
+.cast-img-wrap{width:48px;height:48px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.cast-img{width:100%;height:100%;object-fit:cover}
+.cast-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.cast-name{font-size:.5rem;font-weight:700;color:var(--sub);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
 .sheet-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:none}
 
 /* ─── PLAYER PAGE ─── */
@@ -222,8 +227,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .pl-ov-btn{font-size:.72rem;color:var(--accent);font-weight:700;cursor:pointer;margin-bottom:10px;display:inline-flex;align-items:center;gap:4px}
 .pl-ov{font-size:.78rem;color:#aaaac8;line-height:1.65;margin-bottom:10px;display:none}
 .pl-ov.show{display:block}
-.pl-cast{font-size:.68rem;color:var(--sub);line-height:1.5;margin-bottom:14px}
-.pl-cast b{color:var(--text)}
+.pl-cast{margin-bottom:14px}
 
 /* Season/Episode selector */
 .ep-sec{padding:4px 0 0}
@@ -637,7 +641,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
         <div class="tg-txt">Stream instantly via <b id="detBot">@aetho_flixbot</b> — tap Watch to open Telegram and play.</div>
       </div>
       <button class="watch-btn" id="watchBtn">
-        ▶ Watch on Telegram
+        ▶ Watch Now
         <span class="bot-lbl" id="watchBotLbl">@aetho_flixbot</span>
       </button>
       <div style="display:flex;gap:8px;margin-bottom:10px">
@@ -1299,7 +1303,8 @@ async function openDetail(id,type){
   const rat=(meta.vote_average||0).toFixed(1);
   const genres=(meta.genres||[]).slice(0,3).map(g=>g.name).join(' · ');
   const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
-  const cast=(meta.credits?.cast||[]).slice(0,5).map(c=>c.name).join(', ');
+  const castArr=(meta.credits?.cast||[]).slice(0,8);
+  const cast=castArr.map(c=>c.name).join(', ');
   const vid=await api(`${tmdbType}/${id}/videos`);
   trailerData=vid?.results||[];
   const isAnime=type==='anime';
@@ -1314,7 +1319,7 @@ async function openDetail(id,type){
   $('detOv').textContent=meta.overview||'';
   $('detBot').textContent='@'+bot;
   $('watchBotLbl').textContent='@'+bot;
-  if(cast) $('detCast').innerHTML=`<b>Cast:</b> ${cast}`;
+  if(castArr.length) $('detCast').innerHTML=`<div class="cast-row">${castArr.map(c=>`<div class="cast-av"><div class="cast-img-wrap"><img class="cast-img" src="${c.profile_path?'https://image.tmdb.org/t/p/w185'+c.profile_path:''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt=""><div class="cast-fallback" style="display:none">👤</div></div><div class="cast-name">${c.name.split(' ')[0]}</div></div>`).join('')}</div>`;
   const isVip=getVipStatus();
   if(isVip){
     $('tgBox').style.display='none';
@@ -1322,7 +1327,7 @@ async function openDetail(id,type){
     $('watchBtn').onclick=()=>{ closeDetail(); openPlayer(id,type,1,1); };
   }else{
     $('tgBox').style.display='';
-    $('watchBtn').innerHTML=`▶ Watch on Telegram<span class="bot-lbl" id="watchBotLbl">@${bot}</span>`;
+    $('watchBtn').innerHTML=`▶ Watch Now<span class="bot-lbl" id="watchBotLbl">@${bot}</span>`;
     $('watchBtn').onclick=()=>window.open(tgUrl,'_blank');
   }
   curDetail={id,type,title,poster:meta.poster_path};
@@ -1414,7 +1419,8 @@ async function openPlayer(id,type,season,ep){
   const rat=(meta.vote_average||0).toFixed(1);
   const genres=(meta.genres||[]).slice(0,3).map(g=>g.name).join(' · ');
   const runtime=meta.runtime?`${meta.runtime}m`:(meta.episode_run_time?.[0]?`~${meta.episode_run_time[0]}m/ep`:'');
-  const cast=(meta.credits?.cast||[]).slice(0,5).map(c=>c.name).join(', ');
+  const castArr2=(meta.credits?.cast||[]).slice(0,8);
+  const cast=castArr2.map(c=>c.name).join(', ');
   const seasons=meta.number_of_seasons||0;
 
   $('ctrlTitle').textContent=title;
@@ -1428,8 +1434,7 @@ async function openPlayer(id,type,season,ep){
   if(genres) metaHtml+=`<span class="pl-tag">${genres}</span>`;
   $('plMeta').innerHTML=metaHtml;
   $('plOv').textContent=meta.overview||'';
-  if(cast) $('plCast').innerHTML=`<b style="color:var(--text)">Cast:</b> ${cast}`;
-
+  if(castArr2.length) $('plCast').innerHTML=`<div class="cast-row">${castArr2.map(c=>`<div class="cast-av"><div class="cast-img-wrap"><img class="cast-img" src="${c.profile_path?'https://image.tmdb.org/t/p/w185'+c.profile_path:''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt=""><div class="cast-fallback" style="display:none">👤</div></div><div class="cast-name">${c.name.split(' ')[0]}</div></div>`).join('')}</div>`;
   saveContinueWatching({id,type,title,poster:meta.poster_path,season,ep});
 
   // TV / Anime: load episodes
