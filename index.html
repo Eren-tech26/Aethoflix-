@@ -646,6 +646,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
       </button>
       <div style="display:flex;gap:8px;margin-bottom:10px">
         <button class="wl-btn" id="trailerBtn" onclick="playTrailer()" style="flex:1;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15)">🎬 Trailer</button>
+        <button class="wl-btn" id="wlBtn" onclick="onWatchlistClick()" style="flex:1">+ My List</button>
       </div>
       <div class="sheet-cast" id="detCast"></div>
       <a href="https://www.effectivecpmnetwork.com/hixuwd6t?key=b821c1e4d995c75e66c30e775fa96" target="_blank" style="display:block;text-align:center;margin-top:10px;color:var(--sub);text-decoration:none;font-size:.7rem">Sponsored</a>
@@ -758,6 +759,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
     <div class="pl-meta" id="plMeta"></div>
     <span class="pl-ov-btn" id="plOvBtn" onclick="toggleOv()">▼ Overview</span>
     <div class="pl-ov" id="plOv"></div>
+    <div style="display:flex;gap:8px;margin:6px 0 2px">
+      <button class="wl-btn" onclick="playTrailer()" style="flex:1;font-size:.75rem;padding:9px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15)">🎬 Trailer</button>
+    </div>
     <div class="pl-cast" id="plCast"></div>
   </div>
     
