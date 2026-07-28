@@ -54,10 +54,10 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .hamburger-btn:active{background:rgba(255,255,255,.14)}
   
 /* ─── BOTTOM NAV ─── */
-.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bnav);background:rgba(8,8,16,.98);border-top:1px solid var(--border);display:flex;z-index:3000;padding-bottom:env(safe-area-inset-bottom,0)}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:.5rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:.15s}
-.bn.on{color:var(--accent)}
-.bn-ic{font-size:1.15rem;line-height:1}
+.bnav{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:400px;height:var(--bnav);background:rgba(15,15,26,.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);display:flex;z-index:3000;padding-bottom:0;border-radius:50px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:.5rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:.2s;border-radius:50px}
+.bn.on{color:var(--accent);background:rgba(229,9,20,.15)}
+.bn-ic{font-size:1.15rem;line-height:1;display:none}
 
 /* ─── PAGES ─── */
 .pg{display:none;min-height:100vh;animation:fadeUp .2s ease}
@@ -541,11 +541,11 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   
 <!-- BOTTOM NAV -->
 <div class="bnav">
-  <button class="bn on" id="bn-home" onclick="goHome()"><span class="bn-ic">🏠</span>Home</button>
-  <button class="bn" id="bn-movie" onclick="browseType('movie','Movies')"><span class="bn-ic">🎬</span>Movies</button>
-  <button class="bn" id="bn-tv" onclick="browseType('tv','Series')"><span class="bn-ic">📺</span>Series</button>
-  <button class="bn" id="bn-anime" onclick="browseType('anime','Anime')"><span class="bn-ic">🏮</span>Anime</button>
-  <button class="bn" id="bn-search" onclick="navSearch()"><span class="bn-ic">🔍</span>Search</button>
+  <button class="bn on" id="bn-home" onclick="goHome()">Home</button>
+  <button class="bn" id="bn-movie" onclick="browseType('movie','Movies')">Movies</button>
+  <button class="bn" id="bn-tv" onclick="browseType('tv','Series')">Series</button>
+  <button class="bn" id="bn-anime" onclick="browseType('anime','Anime')">Anime</button>
+  <button class="bn" id="bn-search" onclick="navSearch()">Search</button>
 </div>
 
 <!-- ANNOUNCEMENT BANNER -->
