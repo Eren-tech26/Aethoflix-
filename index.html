@@ -1292,6 +1292,7 @@ async function openDetail(id,type){
   $('detPill').textContent=''; $('detMeta').innerHTML='';
   $('detOv').textContent=''; $('detCast').textContent='';
   $('watchBtn').onclick=null;
+  pl = { id, type, season:1, ep:1, source:0 };
   ov.classList.add('on'); document.body.style.overflow='hidden';
 
   const tmdbType=type==='anime'?'tv':type;
