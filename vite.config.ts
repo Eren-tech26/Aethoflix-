@@ -19,8 +19,5 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "party"),
     emptyOutDir: true,
-    rollupOptions: {
-      input: path.resolve(partyAppDir, "index.html"),
-    },
   },
 });
