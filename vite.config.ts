@@ -7,9 +7,10 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const partyAppDir = path.resolve(__dirname, "party-app");
 
 export default defineConfig({
-  root: path.resolve(__dirname, "party-app"),
+  root: partyAppDir,
   base: "/party/",
   plugins: [react(), tailwindcss(), viteSingleFile()],
   resolve: {
@@ -18,5 +19,8 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "party"),
     emptyOutDir: true,
+    rollupOptions: {
+      input: "index.html",
+    },
   },
 });

@@ -5918,7 +5918,7 @@ function renderMenuDropdown() {
         gClose() +
 
         gOpen('Extras') +
-          '<button class="menu-item-btn" type="button" onclick="closeMenuDropdown(); window.open(\'party.html\', \'_blank\');">' + icParty + '<span>Watch Party</span></button>' +
+          '<button class="menu-item-btn" type="button" onclick="closeMenuDropdown(); navigateTab(\'party\');">' + icParty + '<span>Watch Party</span></button>' +
           '<button class="menu-item-btn" type="button" onclick="closeMenuDropdown(); navigateTab(\'library\');">' + icLib + '<span>Saved Library</span></button>' +
           '<button class="menu-item-btn ' + (_sfxEnabled?'on':'') + '" type="button" onclick="toggleSfx();">' + icSfx + '<span>Sound Effects</span><span class="menu-item-tag">' + (_sfxEnabled ? 'ON' : 'MUTED') + '</span></button>' +
           '<button class="menu-item-btn" type="button" onclick="togglePerfMode();">' + icBolt + '<span>Performance</span><span class="menu-item-tag">' + (AFX_LITE ? 'LITE' : 'FULL') + '</span></button>' +
@@ -5955,7 +5955,7 @@ function renderMenuDropdown() {
         gClose() +
 
         gOpen('Extras') +
-          '<button class="menu-item-btn" type="button" onclick="closeMenuDropdown(); window.open(\'party.html\', \'_blank\');">' + icParty + '<span>Watch Party</span></button>' +
+          '<button class="menu-item-btn" type="button" onclick="closeMenuDropdown(); navigateTab(\'party\');">' + icParty + '<span>Watch Party</span></button>' +
           '<button class="menu-item-btn ' + (_sfxEnabled?'on':'') + '" type="button" onclick="toggleSfx();">' + icSfx + '<span>Sound Effects</span><span class="menu-item-tag">' + (_sfxEnabled ? 'ON' : 'MUTED') + '</span></button>' +
           '<button class="menu-item-btn" type="button" onclick="togglePerfMode();">' + icBolt + '<span>Performance</span><span class="menu-item-tag">' + (AFX_LITE ? 'LITE' : 'FULL') + '</span></button>' +
         gClose() +
