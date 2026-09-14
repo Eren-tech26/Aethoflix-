@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;450;500;550;600;650;700&display=swap');
+@import "tailwindcss";
+@import "./styles/experience.css";
+@import "./styles/watch-party.css";
+@import "./styles/catalog.css";
+@import "./styles/monochrome.css";
+@import "./styles/site.css";
+@import "./styles/admin.css";

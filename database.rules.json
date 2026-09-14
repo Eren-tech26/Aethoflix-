@@ -1,0 +1,49 @@
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.child('meta/hostId').val() == auth.uid) || data.child('meta/hostId').val() == auth.uid)",
+        "meta": {
+          ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() == auth.uid) || data.child('hostId').val() == auth.uid)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['code','title','hostId','screening','online']) && newData.child('code').val() == $code && newData.child('hostId').isString() && newData.child('title').isString() && newData.child('title').val().length <= 48)"
+        },
+        "media": {
+          ".write": "auth != null && root.child('rooms').child($code).child('meta/hostId').val() == auth.uid"
+        },
+        "playback": {
+          ".write": "auth != null && root.child('rooms').child($code).child('meta/hostId').val() == auth.uid"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && ($uid == auth.uid || root.child('rooms').child($code).child('meta/hostId').val() == auth.uid) && !root.child('rooms').child($code).child('bans').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || (newData.hasChildren(['id','name','color','ready','joinedAt']) && newData.child('id').val() == $uid && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('color').isString())"
+          }
+        },
+        "poses": {
+          "$uid": {
+            ".write": "auth != null && ($uid == auth.uid || root.child('rooms').child($code).child('meta/hostId').val() == auth.uid)"
+          }
+        },
+        "seats": {
+          "$seat": {
+            ".write": "auth != null && ((!data.exists() && newData.val() == auth.uid) || data.val() == auth.uid || root.child('rooms').child($code).child('meta/hostId').val() == auth.uid)"
+          }
+        },
+        "controls": {
+          "$uid": {
+            ".write": "auth != null && root.child('rooms').child($code).child('meta/hostId').val() == auth.uid"
+          }
+        },
+        "bans": {
+          "$uid": {
+            ".write": "auth != null && root.child('rooms').child($code).child('meta/hostId').val() == auth.uid"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}
